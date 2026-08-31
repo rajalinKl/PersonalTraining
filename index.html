@@ -3,50 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProTrainer - Advanced Client Progress Tracker</title>
+    <title>ProTrainer Elite - Client Analytics & Logger</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans antialiased pb-20">
+<body class="bg-[#090d16] text-slate-100 antialiased pb-24 selection:bg-indigo-500 selection:text-white">
 
-    <!-- Header -->
-    <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50 shadow-lg">
+    <!-- Top Navigation Header -->
+    <header class="bg-[#0f172a]/80 backdrop-blur-md border-b border-slate-800/80 p-4 sticky top-0 z-50 shadow-xl">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
-                <h1 class="text-base font-bold tracking-tight text-white">ProTrainer Analytics</h1>
+            <div class="flex items-center space-x-2.5">
+                <div class="w-2.5 h-2.5 bg-emerald-400 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.6)] animate-pulse"></div>
+                <h1 class="text-sm font-extrabold tracking-tight text-white uppercase tracking-wider">ProTrainer <span class="text-indigo-400 font-medium">Elite</span></h1>
             </div>
-            <button onclick="openAddClientModal()" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-1.5 rounded-lg font-semibold transition shadow-sm">+ Client</button>
+            <button onclick="openAddClientModal()" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3.5 py-1.5 rounded-xl font-bold transition shadow-lg shadow-indigo-600/20 active:scale-95">+ Add Client</button>
         </div>
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-4">
         
-        <!-- Client Selector & Overview Quick Card -->
-        <section class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60 space-y-3">
+        <!-- Client Selector & Overview Card -->
+        <section class="bg-[#111c30] p-4.5 rounded-2xl shadow-xl border border-slate-800/80 space-y-3.5 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none"></div>
             <div>
-                <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Active Client</label>
-                <select id="clientSelect" onchange="switchClient()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm font-semibold text-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
+                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Active Client</label>
+                <select id="clientSelect" onchange="switchClient()" class="w-full bg-[#0b1322] border border-slate-700/80 rounded-xl p-3 text-sm font-bold text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition shadow-inner">
                     <!-- Populated by JS -->
                 </select>
             </div>
-            <div id="clientSummaryStats" class="grid grid-cols-3 gap-2 pt-1 text-center">
+            <div id="clientSummaryStats" class="grid grid-cols-3 gap-2.5 pt-1 text-center">
                 <!-- Populated by JS -->
             </div>
         </section>
 
-        <!-- Navigation Tabs -->
-        <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700/60 shadow-inner">
-            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow transition">Sessions</button>
-            <button onclick="switchTab('exercises')" id="tab-exercises" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">Exercises</button>
-            <button onclick="switchTab('analytics')" id="tab-analytics" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">Progress</button>
-            <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">+ Log</button>
+        <!-- Navigation Tab Menu -->
+        <div class="flex bg-[#111c30] p-1.5 rounded-2xl border border-slate-800/80 shadow-lg">
+            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30 transition-all">Sessions</button>
+            <button onclick="switchTab('exercises')" id="tab-exercises" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-400 hover:text-white transition-all">Exercises</button>
+            <button onclick="switchTab('analytics')" id="tab-analytics" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-400 hover:text-white transition-all">Progress</button>
+            <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-400 hover:text-white transition-all">+ Log</button>
         </div>
 
         <!-- TAB 1: ALL SESSIONS HISTORY -->
         <div id="content-dashboard" class="space-y-3">
             <div class="flex justify-between items-center px-1">
-                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Complete Session Logs</h2>
+                <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Complete Session Logs</h2>
             </div>
             <div id="allSessionsContainer" class="space-y-3">
                 <!-- Populated by JS -->
@@ -55,10 +60,10 @@
 
         <!-- TAB 2: EXERCISE DIRECTORY & MUSCLE GROUPS -->
         <div id="content-exercises" class="space-y-3 hidden">
-            <div class="bg-slate-800 p-3 rounded-xl border border-slate-700/60">
-                <input type="text" id="exerciseSearch" placeholder="Search exercises (e.g. Squats, Pull ups)..." oninput="filterExercises()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white outline-none focus:ring-2 focus:ring-indigo-500">
+            <div class="bg-[#111c30] p-3 rounded-2xl border border-slate-800/80 shadow-lg">
+                <input type="text" id="exerciseSearch" placeholder="Search exercises (e.g. Squats, Bench)..." oninput="filterExercises()" class="w-full bg-[#0b1322] border border-slate-700/80 rounded-xl p-3 text-xs text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-indigo-500">
             </div>
-            <div id="exerciseDirectoryContainer" class="space-y-2">
+            <div id="exerciseDirectoryContainer" class="space-y-2.5">
                 <!-- Populated by JS -->
             </div>
         </div>
@@ -66,20 +71,20 @@
         <!-- TAB 3: ADVANCED ANALYTICS & PROGRESS -->
         <div id="content-analytics" class="space-y-4 hidden">
             <!-- Body Metrics Tracking Card -->
-            <div class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60 space-y-3">
+            <div class="bg-[#111c30] p-4.5 rounded-2xl shadow-xl border border-slate-800/80 space-y-3.5">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Body Weight & Muscle Mass</h2>
-                    <button onclick="openBodyMetricModal()" class="text-[10px] bg-indigo-600 hover:bg-indigo-500 px-2.5 py-1 rounded-lg font-semibold text-white transition">+ Update Stats</button>
+                    <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">InBody Scan & Composition</h2>
+                    <button onclick="openBodyMetricModal()" class="text-[10px] bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 rounded-xl font-bold text-white transition shadow-md shadow-indigo-600/20">+ Log Scan</button>
                 </div>
-                <div class="relative h-48 bg-slate-900/50 p-2 rounded-xl border border-slate-700/50">
+                <div class="relative h-52 bg-[#0b1322] p-3 rounded-xl border border-slate-800 shadow-inner">
                     <canvas id="bodyStatsChart"></canvas>
                 </div>
             </div>
 
             <!-- Muscle Group Progression Overview -->
-            <div class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60 space-y-3">
-                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Muscle Group Volume Distribution</h2>
-                <div id="muscleGroupStatsContainer" class="space-y-2">
+            <div class="bg-[#111c30] p-4.5 rounded-2xl shadow-xl border border-slate-800/80 space-y-3">
+                <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Muscle Group Volume Distribution</h2>
+                <div id="muscleGroupStatsContainer" class="space-y-2.5">
                     <!-- Populated by JS -->
                 </div>
             </div>
@@ -87,100 +92,114 @@
 
         <!-- TAB 4: LOG MULTI-EXERCISE SESSION -->
         <div id="content-log" class="space-y-4 hidden">
-            <div class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60 space-y-3.5">
-                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Record Full Workout Session</h2>
+            <div class="bg-[#111c30] p-5 rounded-2xl shadow-xl border border-slate-800/80 space-y-4">
+                <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Record Full Workout Session</h2>
                 
-                <div class="grid grid-cols-2 gap-2.5">
+                <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Session Date</label>
-                        <input type="date" id="logDate" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <label class="block text-[11px] font-bold text-slate-300 mb-1">Session Date</label>
+                        <input type="date" id="logDate" class="w-full bg-[#0b1322] border border-slate-700/80 rounded-xl p-3 text-xs font-semibold text-white focus:ring-2 focus:ring-indigo-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Phase / Tag</label>
-                        <input type="text" id="logPhase" placeholder="e.g. P2, W1D1" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <label class="block text-[11px] font-bold text-slate-300 mb-1">Phase / Tag</label>
+                        <input type="text" id="logPhase" placeholder="e.g. P2, W1D1" class="w-full bg-[#0b1322] border border-slate-700/80 rounded-xl p-3 text-xs font-semibold text-white placeholder-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none">
                     </div>
                 </div>
 
-                <div class="space-y-2 pt-2">
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Exercises Performed</label>
-                    <div id="logExerciseRowsContainer" class="space-y-2">
+                <div class="space-y-2.5 pt-1">
+                    <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Exercises Performed</label>
+                    <div id="logExerciseRowsContainer" class="space-y-2.5">
                         <!-- Dynamic rows injected here -->
                     </div>
-                    <button type="button" onclick="addExerciseRow()" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 py-2 rounded-xl text-xs font-semibold transition border border-slate-600">+ Add Another Exercise</button>
+                    <button type="button" onclick="addExerciseRow()" class="w-full bg-[#1b273d] hover:bg-[#23334f] text-slate-200 py-3 rounded-xl text-xs font-bold transition border border-slate-700/80 shadow-sm">+ Add Another Exercise</button>
                 </div>
 
-                <button onclick="saveMultiExerciseSession()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl text-sm font-semibold shadow-lg transition mt-3">Save Complete Session</button>
+                <button onclick="saveMultiExerciseSession()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3.5 rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition-all mt-2 active:scale-98">Save Complete Session</button>
             </div>
         </div>
 
     </main>
 
     <!-- EXERCISE DETAIL & PROGRESS CHART MODAL -->
-    <div id="exerciseModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-800 w-full max-w-lg p-5 rounded-2xl border border-slate-700 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+    <div id="exerciseModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-[#111c30] w-full max-w-lg p-5.5 rounded-3xl border border-slate-700/80 shadow-2xl space-y-4.5 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3.5">
                 <div>
-                    <h3 id="modalExerciseTitle" class="font-bold text-base text-white">Exercise Name</h3>
-                    <span id="modalMuscleTag" class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 mt-1 inline-block">Muscle Group</span>
+                    <h3 id="modalExerciseTitle" class="font-extrabold text-base text-white">Exercise Name</h3>
+                    <span id="modalMuscleTag" class="text-[10px] uppercase font-extrabold tracking-wider px-2.5 py-1 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mt-1.5 inline-block">Muscle Group</span>
                 </div>
-                <button onclick="closeExerciseModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">✕</button>
+                <button onclick="closeExerciseModal()" class="text-slate-400 hover:text-white bg-slate-800/80 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition">✕</button>
             </div>
             <div class="space-y-2">
-                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Weight Progression Chart</h4>
-                <div class="relative h-56 bg-slate-900/50 p-2 rounded-xl border border-slate-700/50">
+                <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Weight Progression Chart</h4>
+                <div class="relative h-56 bg-[#0b1322] p-3 rounded-2xl border border-slate-800 shadow-inner">
                     <canvas id="exerciseModalChart"></canvas>
                 </div>
             </div>
             <div class="space-y-2">
-                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Historical Performance Logs</h4>
-                <div id="modalHistoryList" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
+                <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Historical Performance Logs</h4>
+                <div id="modalHistoryList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
             </div>
         </div>
     </div>
 
-    <!-- UPDATE BODY METRICS MODAL -->
-    <div id="bodyMetricModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-800 w-full max-w-sm p-5 rounded-2xl border border-slate-700 shadow-2xl space-y-4">
-            <h3 class="font-bold text-base text-white">Log Body Weight & Muscle Mass</h3>
+    <!-- UPDATE INBODY METRICS MODAL -->
+    <div id="bodyMetricModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-[#111c30] w-full max-w-md p-6 rounded-3xl border border-slate-700/80 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <h3 class="font-extrabold text-base text-white">Log InBody Scan Metrics</h3>
             <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Date</label>
-                <input type="date" id="metricDate" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white outline-none">
+                <label class="block text-[11px] font-bold text-slate-300 mb-1">Scan Date</label>
+                <input type="date" id="metricDate" class="w-full bg-[#0b1322] border border-slate-700/80 rounded-xl p-3 text-xs font-semibold text-white outline-none">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 mb-1">Weight (kg)</label>
+                    <input type="number" step="0.1" id="metricWeight" placeholder="e.g. 99.0" class="w-full bg-[#0b1322] border border-slate-700/80 rounded-xl p-2.5 text-xs font-semibold text-white outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 mb-1">Skeletal Muscle (kg)</label>
+                    <input type="number" step="0.1" id="metricMuscle" placeholder="e.g. 46.9" class="w-full bg-[#0b1322] border border-slate-700/80 rounded-xl p-2.5 text-xs font-semibold text-white outline-none">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 mb-1">Body Fat Mass (kg)</label>
+                    <input type="number" step="0.1" id="metricFatMass" placeholder="e.g. 17.5" class="w-full bg-[#0b1322] border border-slate-700/80 rounded-xl p-2.5 text-xs font-semibold text-white outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 mb-1">BMI (kg/m²)</label>
+                    <input type="number" step="0.1" id="metricBmi" placeholder="e.g. 26.0" class="w-full bg-[#0b1322] border border-slate-700/80 rounded-xl p-2.5 text-xs font-semibold text-white outline-none">
+                </div>
             </div>
             <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Body Weight (kg)</label>
-                <input type="number" step="0.1" id="metricWeight" placeholder="e.g. 72.5" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white outline-none">
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">Muscle Mass (kg) [Optional]</label>
-                <input type="number" step="0.1" id="metricMuscle" placeholder="e.g. 34.2" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white outline-none">
+                <label class="block text-[11px] font-bold text-slate-300 mb-1">Percent Body Fat (%)</label>
+                <input type="number" step="0.1" id="metricBodyFatPct" placeholder="e.g. 17.6" class="w-full bg-[#0b1322] border border-slate-700/80 rounded-xl p-2.5 text-xs font-semibold text-white outline-none">
             </div>
             <div class="flex space-x-3 pt-2">
-                <button onclick="closeBodyMetricModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 py-2 rounded-xl text-xs font-semibold text-slate-300">Cancel</button>
-                <button onclick="saveBodyMetric()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-xl text-xs font-semibold">Save Stats</button>
+                <button onclick="closeBodyMetricModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-xl text-xs font-bold text-slate-300 transition">Cancel</button>
+                <button onclick="saveBodyMetric()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition">Save InBody Scan</button>
             </div>
         </div>
     </div>
 
     <!-- Add Client Modal -->
-    <div id="clientModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-800 w-full max-w-sm p-6 rounded-2xl border border-slate-700 shadow-2xl space-y-4">
-            <h3 class="font-bold text-base text-white">Add New Client</h3>
-            <input type="text" id="newClientName" placeholder="Client Full Name" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+    <div id="clientModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-[#111c30] w-full max-w-sm p-6 rounded-3xl border border-slate-700/80 shadow-2xl space-y-4">
+            <h3 class="font-extrabold text-base text-white">Add New Client</h3>
+            <input type="text" id="newClientName" placeholder="Client Full Name" class="w-full bg-[#0b1322] border border-slate-700/80 rounded-xl p-3.5 text-xs font-semibold text-white placeholder-slate-600 outline-none focus:ring-2 focus:ring-indigo-500">
             <div class="flex space-x-3 pt-2">
-                <button onclick="closeAddClientModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 py-2.5 rounded-xl text-xs font-semibold text-slate-300">Cancel</button>
-                <button onclick="addNewClient()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-xl text-xs font-semibold">Save Client</button>
+                <button onclick="closeAddClientModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-xl text-xs font-bold text-slate-300 transition">Cancel</button>
+                <button onclick="addNewClient()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition">Save Client</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Full complete dataset for Rajal and Ramneek with added body metrics storage
         let db = {
             "Rajal": {
                 bodyMetrics: [
-                    { date: '2025-12-01', weight: 65, muscle: 30 },
-                    { date: '2026-03-01', weight: 64.5, muscle: 30.2 },
-                    { date: '2026-06-01', weight: 64, muscle: 30.5 }
+                    { date: '2025-12-01', weight: 65, muscle: 30, fatMass: 18, bmi: 23, bodyFatPct: 27 },
+                    { date: '2026-06-01', weight: 64, muscle: 30.5, fatMass: 17, bmi: 22.5, bodyFatPct: 26.5 }
                 ],
                 sessions: [
                     { "date": "2025-12-10", "phase": "C1P1W1D1", "exercises": [ { "name": "Goblet squats", "sets": "10lbsx15 15lbx15/15" }, { "name": "Incline push ups", "sets": "BW x15/15/15" }, { "name": "Seated rows", "sets": "CBL4x15/15/15" }, { "name": "Seated shoulder press", "sets": "DB10lbsx12/8/8" } ] },
@@ -226,9 +245,9 @@
             },
             "Ramneek": {
                 bodyMetrics: [
-                    { date: '2025-12-01', weight: 78, muscle: 38 },
-                    { date: '2026-03-01', weight: 77.2, muscle: 38.5 },
-                    { date: '2026-08-31', weight: 77.5, muscle: 39 }
+                    { date: '2025-12-01', weight: 78, muscle: 38, fatMass: 16, bmi: 24, bodyFatPct: 18 },
+                    { date: '2026-03-01', weight: 77.2, muscle: 38.5, fatMass: 15.5, bmi: 23.8, bodyFatPct: 17.5 },
+                    { date: '2026-08-26', weight: 99.0, muscle: 46.9, fatMass: 17.5, bmi: 26.0, bodyFatPct: 17.6 }
                 ],
                 sessions: [
                     { "date": "2025-12-03", "phase": "C2P1W2D1", "exercises": [ { "name": "Goblet squats", "sets": "DB17.5kgx15 20kgx15/15" }, { "name": "Hack squats", "sets": "MC22.7kgx15/15" }, { "name": "Bench press", "sets": "DB20kgx15 22.5kgx15/15" }, { "name": "Lat pulldowns N", "sets": "CBL9x15 no10x15/15" }, { "name": "Seated rows", "sets": "CBL10x15/15" } ] },
@@ -306,7 +325,7 @@
             renderAnalytics();
             document.getElementById('logDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('metricDate').value = new Date().toISOString().split('T')[0];
-            addExerciseRow(); // Start logger with 1 row
+            addExerciseRow();
         }
 
         function updateClientDropdown() {
@@ -331,11 +350,11 @@
         function switchTab(tab) {
             ['dashboard', 'exercises', 'analytics', 'log'].forEach(t => {
                 document.getElementById('content-' + t).classList.add('hidden');
-                document.getElementById('tab-' + t).classList.remove('bg-indigo-600', 'text-white', 'shadow');
+                document.getElementById('tab-' + t).classList.remove('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/30');
                 document.getElementById('tab-' + t).classList.add('text-slate-400');
             });
             document.getElementById('content-' + tab).classList.remove('hidden');
-            document.getElementById('tab-' + tab).classList.add('bg-indigo-600', 'text-white', 'shadow');
+            document.getElementById('tab-' + tab).classList.add('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/30');
             document.getElementById('tab-' + tab).classList.remove('text-slate-400');
             if(tab === 'analytics') renderAnalytics();
         }
@@ -347,16 +366,16 @@
             clientData.sessions.forEach(s => s.exercises.forEach(e => uniqueExercises.add(e.name)));
 
             document.getElementById('clientSummaryStats').innerHTML = `
-                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/40">
-                    <span class="block text-[9px] text-slate-400 uppercase font-bold tracking-wider">Total Sessions</span>
+                <div class="bg-[#0b1322] p-2.5 rounded-xl border border-slate-800 shadow-inner">
+                    <span class="block text-[9px] text-slate-400 uppercase font-extrabold tracking-widest">Total Sessions</span>
                     <span class="text-sm font-extrabold text-indigo-400 mt-0.5 block">${totalSessions}</span>
                 </div>
-                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/40">
-                    <span class="block text-[9px] text-slate-400 uppercase font-bold tracking-wider">Exercises</span>
+                <div class="bg-[#0b1322] p-2.5 rounded-xl border border-slate-800 shadow-inner">
+                    <span class="block text-[9px] text-slate-400 uppercase font-extrabold tracking-widest">Exercises</span>
                     <span class="text-sm font-extrabold text-emerald-400 mt-0.5 block">${uniqueExercises.size}</span>
                 </div>
-                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/40">
-                    <span class="block text-[9px] text-slate-400 uppercase font-bold tracking-wider">Status</span>
+                <div class="bg-[#0b1322] p-2.5 rounded-xl border border-slate-800 shadow-inner">
+                    <span class="block text-[9px] text-slate-400 uppercase font-extrabold tracking-widest">Status</span>
                     <span class="text-xs font-bold text-sky-400 mt-1 block">Active</span>
                 </div>
             `;
@@ -367,22 +386,22 @@
             let html = '';
             sortedSessions.forEach(session => {
                 html += `
-                    <div class="bg-slate-800 p-3.5 rounded-2xl shadow-md border border-slate-700/60 space-y-2">
-                        <div class="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                            <span class="text-xs font-bold text-indigo-400">${session.date}</span>
-                            ${session.phase ? `<span class="text-[10px] font-mono bg-indigo-500/10 text-indigo-300 px-2 py-0.5 rounded">${session.phase}</span>` : ''}
+                    <div class="bg-[#111c30] p-4 rounded-2xl shadow-lg border border-slate-800/80 space-y-2.5">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <span class="text-xs font-extrabold text-indigo-400">${session.date}</span>
+                            ${session.phase ? `<span class="text-[10px] font-mono bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 px-2 py-0.5 rounded-md font-bold">${session.phase}</span>` : ''}
                         </div>
-                        <div class="space-y-1.5">
+                        <div class="space-y-2">
                 `;
                 session.exercises.forEach(ex => {
                     let muscle = getMuscleGroup(ex.name);
                     html += `
-                        <div class="flex justify-between items-center bg-slate-900/40 p-2 rounded-xl text-xs border border-slate-700/40">
+                        <div class="flex justify-between items-center bg-[#0b1322] p-2.5 rounded-xl text-xs border border-slate-800/80 shadow-sm">
                             <div>
-                                <span class="font-medium text-slate-200 block">${ex.name}</span>
-                                <span class="text-[10px] text-slate-400">${muscle}</span>
+                                <span class="font-bold text-slate-200 block">${ex.name}</span>
+                                <span class="text-[9px] font-semibold text-slate-400 uppercase tracking-wide">${muscle}</span>
                             </div>
-                            <span class="font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded text-right">${ex.sets}</span>
+                            <span class="font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-lg text-right">${ex.sets}</span>
                         </div>
                     `;
                 });
@@ -415,18 +434,18 @@
             let html = '';
             exercises.forEach(ex => {
                 html += `
-                    <div onclick="openExerciseModal('${ex.name.replace(/'/g, "\\'")}')" class="bg-slate-800 p-3.5 rounded-xl shadow border border-slate-700/60 flex justify-between items-center cursor-pointer hover:bg-slate-750 transition">
+                    <div onclick="openExerciseModal('${ex.name.replace(/'/g, "\\'")}')" class="bg-[#111c30] p-4 rounded-2xl shadow-lg border border-slate-800/80 flex justify-between items-center cursor-pointer hover:bg-[#16233b] transition-all group">
                         <div>
-                            <div class="text-xs font-bold text-white">${ex.name}</div>
-                            <div class="text-[10px] text-indigo-400 font-medium mt-0.5">${ex.muscle} • <span class="text-slate-400">${ex.count} sessions logged</span></div>
+                            <div class="text-xs font-bold text-white group-hover:text-indigo-300 transition">${ex.name}</div>
+                            <div class="text-[10px] text-slate-400 font-semibold mt-0.5">${ex.muscle} • <span class="text-slate-500">${ex.count} sessions</span></div>
                         </div>
                         <div class="text-right">
-                            <span class="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded">${ex.lastSets}</span>
+                            <span class="text-[11px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-xl">${ex.lastSets}</span>
                         </div>
                     </div>
                 `;
             });
-            container.innerHTML = html || '<p class="text-xs text-slate-500 text-center py-4">No exercises found.</p>';
+            container.innerHTML = html || '<p class="text-xs text-slate-500 text-center py-6">No exercises found.</p>';
         }
 
         function filterExercises() {
@@ -437,7 +456,6 @@
         function renderAnalytics() {
             const clientData = db[currentClient];
             
-            // 1. Muscle Group Distribution Calculation
             let muscleCounts = {};
             clientData.sessions.forEach(s => {
                 s.exercises.forEach(e => {
@@ -454,26 +472,26 @@
                 let count = muscleCounts[muscle];
                 let percent = Math.round((count / totalExCount) * 100);
                 muscleHtml += `
-                    <div class="bg-slate-900/50 p-2.5 rounded-xl border border-slate-700/40 space-y-1">
+                    <div class="bg-[#0b1322] p-3 rounded-xl border border-slate-800 shadow-inner space-y-1.5">
                         <div class="flex justify-between items-center text-xs">
-                            <span class="font-semibold text-slate-200">${muscle}</span>
-                            <span class="font-mono text-indigo-400 font-bold">${count} sets/exercises (${percent}%)</span>
+                            <span class="font-bold text-slate-200">${muscle}</span>
+                            <span class="font-mono text-indigo-400 font-bold">${count} entries (${percent}%)</span>
                         </div>
-                        <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                            <div class="bg-indigo-500 h-full rounded-full" style="width: ${percent}%"></div>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden p-0.5 border border-slate-700/50">
+                            <div class="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: ${percent}%"></div>
                         </div>
                     </div>
                 `;
             });
             muscleContainer.innerHTML = muscleHtml || '<p class="text-xs text-slate-500">No workout data available.</p>';
 
-            // 2. Body Metrics Chart (Weight & Muscle Mass)
             let metrics = clientData.bodyMetrics || [];
             metrics.sort((a,b) => new Date(a.date) - new Date(b.date));
 
             let mDates = metrics.map(m => m.date);
             let mWeights = metrics.map(m => m.weight);
             let mMuscles = metrics.map(m => m.muscle || null);
+            let mFat = metrics.map(m => m.fatMass || null);
 
             const ctx = document.getElementById('bodyStatsChart').getContext('2d');
             if (bodyStatsChartInstance) bodyStatsChartInstance.destroy();
@@ -483,48 +501,55 @@
                     labels: mDates.length ? mDates : ['No Data'],
                     datasets: [
                         {
-                            label: 'Body Weight (kg)',
+                            label: 'Weight (kg)',
                             data: mWeights.length ? mWeights : [0],
                             borderColor: '#38bdf8',
-                            backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                            borderWidth: 2,
-                            tension: 0.2
+                            backgroundColor: 'rgba(56, 189, 248, 0.05)',
+                            borderWidth: 2.5,
+                            tension: 0.25
                         },
                         {
                             label: 'Muscle Mass (kg)',
                             data: mMuscles.length ? mMuscles : [0],
-                            borderColor: '#10b981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            borderWidth: 2,
-                            tension: 0.2
+                            borderColor: '#34d399',
+                            backgroundColor: 'rgba(52, 211, 153, 0.05)',
+                            borderWidth: 2.5,
+                            tension: 0.25
+                        },
+                        {
+                            label: 'Body Fat (kg)',
+                            data: mFat.length ? mFat : [0],
+                            borderColor: '#f43f5e',
+                            backgroundColor: 'rgba(244, 63, 94, 0.05)',
+                            borderWidth: 2.5,
+                            tension: 0.25
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10 } } } },
+                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 9, family: 'Plus Jakarta Sans', weight: '600' } } } },
                     scales: {
-                        x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#334155' } },
-                        y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#334155' } }
+                        x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } },
+                        y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#1e293b' } }
                     }
                 }
             });
         }
 
-        // Dynamic Rows for Multi-Exercise Logging
         function addExerciseRow() {
             const container = document.getElementById('logExerciseRowsContainer');
             const rowId = 'ex-row-' + Date.now() + Math.random();
             const rowDiv = document.createElement('div');
             rowDiv.id = rowId;
-            rowDiv.className = "flex gap-2 items-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/50";
+            rowDiv.className = "flex gap-2 items-center bg-[#0b1322] p-3 rounded-2xl border border-slate-800 shadow-sm";
             rowDiv.innerHTML = `
-                <div class="flex-1 space-y-1">
-                    <input type="text" placeholder="Exercise Name (e.g. Bench press)" class="log-ex-name w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white outline-none">
-                    <input type="text" placeholder="Sets/Weights (e.g. 40kgx10 45kgx8)" class="log-ex-sets w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white outline-none">
+                <div class="flex-1 space-y-2">
+                    <input type="text" placeholder="Exercise Name (e.g. Bench press)" class="log-ex-name w-full bg-[#111c30] border border-slate-700/80 rounded-xl p-2.5 text-xs font-semibold text-white placeholder-slate-600 outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="text" placeholder="Sets/Weights (e.g. 40kgx10 45kgx8)" class="log-ex-sets w-full bg-[#111c30] border border-slate-700/80 rounded-xl p-2.5 text-xs font-semibold text-white placeholder-slate-600 outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
-                <button type="button" onclick="document.getElementById('${rowId}').remove()" class="text-rose-400 hover:text-rose-300 font-bold px-2 text-sm">✕</button>
+                <button type="button" onclick="document.getElementById('${rowId}').remove()" class="text-rose-400 hover:text-rose-300 bg-rose-500/10 border border-rose-500/20 w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs transition">✕</button>
             `;
             container.appendChild(rowDiv);
         }
@@ -557,13 +582,11 @@
                 clientData.sessions.push(session);
             }
 
-            // Append new exercises
             session.exercises.push(...newExercises);
             if(phase) session.phase = phase;
 
             alert("Workout session logged successfully!");
             
-            // Reset form
             document.getElementById('logPhase').value = '';
             document.getElementById('logExerciseRowsContainer').innerHTML = '';
             addExerciseRow();
@@ -590,8 +613,8 @@
                 session.exercises.forEach(ex => {
                     if (ex.name.toLowerCase() === exerciseName.toLowerCase()) {
                         historyHtml = `
-                            <div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded-xl text-xs border border-slate-700/40">
-                                <span class="text-indigo-300 font-semibold">${session.date}</span>
+                            <div class="flex justify-between items-center bg-[#0b1322] p-3 rounded-xl text-xs border border-slate-800">
+                                <span class="text-indigo-300 font-bold">${session.date}</span>
                                 <span class="font-mono text-emerald-400 font-bold">${ex.sets}</span>
                             </div>
                         ` + historyHtml;
@@ -618,7 +641,7 @@
                         data: maxWeights.length ? maxWeights : [0],
                         borderColor: '#6366f1',
                         backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                        borderWidth: 2,
+                        borderWidth: 2.5,
                         fill: true,
                         tension: 0.25
                     }]
@@ -628,8 +651,8 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#334155' } },
-                        y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#334155' } }
+                        x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } },
+                        y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#1e293b' } }
                     }
                 }
             });
@@ -644,9 +667,12 @@
             const date = document.getElementById('metricDate').value;
             const weight = parseFloat(document.getElementById('metricWeight').value);
             const muscle = parseFloat(document.getElementById('metricMuscle').value);
+            const fatMass = parseFloat(document.getElementById('metricFatMass').value);
+            const bmi = parseFloat(document.getElementById('metricBmi').value);
+            const bodyFatPct = parseFloat(document.getElementById('metricBodyFatPct').value);
 
             if(!date || isNaN(weight)) {
-                alert("Please provide a valid date and body weight.");
+                alert("Please provide at least a valid date and body weight.");
                 return;
             }
 
@@ -654,9 +680,16 @@
             if(!clientData.bodyMetrics) clientData.bodyMetrics = [];
 
             clientData.bodyMetrics = clientData.bodyMetrics.filter(m => m.date !== date);
-            clientData.bodyMetrics.push({ date, weight, muscle: isNaN(muscle) ? null : muscle });
+            clientData.bodyMetrics.push({ 
+                date, 
+                weight, 
+                muscle: isNaN(muscle) ? null : muscle, 
+                fatMass: isNaN(fatMass) ? null : fatMass, 
+                bmi: isNaN(bmi) ? null : bmi, 
+                bodyFatPct: isNaN(bodyFatPct) ? null : bodyFatPct 
+            });
 
-            alert("Body metrics updated successfully!");
+            alert("InBody scan metrics saved successfully!");
             closeBodyMetricModal();
             renderAnalytics();
         }
