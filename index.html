@@ -3,48 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trainer Progress Tracker</title>
+    <title>ProTrainer - Client Progress Tracker</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans pb-12">
+<body class="bg-slate-900 text-slate-100 font-sans antialiased pb-16">
 
     <!-- Header -->
-    <header class="bg-indigo-600 text-white p-4 shadow-md sticky top-0 z-50">
+    <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50 shadow-lg">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-lg font-bold">Client Progress Tracker</h1>
-            <button onclick="openAddClientModal()" class="bg-indigo-500 hover:bg-indigo-400 text-xs px-3 py-1.5 rounded-lg font-medium transition">+ Add Client</button>
+            <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+                <h1 class="text-base font-bold tracking-tight text-white">ProTrainer</h1>
+            </div>
+            <button onclick="openAddClientModal()" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-1.5 rounded-lg font-semibold transition shadow-sm">+ Client</button>
         </div>
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-4">
         
-        <!-- Client Selector & Quick Stats -->
-        <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Select Client</label>
-            <select id="clientSelect" onchange="switchClient()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none">
+        <!-- Client Selector Card -->
+        <section class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60">
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Active Client</label>
+            <select id="clientSelect" onchange="switchClient()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm font-semibold text-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
                 <!-- Populated by JS -->
             </select>
         </section>
 
         <!-- Navigation Tabs -->
-        <div class="flex bg-slate-200 p-1 rounded-xl">
-            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="flex-1 py-2 text-xs font-bold rounded-lg bg-white shadow-sm transition">Overview</button>
-            <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-600 transition">Log Session</button>
-            <button onclick="switchTab('graphs')" id="tab-graphs" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-600 transition">Progress Charts</button>
+        <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700/60 shadow-inner">
+            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow transition">Overview</button>
+            <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">Log Session</button>
+            <button onclick="switchTab('graphs')" id="tab-graphs" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">Analytics</button>
         </div>
 
-        <!-- TAB 1: DASHBOARD (Last Session & Body Stats) -->
+        <!-- TAB 1: DASHBOARD -->
         <div id="content-dashboard" class="space-y-4">
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <h2 class="text-sm font-bold text-slate-700 mb-3">Latest Body Stats</h2>
-                <div id="latestStats" class="grid grid-cols-3 gap-2 text-center">
+            <!-- Body Stats Grid -->
+            <div class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Latest Body Metrics</h2>
+                <div id="latestStats" class="grid grid-cols-3 gap-2.5 text-center">
                     <!-- Populated by JS -->
                 </div>
             </div>
 
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <h2 class="text-sm font-bold text-slate-700 mb-3">Last Workout Routine</h2>
+            <!-- Last Workout Routine -->
+            <div class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Last Session Routine</h2>
+                    <span id="lastWorkoutDate" class="text-xs font-medium text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-md"></span>
+                </div>
                 <div id="lastSessionContainer" class="space-y-3">
                     <!-- Populated by JS -->
                 </div>
@@ -53,81 +61,110 @@
 
         <!-- TAB 2: LOG NEW SESSION -->
         <div id="content-log" class="space-y-4 hidden">
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 space-y-3">
-                <h2 class="text-sm font-bold text-slate-700">Record New Workout & Stats</h2>
+            <div class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60 space-y-3.5">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Record Workout & Stats</h2>
                 <div>
-                    <label class="block text-xs font-medium text-slate-500 mb-1">Session Date</label>
-                    <input type="date" id="logDate" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Session Date</label>
+                    <input type="date" id="logDate" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div>
-                        <label class="block text-xs font-medium text-slate-500 mb-1">Body Weight (kg)</label>
-                        <input type="number" id="logBodyWeight" placeholder="e.g. 70" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Body Weight (kg)</label>
+                        <input type="number" id="logBodyWeight" placeholder="e.g. 70" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-500 mb-1">Exercise Name</label>
-                        <input type="text" id="logExerciseName" placeholder="e.g. Leg Press" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-500 mb-1">Weight Lifted (kg)</label>
-                        <input type="number" id="logWeightLifted" placeholder="e.g. 100" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-500 mb-1">Reps / Sets</label>
-                        <input type="text" id="logReps" placeholder="e.g. 3x10" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Section Type</label>
+                        <select id="logSection" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="Main workout">Main workout</option>
+                            <option value="Warm up">Warm up</option>
+                        </select>
                     </div>
                 </div>
-                <button onclick="saveNewSession()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-lg text-sm font-semibold shadow transition">Save Workout Entry</button>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Exercise Name</label>
+                        <input type="text" id="logExerciseName" placeholder="e.g. Incline press SM" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Sets & Weight Progression</label>
+                        <input type="text" id="logSetsDetail" placeholder="e.g. 40kgx12 50kgx10" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                </div>
+                <button onclick="saveNewSession()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl text-sm font-semibold shadow-lg transition mt-2">Save Workout Entry</button>
             </div>
         </div>
 
         <!-- TAB 3: GRAPHS -->
         <div id="content-graphs" class="space-y-4 hidden">
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <h2 class="text-sm font-bold text-slate-700 mb-2">Weight Lifted Progress (Legs / Main)</h2>
-                <canvas id="weightChart"></canvas>
+            <div class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Primary Exercise Progression</h2>
+                <div class="relative h-64"><canvas id="weightChart"></canvas></div>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <h2 class="text-sm font-bold text-slate-700 mb-2">Body Weight Trend</h2>
-                <canvas id="bodyWeightChart"></canvas>
+            <div class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Body Weight Trend</h2>
+                <div class="relative h-64"><canvas id="bodyWeightChart"></canvas></div>
             </div>
         </div>
 
     </main>
 
     <!-- Add Client Modal -->
-    <div id="clientModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white w-full max-w-sm p-5 rounded-2xl space-y-4">
-            <h3 class="font-bold text-base text-slate-800">Add New Client</h3>
-            <input type="text" id="newClientName" placeholder="Client Full Name" class="w-full border border-slate-200 rounded-lg p-2 text-sm">
-            <div class="flex space-x-2">
-                <button onclick="closeAddClientModal()" class="flex-1 bg-slate-100 py-2 rounded-lg text-xs font-semibold text-slate-600">Cancel</button>
-                <button onclick="addNewClient()" class="flex-1 bg-indigo-600 text-white py-2 rounded-lg text-xs font-semibold">Save</button>
+    <div id="clientModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 w-full max-w-sm p-6 rounded-2xl border border-slate-700 shadow-2xl space-y-4">
+            <h3 class="font-bold text-base text-white">Add New Client</h3>
+            <input type="text" id="newClientName" placeholder="Client Full Name" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+            <div class="flex space-x-3 pt-2">
+                <button onclick="closeAddClientModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 py-2.5 rounded-xl text-xs font-semibold text-slate-300 transition">Cancel</button>
+                <button onclick="addNewClient()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-xl text-xs font-semibold transition shadow">Save Client</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Initial Database containing initial seed info for Rajal and Ramneek
         let db = {
             "Rajal": {
-                bodyStats: [{ date: '2026-08-01', weight: 65 }, { date: '2026-08-15', weight: 64.5 }, { date: '2026-08-28', weight: 64 }],
+                bodyStats: [{ date: '2026-08-01', weight: 65 }, { date: '2026-08-28', weight: 64 }],
                 workouts: [
-                    { date: '2026-08-15', exercises: [{ name: 'Leg Press', weight: 80, reps: '3x10' }, { name: 'Bulgarian Split Squat', weight: 20, reps: '3x12' }] },
-                    { date: '2026-08-28', exercises: [{ name: 'Leg Press', weight: 90, reps: '3x10' }, { name: 'Bulgarian Split Squat', weight: 22.5, reps: '3x12' }] }
+                    {
+                        date: '2026-08-28',
+                        sections: [
+                            { type: 'Warm up', exercises: [{ name: 'Facepulls CBL', detail: '4x15/15' }] },
+                            { type: 'Main workout', exercises: [{ name: 'Leg Press', detail: '80kgx10 90kgx10' }, { name: 'Bulgarian split squats', detail: '20lbsx12 25lbsx10' }] }
+                        ]
+                    }
                 ]
             },
             "Ramneek": {
-                bodyStats: [{ date: '2026-08-05', weight: 78 }, { date: '2026-08-20', weight: 77.2 }],
+                bodyStats: [{ date: '2026-08-15', weight: 78 }, { date: '2026-08-31', weight: 77.5 }],
                 workouts: [
-                    { date: '2026-08-20', exercises: [{ name: 'Barbell Squat', weight: 60, reps: '4x8' }, { name: 'Leg Extension', weight: 45, reps: '3x12' }] }
+                    {
+                        date: '2026-08-31',
+                        sections: [
+                            {
+                                type: 'Warm up',
+                                exercises: [
+                                    { name: 'Facepulls CBL', detail: '4x15/15' },
+                                    { name: 'Deep squats', detail: 'BWx15/15' }
+                                ]
+                            },
+                            {
+                                type: 'Main workout',
+                                exercises: [
+                                    { name: 'Bulgarian split squats', detail: 'DB15lbsx12 20lbsx12 25lbsx10' },
+                                    { name: 'Aus pull ups', detail: 'BWx15/15' },
+                                    { name: 'Pull ups', detail: 'BWx6/5/5' },
+                                    { name: 'Aus pull ups', detail: 'BWx15/15' },
+                                    { name: 'Incline press SM', detail: '40kgx12 50kgx10 55kgx10' },
+                                    { name: 'Narrow push ups', detail: 'BWx12/12/10' }
+                                ]
+                            }
+                        ]
+                    }
                 ]
             }
         };
 
-        let currentClient = "Rajal";
+        let currentClient = "Ramneek";
         let weightChartInstance = null;
         let bodyWeightChartInstance = null;
 
@@ -135,6 +172,7 @@
             updateClientDropdown();
             renderDashboard();
             renderCharts();
+            document.getElementById('logDate').value = new Date().toISOString().split('T')[0];
         }
 
         function updateClientDropdown() {
@@ -158,12 +196,12 @@
         function switchTab(tab) {
             ['dashboard', 'log', 'graphs'].forEach(t => {
                 document.getElementById('content-' + t).classList.add('hidden');
-                document.getElementById('tab-' + t).classList.remove('bg-white', 'shadow-sm', 'text-slate-800');
-                document.getElementById('tab-' + t).classList.add('text-slate-600');
+                document.getElementById('tab-' + t).classList.remove('bg-indigo-600', 'text-white', 'shadow');
+                document.getElementById('tab-' + t).classList.add('text-slate-400');
             });
             document.getElementById('content-' + tab).classList.remove('hidden');
-            document.getElementById('tab-' + tab).classList.add('bg-white', 'shadow-sm', 'text-slate-800');
-            document.getElementById('tab-' + tab).classList.remove('text-slate-600');
+            document.getElementById('tab-' + tab).classList.add('bg-indigo-600', 'text-white', 'shadow');
+            document.getElementById('tab-' + tab).classList.remove('text-slate-400');
             if(tab === 'graphs') renderCharts();
         }
 
@@ -174,35 +212,49 @@
             const statsContainer = document.getElementById('latestStats');
             const latestWeight = clientData.bodyStats.length > 0 ? clientData.bodyStats[clientData.bodyStats.length - 1].weight : 'N/A';
             statsContainer.innerHTML = `
-                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                    <span class="block text-[10px] text-slate-400 uppercase font-bold">Body Wt</span>
-                    <span class="text-sm font-bold text-indigo-600">${latestWeight} kg</span>
+                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/40">
+                    <span class="block text-[10px] text-slate-400 uppercase font-bold tracking-wider">Body Weight</span>
+                    <span class="text-sm font-extrabold text-indigo-400 mt-0.5 block">${latestWeight} kg</span>
                 </div>
-                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                    <span class="block text-[10px] text-slate-400 uppercase font-bold">Total Workouts</span>
-                    <span class="text-sm font-bold text-indigo-600">${clientData.workouts.length}</span>
+                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/40">
+                    <span class="block text-[10px] text-slate-400 uppercase font-bold tracking-wider">Workouts</span>
+                    <span class="text-sm font-extrabold text-emerald-400 mt-0.5 block">${clientData.workouts.length} Logged</span>
                 </div>
-                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                    <span class="block text-[10px] text-slate-400 uppercase font-bold">Status</span>
-                    <span class="text-xs font-bold text-emerald-600">Active</span>
+                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/40">
+                    <span class="block text-[10px] text-slate-400 uppercase font-bold tracking-wider">Status</span>
+                    <span class="text-xs font-bold text-sky-400 mt-1 block">Active</span>
                 </div>
             `;
 
-            // Last Session
+            // Last Session Routine Display
             const sessionContainer = document.getElementById('lastSessionContainer');
+            const dateBadge = document.getElementById('lastWorkoutDate');
+            
             if(clientData.workouts.length === 0) {
-                sessionContainer.innerHTML = `<p class="text-xs text-slate-400">No workout sessions recorded yet.</p>`;
+                dateBadge.textContent = "No data";
+                sessionContainer.innerHTML = `<p class="text-xs text-slate-500 py-2">No workout sessions recorded yet.</p>`;
                 return;
             }
+
             const lastWorkout = clientData.workouts[clientData.workouts.length - 1];
-            let html = `<div class="text-xs text-indigo-500 font-semibold mb-2">Date: ${lastWorkout.date}</div>`;
-            lastWorkout.exercises.forEach(ex => {
+            dateBadge.textContent = lastWorkout.date;
+
+            let html = '';
+            lastWorkout.sections.forEach(sec => {
                 html += `
-                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg text-xs border border-slate-100 mb-1">
-                        <span class="font-medium text-slate-700">${ex.name}</span>
-                        <span class="font-bold text-slate-900">${ex.weight} kg (${ex.reps})</span>
-                    </div>
+                    <div class="mb-3 last:mb-0">
+                        <div class="text-[11px] font-bold text-indigo-300 uppercase tracking-wider mb-1.5 border-b border-slate-700/50 pb-1">${sec.type}</div>
+                        <div class="space-y-1.5">
                 `;
+                sec.exercises.forEach(ex => {
+                    html += `
+                        <div class="flex justify-between items-center bg-slate-900/40 p-2.5 rounded-xl text-xs border border-slate-700/40">
+                            <span class="font-medium text-slate-200">${ex.name}</span>
+                            <span class="font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">${ex.detail}</span>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
             });
             sessionContainer.innerHTML = html;
         }
@@ -210,36 +262,43 @@
         function saveNewSession() {
             const date = document.getElementById('logDate').value || new Date().toISOString().split('T')[0];
             const bodyWeight = parseFloat(document.getElementById('logBodyWeight').value);
-            const exName = document.getElementById('logExerciseName').value;
-            const weightLifted = parseFloat(document.getElementById('logWeightLifted').value);
-            const reps = document.getElementById('logReps').value;
+            const sectionType = document.getElementById('logSection').value;
+            const exName = document.getElementById('logExerciseName').value.trim();
+            const setsDetail = document.getElementById('logSetsDetail').value.trim();
 
-            if(!exName || isNaN(weightLifted)) {
-                alert("Please fill out exercise name and weight lifted.");
+            if(!exName || !setsDetail) {
+                alert("Please fill out exercise name and sets/weight details.");
                 return;
             }
 
             if(!db[currentClient]) db[currentClient] = { bodyStats: [], workouts: [] };
 
             if(!isNaN(bodyWeight)) {
+                // avoid duplicate body weight on same day
+                db[currentClient].bodyStats = db[currentClient].bodyStats.filter(s => s.date !== date);
                 db[currentClient].bodyStats.push({ date, weight: bodyWeight });
+                db[currentClient].bodyStats.sort((a,b) => new Date(a.date) - new Date(b.date));
             }
 
-            // Check if a workout for this date already exists
-            let existingWorkout = db[currentClient].workouts.find(w => w.date === date);
-            if(existingWorkout) {
-                existingWorkout.exercises.push({ name: exName, weight: weightLifted, reps: reps || '3x10' });
-            } else {
-                db[currentClient].workouts.push({
-                    date,
-                    exercises: [{ name: exName, weight: weightLifted, reps: reps || '3x10' }]
-                });
+            let workout = db[currentClient].workouts.find(w => w.date === date);
+            if(!workout) {
+                workout = { date, sections: [] };
+                db[currentClient].workouts.push(workout);
+                db[currentClient].workouts.sort((a,b) => new Date(a.date) - new Date(b.date));
             }
 
-            alert("Session recorded successfully!");
+            let section = workout.sections.find(s => s.type === sectionType);
+            if(!section) {
+                section = { type: sectionType, exercises: [] };
+                workout.sections.push(section);
+            }
+
+            section.exercises.push({ name: exName, detail: setsDetail });
+
+            alert("Session logged successfully!");
             document.getElementById('logExerciseName').value = '';
-            document.getElementById('logWeightLifted').value = '';
-            document.getElementById('logReps').value = '';
+            document.getElementById('logSetsDetail').value = '';
+            document.getElementById('logBodyWeight').value = '';
             renderDashboard();
             switchTab('dashboard');
         }
@@ -247,15 +306,20 @@
         function renderCharts() {
             const clientData = db[currentClient];
 
-            // Weight Lifted Chart (tracking first or primary leg exercise like Leg Press)
-            let exerciseDates = [];
-            let exerciseWeights = [];
-            
-            // Collect primary tracked movement data
+            // Extract numeric weights for charts (parsing first detected numeric value from sets detail for graphing trends)
+            let dates = [];
+            let weights = [];
+
             clientData.workouts.forEach(w => {
-                w.exercises.forEach(ex => {
-                    exerciseDates.push(w.date);
-                    exerciseWeights.push(ex.weight);
+                w.sections.forEach(sec => {
+                    sec.exercises.forEach(ex => {
+                        // try to pull a weight number like "55kg" or "25lbs"
+                        let match = ex.detail.match(/(\d+(\.\d+)?)\s*(kg|lbs)/i);
+                        if(match) {
+                            dates.push(w.date + ' (' + ex.name.substring(0,10) + ')');
+                            weights.push(parseFloat(match[1]));
+                        }
+                    });
                 });
             });
 
@@ -264,17 +328,26 @@
             weightChartInstance = new Chart(ctxWeight, {
                 type: 'line',
                 data: {
-                    labels: exerciseDates,
+                    labels: dates.length ? dates : ['No Data'],
                     datasets: [{
-                        label: 'Weight Lifted (kg)',
-                        data: exerciseWeights,
-                        borderColor: '#4f46e5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        label: 'Lift Weight Progression',
+                        data: weights.length ? weights : [0],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 2,
                         fill: true,
-                        tension: 0.2
+                        tension: 0.25
                     }]
                 },
-                options: { responsive: true, scales: { y: { beginAtZero: false } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
+                    scales: { 
+                        x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#334155' } },
+                        y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#334155' } } 
+                    } 
+                }
             });
 
             // Body Weight Chart
@@ -286,17 +359,26 @@
             bodyWeightChartInstance = new Chart(ctxBody, {
                 type: 'line',
                 data: {
-                    labels: bodyDates,
+                    labels: bodyDates.length ? bodyDates : ['No Data'],
                     datasets: [{
                         label: 'Body Weight (kg)',
-                        data: bodyWeights,
-                        borderColor: '#06b6d4',
-                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        data: bodyWeights.length ? bodyWeights : [0],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 2,
                         fill: true,
-                        tension: 0.2
+                        tension: 0.25
                     }]
                 },
-                options: { responsive: true }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
+                    scales: { 
+                        x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#334155' } },
+                        y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#334155' } } 
+                    } 
+                }
             });
         }
 
