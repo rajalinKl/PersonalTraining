@@ -130,15 +130,35 @@
                 </div>
                 <button onclick="closeExerciseModal()" class="text-slate-400 hover:text-slate-700 bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition">✕</button>
             </div>
+
+            <!-- Dynamic Metric Filters / Selector Controls -->
+            <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                <div>
+                    <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Graph Metric</label>
+                    <select id="modalMetricSelect" onchange="updateExerciseModalChart()" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-600">
+                        <option value="weight">Weight / Resistance</option>
+                        <option value="reps">Repetitions</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Set Aggregation</label>
+                    <select id="modalSetTypeSelect" onchange="updateExerciseModalChart()" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-600">
+                        <option value="max">Max Set Value</option>
+                        <option value="average">Average Set Value</option>
+                        <option value="total">Total Volume (Sum)</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="space-y-2">
                 <h4 id="modalChartTitle" class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Progression Chart</h4>
-                <div class="relative h-56 bg-slate-50 p-3 rounded-2xl border border-slate-200 shadow-inner">
+                <div class="relative h-52 bg-slate-50 p-3 rounded-2xl border border-slate-200 shadow-inner">
                     <canvas id="exerciseModalChart"></canvas>
                 </div>
             </div>
             <div class="space-y-2">
                 <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Historical Performance Logs</h4>
-                <div id="modalHistoryList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+                <div id="modalHistoryList" class="space-y-2 max-h-44 overflow-y-auto pr-1"></div>
             </div>
         </div>
     </div>
@@ -297,13 +317,14 @@
                     { "date": "2026-08-10", "phase": "P1", "exercises": [ { "name": "Hack squats", "sets": "MC 27kg × 12, MC 27kg × 12, MC 27kg × 12" }, { "name": "Romanian deadlifts", "sets": "SB 30kg × 12, SB 30kg × 12, SB 35kg × 12" }, { "name": "Lat pulldowns", "sets": "CBL 10 × 15, CBL 11 × 12, CBL 12 × 12" }, { "name": "Bench press", "sets": "BB 20kg × 15, BB 25kg × 12, BB 25kg × 15" }, { "name": "Seated shoulder press", "sets": "DB 20lbs × 15, DB 20lbs × 15, DB 20lbs × 15" }, { "name": "Incline curls", "sets": "DB 15lbs × 15, DB 15lbs × 15, DB 15lbs × 15" }, { "name": "Skull crushers", "sets": "SB 5kg × 15, SB 5kg × 15, SB 5kg × 15" } ] },
                     { "date": "2026-08-17", "phase": "P1", "exercises": [ { "name": "Squats", "sets": "SM 20kg × 15, SM 30kg × 12, SM 40kg × 12" }, { "name": "Lat pulldowns", "sets": "CBL 11 × 15, CBL 12 × 13, CBL 12 × 12" }, { "name": "Incline press", "sets": "DB 20kg × 15, DB 20kg × 15, DB 22.5kg × 12" }, { "name": "Rear delt fly", "sets": "DB 15lbs × 15, DB 15lbs × 15, DB 15lbs × 15" } ] },
                     { "date": "2026-08-24", "phase": "P2", "exercises": [ { "name": "Reverse lunges", "sets": "DB 30lbs × 12, DB 30lbs × 12, DB 17.5kg × 8, DB 17.5kg × 8 a side" }, { "name": "Pull ups", "sets": "BW × 8, BW × 6, BW × 5" }, { "name": "Lat pulldowns narrow", "sets": "CBL 13 × 10, CBL 13 × 10" }, { "name": "Bench press", "sets": "BB 30kg × 12, BB 35kg × 10, BB 35kg × 10" }, { "name": "Seated shoulder press", "sets": "DB 20kg × 10, DB 20kg × 10, DB 20kg × 8" } ] },
-                    { "date": "2026-08-28", "phase": "P2", "exercises": [ { "name": "Squats", "sets": "SM 20kg × 10, SM 30kg × 10, SM 40kg × 10, SM 45kg × 10, SM 50kg × 10" }, { "name": "Pull ups", "sets": "BW × 9.5, / 7.5 / 6" }, { "name": "Bench press", "sets": "BB 40kg × 10, BB 45kg × 10, BB 45kg × 8" }, { "name": "Skullcrushers", "sets": "SB 25kg × 10, SB 25kg × 10, SB 25kg × 10" }, { "name": "Seated curls", "sets": "DB 25lbs × 10, DB 25lbs × 10, DB 25lbs × 10" } ] },
+                    { "date": "2026-08-28", "phase": "P2", "exercises": [ { "name": "Squats", "sets": "SM 20kg × 10, SM 30kg × 10, SM 40kg × 10, SM 45kg × 10, SM 50kg × 10" }, { "name": "Pull ups", "sets": "BW × 9.5, BW × 7.5, BW × 6" }, { "name": "Bench press", "sets": "BB 40kg × 10, BB 45kg × 10, BB 45kg × 8" }, { "name": "Skullcrushers", "sets": "SB 25kg × 10, SB 25kg × 10, SB 25kg × 10" }, { "name": "Seated curls", "sets": "DB 25lbs × 10, DB 25lbs × 10, DB 25lbs × 10" } ] },
                     { "date": "2026-08-31", "phase": "P2", "exercises": [ { "name": "Bulgarian split squats", "sets": "DB 15lbs × 12, DB 20lbs × 12, DB 25lbs × 10" }, { "name": "Aus pull ups", "sets": "BW × 15, BW × 15" }, { "name": "Pull ups", "sets": "BW × 6, BW × 5, BW × 5" }, { "name": "Incline press", "sets": "SM 40kg × 12, SM 50kg × 10, SM 55kg × 10" }, { "name": "Narrow push ups", "sets": "BW × 12, BW × 12, BW × 10" } ] }
                 ]
             }
         };
 
         let currentClient = "Ramneek";
+        let activeModalExercise = null;
         let modalChartInstance = null;
         let bodyStatsChartInstance = null;
 
@@ -629,55 +650,56 @@
             switchTab('dashboard');
         }
 
-        function parseMeasurement(setsStr) {
-            // Check for explicit weight indicators (DB, SB, BB, KB, EZB, MC, HS, CBL) followed by number
-            let match = setsStr.match(/(?:DB|SB|BB|KB|EZB|MC|HS|CBL)\s*(\d+(\.\d+)?)/i) || setsStr.match(/(\d+(\.\d+)?)\s*(kg|lbs)/i);
-            if (match) {
-                return { val: parseFloat(match[1]), type: 'weight' };
-            }
-            
-            // If it's bodyweight or purely reps (e.g., BW x 12, 20" x 12, or just reps per set)
-            // Extract the maximum or average repetition count from the sets string
-            let repMatches = [...setsStr.matchAll(/[xX]\s*(\d+(\.\d+)?)/g)];
-            if (repMatches.length > 0) {
-                // Return the max reps performed in a set for progression tracking
-                let reps = repMatches.map(m => parseFloat(m[1]));
-                return { val: Math.max(...reps), type: 'reps' };
-            }
+        function parseSetsData(setsStr) {
+            // Parses a multi-set string like "DB 15lbs × 12, DB 20lbs × 10" into individual set objects
+            let setEntries = setsStr.split(/[,;]/);
+            let parsedSets = [];
 
-            let fallbackNum = setsStr.match(/(\d+(\.\d+)?)/);
-            if (fallbackNum) {
-                return { val: parseFloat(fallbackNum[1]), type: 'reps' };
-            }
+            setEntries.forEach(entry => {
+                let weightVal = 0;
+                let repsVal = 0;
 
-            return null;
+                // Extract weight/resistance number if present
+                let weightMatch = entry.match(/(?:DB|SB|BB|KB|EZB|MC|HS|CBL)\s*(\d+(\.\d+)?)/i) || entry.match(/(\d+(\.\d+)?)\s*(kg|lbs)/i);
+                if (weightMatch) {
+                    weightVal = parseFloat(weightMatch[1]);
+                } else {
+                    // Check for cable machine level numbers or standalone numbers before 'x'
+                    let prefixNum = entry.match(/^[^xX]*?(\d+(\.\d+)?)\s*[xX]/);
+                    if (prefixNum) {
+                        weightVal = parseFloat(prefixNum[1]);
+                    }
+                }
+
+                // Extract repetition count
+                let repMatch = entry.match(/[xX]\s*(\d+(\.\d+)?)/);
+                if (repMatch) {
+                    repsVal = parseFloat(repMatch[1]);
+                } else {
+                    let nums = [...entry.matchAll(/(\d+(\.\d+)?)/g)];
+                    if (nums.length >= 2) {
+                        repsVal = parseFloat(nums[1][1]);
+                    } else if (nums.length === 1 && !weightMatch) {
+                        repsVal = parseFloat(nums[0][1]);
+                    }
+                }
+
+                parsedSets.push({ weight: weightVal, reps: repsVal });
+            });
+
+            return parsedSets;
         }
 
         function openExerciseModal(exerciseName) {
+            activeModalExercise = exerciseName;
             const clientData = db[currentClient];
             document.getElementById('modalExerciseTitle').textContent = exerciseName;
             document.getElementById('modalMuscleTag').textContent = getMuscleGroup(exerciseName);
             document.getElementById('exerciseModal').classList.remove('hidden');
 
-            let dates = [];
-            let values = [];
-            let chartMetricLabel = 'Load Progression';
+            // Render historical performance log list
             let historyHtml = '';
-
             let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(a.date) - new Date(b.date));
-
-            // Determine if this exercise predominantly uses external weights or is bodyweight/reps-focused
-            let hasWeight = false;
-            sortedSessions.forEach(session => {
-                session.exercises.forEach(ex => {
-                    if (ex.name.toLowerCase() === exerciseName.toLowerCase()) {
-                        let parsed = parseMeasurement(ex.sets);
-                        if (parsed && parsed.type === 'weight') hasWeight = true;
-                    }
-                });
-            });
-
-            chartMetricLabel = hasWeight ? 'Weight / Resistance Value' : 'Repetitions Growth (Max Reps)';
 
             sortedSessions.forEach(session => {
                 session.exercises.forEach(ex => {
@@ -688,18 +710,51 @@
                                 <span class="font-mono text-emerald-600 font-bold">${ex.sets}</span>
                             </div>
                         ` + historyHtml;
+                    }
+                });
+            });
 
-                        let parsed = parseMeasurement(ex.sets);
-                        if (parsed) {
+            document.getElementById('modalHistoryList').innerHTML = historyHtml || '<p class="text-xs text-slate-400">No logs for this exercise.</p>';
+            updateExerciseModalChart();
+        }
+
+        function updateExerciseModalChart() {
+            if (!activeModalExercise) return;
+            const clientData = db[currentClient];
+            const metric = document.getElementById('modalMetricSelect').value; // 'weight' or 'reps'
+            const setType = document.getElementById('modalSetTypeSelect').value; // 'max', 'average', 'total'
+
+            let dates = [];
+            let values = [];
+            let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            sortedSessions.forEach(session => {
+                session.exercises.forEach(ex => {
+                    if (ex.name.toLowerCase() === activeModalExercise.toLowerCase()) {
+                        let parsedSets = parseSetsData(ex.sets);
+                        if (parsedSets.length > 0) {
+                            let metricValues = parsedSets.map(s => metric === 'weight' ? s.weight : s.reps);
+                            let computedVal = 0;
+
+                            if (setType === 'max') {
+                                computedVal = Math.max(...metricValues);
+                            } else if (setType === 'average') {
+                                let sum = metricValues.reduce((a, b) => a + b, 0);
+                                computedVal = Number((sum / metricValues.length).toFixed(1));
+                            } else if (setType === 'total') {
+                                computedVal = metricValues.reduce((a, b) => a + b, 0);
+                            }
+
                             dates.push(formatDate(session.date));
-                            values.push(parsed.val);
+                            values.push(computedVal);
                         }
                     }
                 });
             });
 
-            document.getElementById('modalChartTitle').textContent = chartMetricLabel;
-            document.getElementById('modalHistoryList').innerHTML = historyHtml || '<p class="text-xs text-slate-400">No logs for this exercise.</p>';
+            let metricNameLabel = metric === 'weight' ? 'Weight / Resistance' : 'Repetitions';
+            let aggNameLabel = setType === 'max' ? 'Max' : (setType === 'average' ? 'Average' : 'Total Volume');
+            document.getElementById('modalChartTitle').textContent = `${aggNameLabel} ${metricNameLabel} Progression Chart`;
 
             const ctx = document.getElementById('exerciseModalChart').getContext('2d');
             if (modalChartInstance) modalChartInstance.destroy();
@@ -708,10 +763,10 @@
                 data: {
                     labels: dates.length ? dates : ['No Data Available'],
                     datasets: [{
-                        label: chartMetricLabel,
+                        label: `${aggNameLabel} ${metricNameLabel}`,
                         data: values.length ? values : [0],
-                        borderColor: '#4f46e5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.08)',
+                        borderColor: metric === 'weight' ? '#4f46e5' : '#10b981',
+                        backgroundColor: metric === 'weight' ? 'rgba(79, 70, 229, 0.08)' : 'rgba(16, 185, 129, 0.08)',
                         borderWidth: 2.5,
                         fill: true,
                         tension: 0.25
@@ -729,7 +784,10 @@
             });
         }
 
-        function closeExerciseModal() { document.getElementById('exerciseModal').classList.add('hidden'); }
+        function closeExerciseModal() { 
+            document.getElementById('exerciseModal').classList.add('hidden'); 
+            activeModalExercise = null;
+        }
         
         function openBodyMetricModal() { document.getElementById('bodyMetricModal').classList.remove('hidden'); }
         function closeBodyMetricModal() { document.getElementById('bodyMetricModal').classList.add('hidden'); }
