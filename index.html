@@ -9,18 +9,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .toast-animate { animation: fadeIn 0.25s ease-out forwards; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased pb-24 selection:bg-indigo-600 selection:text-white">
 
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
     <!-- Top Navigation Header -->
-    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 p-4 sticky top-0 z-50 shadow-sm">
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 p-4 sticky top-0 z-40 shadow-sm">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-2.5">
                 <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.4)] animate-pulse"></div>
                 <h1 class="text-sm font-extrabold tracking-tight text-slate-900 uppercase tracking-wider">ProTrainer <span class="text-indigo-600 font-medium">Elite</span></h1>
             </div>
-            <button onclick="openAddClientModal()" class="bg-indigo-600 hover:bg-indigo-700 text-xs px-3.5 py-1.5 rounded-xl font-bold text-white transition shadow-md shadow-indigo-600/20 active:scale-95">+ Add Client</button>
+            <div id="headerActions" class="flex items-center space-x-2">
+                <button onclick="toggleRoleMode()" id="roleToggleBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] px-2.5 py-1.5 rounded-xl font-bold transition">Trainer Mode</button>
+                <button onclick="openAddClientModal()" id="addClientBtn" class="bg-indigo-600 hover:bg-indigo-700 text-xs px-3 py-1.5 rounded-xl font-bold text-white transition shadow-md shadow-indigo-600/20 active:scale-95">+ Add Client</button>
+            </div>
         </div>
     </header>
 
@@ -30,7 +38,7 @@
         <section class="bg-white p-4.5 rounded-2xl shadow-md border border-slate-200 space-y-3.5 relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none"></div>
             <div>
-                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Active Client</label>
+                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Active Client Profile</label>
                 <select id="clientSelect" onchange="switchClient()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition shadow-inner">
                     <!-- Populated by JS -->
                 </select>
@@ -45,10 +53,10 @@
             <button onclick="switchTab('dashboard')" id="tab-dashboard" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30 transition-all">Sessions</button>
             <button onclick="switchTab('exercises')" id="tab-exercises" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all">Exercises</button>
             <button onclick="switchTab('analytics')" id="tab-analytics" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all">Progress</button>
-            <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all">+ Log</button>
+            <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all trainer-only">+ Log</button>
         </div>
 
-        <!-- TAB 1: SESSIONS (Collapsible Month-Year Grouping) -->
+        <!-- TAB 1: SESSIONS -->
         <div id="content-dashboard" class="space-y-4">
             <div class="flex justify-between items-center px-1">
                 <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Sessions by Month</h2>
@@ -58,7 +66,7 @@
             </div>
         </div>
 
-        <!-- TAB 2: EXERCISE DIRECTORY & MUSCLE GROUPS -->
+        <!-- TAB 2: EXERCISE DIRECTORY -->
         <div id="content-exercises" class="space-y-3 hidden">
             <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
                 <input type="text" id="exerciseSearch" placeholder="Search exercises (e.g. Squats, Bench)..." oninput="filterExercises()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 outline-none focus:ring-2 focus:ring-indigo-600">
@@ -70,18 +78,16 @@
 
         <!-- TAB 3: ADVANCED ANALYTICS & PROGRESS -->
         <div id="content-analytics" class="space-y-4 hidden">
-            <!-- Body Metrics Tracking Card -->
             <div class="bg-white p-4.5 rounded-2xl shadow-md border border-slate-200 space-y-3.5">
                 <div class="flex justify-between items-center">
                     <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">InBody Scan & Composition</h2>
-                    <button onclick="openBodyMetricModal()" class="text-[10px] bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-xl font-bold text-white transition shadow-md shadow-indigo-600/20">+ Log Scan</button>
+                    <button onclick="openBodyMetricModal()" class="trainer-only text-[10px] bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-xl font-bold text-white transition shadow-md shadow-indigo-600/20">+ Log Scan</button>
                 </div>
                 <div class="relative h-52 bg-slate-50 p-3 rounded-xl border border-slate-200 shadow-inner">
                     <canvas id="bodyStatsChart"></canvas>
                 </div>
             </div>
 
-            <!-- Muscle Group Progression Overview -->
             <div class="bg-white p-4.5 rounded-2xl shadow-md border border-slate-200 space-y-3">
                 <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Muscle Group Volume Distribution</h2>
                 <div id="muscleGroupStatsContainer" class="space-y-2.5">
@@ -91,7 +97,7 @@
         </div>
 
         <!-- TAB 4: ENHANCED MULTI-SET WORKOUT LOGGER -->
-        <div id="content-log" class="space-y-4 hidden">
+        <div id="content-log" class="space-y-4 hidden trainer-only">
             <div class="bg-white p-5 rounded-2xl shadow-md border border-slate-200 space-y-4">
                 <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Record Full Workout Session</h2>
                 
@@ -108,9 +114,7 @@
 
                 <div class="space-y-3 pt-1">
                     <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Exercises Performed</label>
-                    <div id="logExerciseBlocksContainer" class="space-y-4">
-                        <!-- Dynamic Exercise Blocks injected here -->
-                    </div>
+                    <div id="logExerciseBlocksContainer" class="space-y-4"></div>
                     <button type="button" onclick="addExerciseBlock()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl text-xs font-bold transition border border-slate-200 shadow-sm">+ Add Another Exercise</button>
                 </div>
 
@@ -131,7 +135,6 @@
                 <button onclick="closeExerciseModal()" class="text-slate-400 hover:text-slate-700 bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition">✕</button>
             </div>
 
-            <!-- Dynamic Metric Filters / Selector Controls -->
             <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
                 <div>
                     <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Graph Metric</label>
@@ -174,11 +177,11 @@
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-700 mb-1">Weight (kg)</label>
-                    <input type="number" step="0.1" id="metricWeight" placeholder="e.g. 99.0" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold text-slate-800 outline-none">
+                    <input type="number" step="0.1" id="metricWeight" placeholder="e.g. 65.0" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold text-slate-800 outline-none">
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-700 mb-1">Skeletal Muscle (kg)</label>
-                    <input type="number" step="0.1" id="metricMuscle" placeholder="e.g. 46.9" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold text-slate-800 outline-none">
+                    <input type="number" step="0.1" id="metricMuscle" placeholder="e.g. 30.0" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold text-slate-800 outline-none">
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-3">
@@ -188,12 +191,12 @@
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-700 mb-1">BMI (kg/m²)</label>
-                    <input type="number" step="0.1" id="metricBmi" placeholder="e.g. 26.0" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold text-slate-800 outline-none">
+                    <input type="number" step="0.1" id="metricBmi" placeholder="e.g. 22.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold text-slate-800 outline-none">
                 </div>
             </div>
             <div>
                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Percent Body Fat (%)</label>
-                <input type="number" step="0.1" id="metricBodyFatPct" placeholder="e.g. 17.6" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold text-slate-800 outline-none">
+                <input type="number" step="0.1" id="metricBodyFatPct" placeholder="e.g. 26.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold text-slate-800 outline-none">
             </div>
             <div class="flex space-x-3 pt-2">
                 <button onclick="closeBodyMetricModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 py-3 rounded-xl text-xs font-bold text-slate-700 transition">Cancel</button>
@@ -215,120 +218,53 @@
     </div>
 
     <script>
-        let db = {
+        let db = JSON.parse(localStorage.getItem('protrainer_db')) || {
             "Rajal": {
                 bodyMetrics: [
                     { date: '2025-12-01', weight: 65, muscle: 30, fatMass: 18, bmi: 23, bodyFatPct: 27 },
                     { date: '2026-06-01', weight: 64, muscle: 30.5, fatMass: 17, bmi: 22.5, bodyFatPct: 26.5 }
                 ],
                 sessions: [
-                    { "date": "2025-12-10", "phase": "C1P1W1D1", "exercises": [ { "name": "Goblet squats", "sets": "DB 10lbs × 15, DB 15lbs × 15, DB 15lbs × 15" }, { "name": "Incline push ups", "sets": "BW × 15, BW × 15, BW × 15" }, { "name": "Seated rows", "sets": "CBL 4 × 15, CBL 4 × 15, CBL 4 × 15" }, { "name": "Seated shoulder press", "sets": "DB 10lbs × 12, DB 10lbs × 8, DB 10lbs × 8" } ] },
-                    { "date": "2025-12-12", "phase": "C1P1W1D2", "exercises": [ { "name": "Reverse lunges", "sets": "BW × 24 steps, BW × 24 steps, BW × 24 steps" }, { "name": "Chest press", "sets": "DB 10lbs × 12, DB 10lbs × 12, DB 10lbs × 12" }, { "name": "Lat pulldowns", "sets": "CBL 4 × 15, CBL 5 × 12, CBL 5 × 10" }, { "name": "Rear delt flys", "sets": "DB 5lbs × 12, DB 2.5lbs × 12, DB 2.5lbs × 12" }, { "name": "Stand curls", "sets": "DB 10lbs × 12, DB 10lbs × 12" }, { "name": "Tricep pressdowns", "sets": "CBL 3 × 15, CBL 3 × 15" } ] },
-                    { "date": "2026-01-14", "phase": "P1W2D1", "exercises": [ { "name": "Reverse lunges", "sets": "BW × 12, DB 10lbs × 12, DB 10lbs × 10 a side" }, { "name": "Rear delt fly", "sets": "DB 6lbs × 20, DB 6lbs × 15" }, { "name": "Chest press", "sets": "DB 15lbs × 12, DB 15lbs × 12, DB 15lbs × 12" }, { "name": "Bent over rows", "sets": "CBL 4 × 15, CBL 5 × 15, CBL 5 × 15, CBL 5 × 15" } ] },
-                    { "date": "2026-01-17", "phase": "P1W2D2", "exercises": [ { "name": "Goblet squats", "sets": "DB 15lbs × 15, DB 15lbs × 15, DB 20lbs × 15" }, { "name": "Romanian DLs", "sets": "SB 10kg × 15, SB 15kg × 15" }, { "name": "Rear delt fly", "sets": "DB 6lbs × 20, DB 6lbs × 15" }, { "name": "Incline press", "sets": "DB 15lbs × 12, DB 15lbs × 10, DB 15lbs × 10" }, { "name": "Single arm rows", "sets": "DB 15lbs × 15, DB 20lbs × 15, DB 20lbs × 12" }, { "name": "Deadlifts", "sets": "KB 16kg × 12, KB 20kg × 12" }, { "name": "Clean & press", "sets": "DB 10lbs × 10, DB 10lbs × 10" } ] },
-                    { "date": "2026-01-21", "phase": "P1W3D1", "exercises": [ { "name": "Walking lunges", "sets": "BW × 12, DB 10lbs × 10, BW × 10" }, { "name": "Lying leg curls", "sets": "MC 2 × 12, MC 2 × 12" }, { "name": "Chest fly mid", "sets": "CBL 1 × 15, CBL 1 × 15, CBL 1 × 15" }, { "name": "Seated shoulder press", "sets": "DB 10lbs × 12, DB 10lbs × 12" }, { "name": "Lat pulldowns narrow", "sets": "CBL 3 × 15, CBL 4 × 15, CBL 5 × 12, CBL 5 × 12" }, { "name": "Planks", "sets": "BW × 60s, BW 2.5kg × 30s" } ] },
-                    { "date": "2026-01-24", "phase": "P1W3D2", "exercises": [ { "name": "Squats", "sets": "DB 20lbs × 15, DB 25lbs × 12, DB 25lbs × 12" }, { "name": "Incline lateral lunges", "sets": "DB 2.5kg × 15, DB 2.5kg × 15" }, { "name": "Facepulls", "sets": "CBL 2 × 15, CBL 3 × 15" }, { "name": "Chest press", "sets": "DB 15lbs × 12, DB 20lbs × 10, DB 20lbs × 10" }, { "name": "Deadlifts", "sets": "KB 20kg × 12, KB 20kg × 12" }, { "name": "Bent over rows", "sets": "SB 15kg × 15, SB 17.5kg × 15, SB 17.5kg × 15" } ] },
-                    { "date": "2026-01-31", "phase": "P1W4D1", "exercises": [ { "name": "Hack squats", "sets": "MC 9kg × 12, MC 9kg × 12, MC 9kg × 12" }, { "name": "Box jumps", "sets": "BW × 12, BW × 12" }, { "name": "Rear delt fly", "sets": "DB 8lbs × 15, DB 8lbs × 15" }, { "name": "Stand shoulder press", "sets": "DB 10lbs × 12, DB 10lbs × 12, DB 10lbs × 12" }, { "name": "Bent over rows", "sets": "CBL 5 × 15, CBL 6 × 12, CBL 7 × 12, CBL 6 × 12" }, { "name": "Planks", "sets": "BW × 60s, BW × 60s" } ] },
-                    { "date": "2026-02-03", "phase": "P1W5D1", "exercises": [ { "name": "Romanian DLs", "sets": "SB 20kg × 12, SB 20kg × 12" }, { "name": "Deadlifts", "sets": "BB 10kg × 10, BB 10kg × 10, BB 10kg × 10" }, { "name": "Reverse lunges", "sets": "DB 10lbs × 10, DB 10lbs × 10, DB 10lbs × 10 a side" }, { "name": "Rear delt fly", "sets": "DB 8lbs × 12, DB 8lbs × 12" }, { "name": "Chest press", "sets": "DB 15lbs × 12, DB 15lbs × 12" }, { "name": "Lat pulldowns", "sets": "CBL 6 × 15, CBL 7 × 12, CBL 7 × 12" } ] },
-                    { "date": "2026-02-07", "phase": "P1W6D1", "exercises": [ { "name": "Goblet squats", "sets": "DB 25kg × 12, DB 30lbs × 12, DB 30lbs × 10" }, { "name": "Lying leg curl", "sets": "MC 2 × 15, MC 2 × 12" }, { "name": "Facepulls", "sets": "CBL 3 × 15, CBL 3 × 15" }, { "name": "Shoulder press", "sets": "DB 15lbs × 10, DB 15lbs × 10, DB 15lbs × 8" }, { "name": "Seated rows", "sets": "CBL 6 × 10, CBL 5 × 12, CBL 5 × 12" }, { "name": "Stand curls", "sets": "DB 10lbs × 12, DB 10lbs × 12, DB 10lbs × 12" }, { "name": "Tricep pressdowns", "sets": "CBL 3 × 12, CBL 4 × 12, CBL 4 × 12" } ] },
-                    { "date": "2026-03-04", "phase": "P1W7D1", "exercises": [ { "name": "Goblet squats", "sets": "DB 25kg × 15, DB 25kg × 15, DB 25kg × 12" }, { "name": "Rear delt fly", "sets": "DB 8lbs × 15, DB 8lbs × 15" }, { "name": "Military press", "sets": "SB 10kg × 15, SB 10kg × 12, SB 10kg × 12" }, { "name": "Lat pulldowns", "sets": "CBL 6 × 15, CBL 7 × 15, CBL 7 × 15" }, { "name": "Core rotations", "sets": "CBL 3 × 15, CBL 3 × 15 a side" } ] },
-                    { "date": "2026-03-07", "phase": "P1W7D2", "exercises": [ { "name": "Incline lateral lunge", "sets": "BW × 15, DB 5kg × 15 a side" }, { "name": "Single reverse lunges", "sets": "DB 10lbs × 12, DB 10lbs × 12 a side" }, { "name": "Chest press", "sets": "CBL 3 × 12, CBL 2 × 12" }, { "name": "Facepulls", "sets": "CBL 3 × 15, CBL 3 × 15" }, { "name": "Stand rows", "sets": "CBL 7 × 15, CBL 7 × 15, CBL 7 × 15" }, { "name": "Med ball crunches", "sets": "MB 2.5kg × 15, MB 2.5kg × 15, MB 2.5kg × 15" }, { "name": "Med ball core rotations", "sets": "MB 2.5kg × 10, MB 2.5kg × 10, MB 2.5kg × 10" } ] },
-                    { "date": "2026-03-11", "phase": "P1W8D1", "exercises": [ { "name": "Goblet squats", "sets": "DB 25kg × 15, DB 25kg × 15, DB 25kg × 15" }, { "name": "Romanian DLs", "sets": "SB 15kg × 12, SB 17.5kg × 12, SB 17.5kg × 12" }, { "name": "Seated shoulder press", "sets": "DB 10lbs × 15, DB 10lbs × 15, DB 10lbs × 12" }, { "name": "Lat pulldowns", "sets": "CBL 4 × 15, CBL 4 × 15, CBL 5 × 12" } ] },
-                    { "date": "2026-03-14", "phase": "P1W8D2", "exercises": [ { "name": "Goblet squats", "sets": "DB 25kg × 15, DB 25kg × 15, DB 25kg × 12" }, { "name": "Romanian DLs", "sets": "SB 15kg × 15, SB 15kg × 15, SB 15kg × 15" }, { "name": "Seated shoulder press", "sets": "DB 5kg × 15, DB 5kg × 12, DB 5kg × 12" }, { "name": "Rear delt fly", "sets": "DB 2.5kg × 15, DB 2.5kg × 15, DB 2.5kg × 15" }, { "name": "Bicep curl", "sets": "DB 2.5kg × 15, DB 5kg × 15, DB 5kg × 15" }, { "name": "Lat pulldowns", "sets": "BB 21kg × 12, BB 21kg × 12" }, { "name": "Bench Plank", "sets": "BW × 76s, BW × 60s" } ] },
-                    { "date": "2026-03-18", "phase": "P1W9D1", "exercises": [ { "name": "Goblet squats", "sets": "DB 25lbs × 15, DB 30lbs × 12, DB 25lbs × 12" }, { "name": "Romanian DLs", "sets": "SB 17.5kg × 12, SB 20kg × 12" }, { "name": "Incline PUs", "sets": "BW × 12, BW × 12, BW × 12" }, { "name": "Seated rows", "sets": "CBL 5 × 15, CBL 5 × 15, CBL 5 × 12" }, { "name": "Core rotations", "sets": "CBL 4 × 12, CBL 4 × 12, CBL 4 × 12 a side" }, { "name": "Stand curls", "sets": "DB 10lbs × 15, DB 10lbs × 12, DB 10lbs × 12" }, { "name": "Tricep pressdowns", "sets": "CBL 4 × 15, CBL 4 × 15, CBL 4 × 15" } ] },
-                    { "date": "2026-04-06", "phase": "C2P1W10D1", "exercises": [ { "name": "Step overs", "sets": "BW × 20, DB 5kg × 20, DB 5kg × 20, DB 5kg × 20 steps" }, { "name": "Stand shoulder press", "sets": "DB 10lbs × 10, DB 10lbs × 10, DB 10lbs × 10, DB 10lbs × 10" }, { "name": "Aus pull ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Half burpees", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Dips", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Squats", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Core rotations", "sets": "CBL 4 × 12, CBL 4 × 12 a side" } ] },
-                    { "date": "2026-04-08", "phase": "C2P1W10D2", "exercises": [ { "name": "Bulgarian split squats", "sets": "BW × 12, BW × 12, BW × 12 a side" }, { "name": "Incline lateral lunge", "sets": "BW × 12, BW × 12 a side" }, { "name": "Supported pull ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Med ball slams", "sets": "MB 5kg × 10, MB 9kg × 10, MB 9kg × 10" }, { "name": "Incline push ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Deadlifts", "sets": "KB 20kg × 10, KB 16kg × 10, KB 16kg × 10" } ] },
-                    { "date": "2026-04-11", "phase": "P1W10D3", "exercises": [ { "name": "Goblet squats", "sets": "DB 30lbs × 12, DB 30lbs × 12, DB 30lbs × 12" }, { "name": "Med ball slams", "sets": "MB 5kg × 12, MB 5kg × 12, MB 5kg × 12" }, { "name": "Aus pull ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Cleans", "sets": "DB 15lbs × 10, DB 15lbs × 10, DB 15lbs × 10" }, { "name": "Box jumps", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Incline push ups", "sets": "BW × 10, BW × 10, BW × 10" } ] },
-                    { "date": "2026-04-13", "phase": "P1W1D1", "exercises": [ { "name": "Goblet squats", "sets": "DB 30lbs × 12, DB 30lbs × 12, DB 30lbs × 12" }, { "name": "Romanian DLs", "sets": "SB 15kg × 12, SB 17.5kg × 12, SB 17.5kg × 12" }, { "name": "Single stand rows", "sets": "CBL 3 × 15, CBL 3 × 15, CBL 3 × 15" }, { "name": "Rear delt flys", "sets": "DB 6lbs × 12, DB 6lbs × 15, DB 6lbs × 15" }, { "name": "Stand curls", "sets": "CBL 2 × 15, CBL 3 × 15, CBL 3 × 12" }, { "name": "Tricep rope pulldowns", "sets": "CBL 3 × 15, CBL 3 × 15, CBL 3 × 15" } ] },
-                    { "date": "2026-04-15", "phase": "P1W1D2", "exercises": [ { "name": "Reverse lunges", "sets": "DB 5kg × 12, DB 15lbs × 12, DB 15lbs × 12" }, { "name": "Single stand rows", "sets": "CBL 4 × 12, CBL 4 × 12, CBL 4 × 12" }, { "name": "Seated shoulder press", "sets": "DB 10lbs × 12, DB 15lbs × 10, DB 15lbs × 8" }, { "name": "Landmine 180s", "sets": "BB 20kg × 20, BB 22.5kg × 10, BB 22.5kg × 12" }, { "name": "Cleans", "sets": "DB 15lbs × 12, DB 15lbs × 12, DB 15lbs × 12" }, { "name": "Tricep pressdowns", "sets": "CBL 3 × 12, CBL 4 × 12, CBL 5 × 12" } ] },
-                    { "date": "2026-04-24", "phase": "P1W2D1", "exercises": [ { "name": "Walking lunges", "sets": "DB 15lbs × 10, DB 15lbs × 10" }, { "name": "Goblet squats", "sets": "DB 30lbs × 12, DB 30lbs × 12" }, { "name": "Lat pulldowns N", "sets": "CBL 5 × 12, CBL 5 × 12" }, { "name": "Seated rows N", "sets": "CBL 5 × 12, CBL 5 × 12" }, { "name": "Incline push ups", "sets": "BW × 12, BW × 12" }, { "name": "Calf raise", "sets": "BW × 20, BW × 20, BW × 20" }, { "name": "Med ball crunches", "sets": "MB 2.5kg × 20, MB 2.5kg × 20, MB 2.5kg × 20" } ] },
-                    { "date": "2026-04-29", "phase": "P1W3D1", "exercises": [ { "name": "Romanian DLs", "sets": "SB 15kg × 12, SB 17.5kg × 12, SB 20kg × 12" }, { "name": "Leg press", "sets": "MC 30lbs × 15, MC 40lbs × 15, MC 50lbs × 15" }, { "name": "Bent over rows", "sets": "SB 20kg × 12, SB 20kg × 12, SB 20kg × 12" }, { "name": "Chest fly mid", "sets": "CBL 1 × 15, CBL 1 × 15, CBL 1 × 15" }, { "name": "Reverse fly", "sets": "DB 6lbs × 15, DB 6lbs × 15, DB 6lbs × 15" } ] },
-                    { "date": "2026-05-06", "phase": "P1W4D1", "exercises": [ { "name": "Reverse lunges", "sets": "DB 5kg × 24, DB 5kg × 24, DB 5kg × 24 steps" }, { "name": "Single Romanian DLs", "sets": "DB 10lbs × 10, DB 10lbs × 12" }, { "name": "Step downs", "sets": "BW × 15, BW × 15" }, { "name": "Single arm rows", "sets": "DB 20lbs × 12, DB 20lbs × 12, DB 20lbs × 12" }, { "name": "Core rotations", "sets": "CBL 3 × 15, CBL 4 × 12" } ] },
-                    { "date": "2026-05-13", "phase": "", "exercises": [ { "name": "Romanian DLs", "sets": "SB 17.5kg × 12, SB 20kg × 12, SB 25kg × 12" }, { "name": "Leg press", "sets": "MC 60lbs × 15, MC 60lbs × 15" }, { "name": "Supported pull ups", "sets": "BW × 12, BW × 12, BW × 12" }, { "name": "Straight arm pulldowns", "sets": "CBL 4 × 12, CBL 4 × 12" }, { "name": "Dips", "sets": "BW × 12, BW × 12, BW × 12" }, { "name": "Med ball slams", "sets": "MB 9kg × 10, MB 9kg × 10" } ] },
-                    { "date": "2026-05-16", "phase": "", "exercises": [ { "name": "Squats", "sets": "MB 9kg × 15, MB 9kg × 15, MB 9kg × 15" }, { "name": "Single RDLs", "sets": "DB 5kg × 10, DB 5kg × 10, DB 5kg × 10" }, { "name": "Bent over rows", "sets": "CBL 6 × 15, CBL 6 × 15, CBL 6 × 15, CBL 6 × 15" }, { "name": "Stand shoulder press", "sets": "DB 10lbs × 15, DB 10lbs × 12, DB 10lbs × 12" }, { "name": "Core rotations", "sets": "CBL 4 × 15, CBL 4 × 15, CBL 4 × 12" } ] },
-                    { "date": "2026-05-25", "phase": "", "exercises": [ { "name": "Squats", "sets": "DB 20lbs × 15, DB 20lbs × 15, DB 20lbs × 15" }, { "name": "Single RDLs", "sets": "DB 5kg × 15, DB 5kg × 15" }, { "name": "Bent over rows", "sets": "DB 10lbs × 15, DB 10lbs × 15, DB 10lbs × 15" }, { "name": "Stand shoulder press", "sets": "DB 10lbs × 12, DB 10lbs × 12, DB 10lbs × 12" }, { "name": "Crunches", "sets": "MB 2.5kg × 10, MB 2.5kg × 20" } ] },
-                    { "date": "2026-05-29", "phase": "", "exercises": [ { "name": "Clean & press", "sets": "DB 10lbs × 10, DB 10lbs × 10, DB 10lbs × 10" }, { "name": "Goblet squats", "sets": "DB 30lbs × 10, DB 30lbs × 10, DB 30lbs × 10" }, { "name": "Aus pull ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Deadlifts", "sets": "KB 20kg × 10, KB 20kg × 10, KB 20kg × 10" }, { "name": "Incline push ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Jump squats", "sets": "BW × 10, BW × 10, BW × 10" } ] },
-                    { "date": "2026-06-03", "phase": "", "exercises": [ { "name": "Bulgarian split squats", "sets": "BW × 10, DB 2.5kg × 10, DB 2.5kg × 10, DB 2.5kg × 10" }, { "name": "Lateral raise", "sets": "DB 8lbs × 10, DB 8lbs × 10, DB 8lbs × 10, DB 8lbs × 10" }, { "name": "Landmine rows", "sets": "BB 5kg × 10, BB 5kg × 10, BB 5kg × 10, BB 5kg × 10" }, { "name": "Stand curls", "sets": "SB 10kg × 10, SB 10kg × 10, SB 10kg × 10, SB 10kg × 10" }, { "name": "Push ups", "sets": "BW × 10, BW × 10, BW × 10, BW × 10" }, { "name": "Tricep pressdowns", "sets": "CBL 5 × 10, CBL 5 × 10, CBL 5 × 10, CBL 5 × 10" } ] },
-                    { "date": "2026-06-06", "phase": "", "exercises": [ { "name": "Hack squats", "sets": "MC 13kg × 10, MC 9kg × 10, MC 9kg × 10" }, { "name": "Stand shoulder press", "sets": "DB 10lbs × 12, DB 10lbs × 12, DB 10lbs × 12" }, { "name": "Single arm rows", "sets": "DB 20lbs × 12, DB 20lbs × 12, DB 20lbs × 12" }, { "name": "Supported pull ups", "sets": "BW × 12, BW × 12" }, { "name": "Incline push ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Landmine 180s", "sets": "BB 20kg × 15, BB 22.5kg × 15, BB 22.5kg × 15" }, { "name": "Cleans", "sets": "DB 15lbs × 12, DB 15lbs × 12, DB 15lbs × 12" } ] },
-                    { "date": "2026-06-10", "phase": "", "exercises": [ { "name": "Bulgarian split squats", "sets": "BW × 12, DB 2.5kg × 12, DB 2.5kg × 12, DB 2.5kg × 12" }, { "name": "Lat pulldowns", "sets": "CBL 5 × 12, CBL 5 × 12, CBL 5 × 8, CBL 5 × 8" }, { "name": "Push ups", "sets": "BW × 10, BW × 15, BW × 15" }, { "name": "Seated shoulder press", "sets": "DB 10lbs × 10, DB 10lbs × 10, DB 10lbs × 12, DB 10lbs × 12" } ] },
-                    { "date": "2026-06-12", "phase": "", "exercises": [ { "name": "Leg press", "sets": "MC 40lbs × 15, MC 60lbs × 12, MC 60lbs × 12, MC 60lbs × 12, MC 70lbs × 12" }, { "name": "Aus pull ups", "sets": "BW × 10, BW × 10, BW × 10, BW × 10" }, { "name": "Seated shoulder press", "sets": "DB 10lbs × 12, DB 10lbs × 12, DB 10lbs × 10, DB 10lbs × 10" }, { "name": "Stand curls", "sets": "DB 8lbs × 15, DB 8lbs × 15, DB 8lbs × 15, DB 8lbs × 15" }, { "name": "Tricep pressdowns", "sets": "CBL 3 × 15, CBL 4 × 15, CBL 4 × 15, CBL 4 × 15" } ] },
-                    { "date": "2026-07-08", "phase": "", "exercises": [ { "name": "Lateral lunges", "sets": "BW × 12, BW × 12 a side" }, { "name": "Reverse lunges", "sets": "BW × 12, BW × 12 a side" }, { "name": "Lat pulldowns", "sets": "CBL 4 × 12, CBL 6 × 12, CBL 6 × 10, CBL 6 × 8" }, { "name": "Seated shoulder press", "sets": "DB 10lbs × 12, DB 10lbs × 12, DB 15lbs × 8" }, { "name": "Stand curls", "sets": "DB 10lbs × 12, DB 10lbs × 12, DB 10lbs × 12" }, { "name": "Tricep rope pulldowns", "sets": "CBL 4 × 12, CBL 4 × 10, CBL 3 × 12" } ] },
-                    { "date": "2026-07-15", "phase": "", "exercises": [ { "name": "Clean & press", "sets": "DB 10lbs × 10, DB 10lbs × 10" }, { "name": "Romanian DLs", "sets": "DB 15lbs × 10, DB 15lbs × 10" }, { "name": "Leg press", "sets": "MC 70lbs × 12, MC 70lbs × 12, MC 80lbs × 10, MC 80lbs × 10" }, { "name": "Supported pull ups", "sets": "BW × 12, BW × 12, BW × 12, BW × 10" }, { "name": "Incline push ups", "sets": "BW × 12, BW × 12, BW × 12, BW × 12" }, { "name": "Curl and press", "sets": "DB 10lbs × 8, DB 10lbs × 8, DB 10lbs × 8, DB 10lbs × 8" }, { "name": "Core rotations", "sets": "CBL 4 × 12, CBL 4 × 12, CBL 4 × 12" } ] },
-                    { "date": "2026-07-19", "phase": "", "exercises": [ { "name": "Deadlifts", "sets": "EZB 20kg × 10, EZB 20kg × 10, EZB 20kg × 10" }, { "name": "Seated shoulder press", "sets": "DB 10lbs × 10, DB 10lbs × 10, DB 10lbs × 10" }, { "name": "Single arm rows", "sets": "DB 20lbs × 10" }, { "name": "Stand curls", "sets": "SB 10kg × 10" }, { "name": "Incline push ups", "sets": "BW × 10" }, { "name": "Tricep rope pulldowns", "sets": "CBL 3 × 10" }, { "name": "Lat pulldowns", "sets": "CBL 6 × 10" }, { "name": "Ball slams", "sets": "MB 5kg × 10" } ] },
-                    { "date": "2026-07-26", "phase": "", "exercises": [ { "name": "Box squats", "sets": "DB 20lbs × 15" }, { "name": "Stand shoulder press", "sets": "DB 10lbs × 15" }, { "name": "Lat pulldowns", "sets": "CBL 4 × 15" }, { "name": "Hammer curls", "sets": "DB 6lbs × 15" }, { "name": "Incline push ups", "sets": "BW × 15" }, { "name": "Tricep rope pulldowns", "sets": "CBL 2 × 15" }, { "name": "Landmine 180s", "sets": "BB 20kg × 15, BB 22.5kg × 15, BB 22.5kg × 15" } ] },
-                    { "date": "2026-07-29", "phase": "", "exercises": [ { "name": "Lunges", "sets": "DB 10lbs × 15, DB 15lbs × 12, DB 15lbs × 12" }, { "name": "Supported pull ups", "sets": "BW × 15, BW × 15, BW × 15, BW × 15" }, { "name": "Single arm OH press", "sets": "DB 10lbs × 12, DB 10lbs × 12, DB 10lbs × 12" }, { "name": "Stand curls", "sets": "SB 10kg × 12, SB 10kg × 12, SB 10kg × 12" }, { "name": "Tricep ext", "sets": "CBL 2 × 12, CBL 2 × 12, CBL 2 × 12" }, { "name": "Single Calf raises", "sets": "BW × 12, BW × 12, BW × 12, BW × 12" } ] },
-                    { "date": "2026-08-12", "phase": "", "exercises": [ { "name": "Hack squats", "sets": "MC 9kg × 12, MC 9kg × 12, MC 9kg × 12" }, { "name": "Reverse lunges", "sets": "DB 5kg × 12, DB 5kg × 12 a side" }, { "name": "Single arm rows", "sets": "DB 15lbs × 12, DB 20lbs × 12, DB 20lbs × 12" }, { "name": "Supported pull ups", "sets": "BW × 12, BW × 12" }, { "name": "Incline push ups", "sets": "BW × 12, BW × 12, BW × 12" }, { "name": "Military press", "sets": "SB 10kg × 10, SB 10kg × 10" } ] },
-                    { "date": "2026-08-19", "phase": "", "exercises": [ { "name": "Walking lunges", "sets": "DB 5kg × 12, DB 5kg × 12, DB 5kg × 12" }, { "name": "Romanian DLs", "sets": "SB 20kg × 12, SB 20kg × 12" }, { "name": "Lat pulldowns UHG", "sets": "CBL 4 × 15, CBL 5 × 12, CBL 5 × 12" }, { "name": "Aus pull ups", "sets": "BW × 10, BW × 12" }, { "name": "Chest fly mid", "sets": "CBL 2 × 12, CBL 2 × 12, CBL 2 × 12" } ] },
-                    { "date": "2026-08-23", "phase": "", "exercises": [ { "name": "Step ups", "sets": "BW × 15, DB 5kg × 12, DB 5kg × 12" }, { "name": "Single seated rows", "sets": "CBL 2 × 15, CBL 2 × 15, CBL 3 × 10, CBL 3 × 10" }, { "name": "Lat pulldowns Narrow", "sets": "CBL 5 × 12, CBL 5 × 12, CBL 5 × 12" }, { "name": "Incline push ups", "sets": "BW 20\" × 12, BW 20\" × 12, BW 20\" × 12" }, { "name": "Stand curls", "sets": "DB 8lbs × 15, DB 10lbs × 15, DB 12.5kg × 12" }, { "name": "Tricep rope pulldowns", "sets": "CBL 3 × 15, CBL 4 × 12, CBL 4 × 12" } ] },
-                    { "date": "2026-08-26", "phase": "", "exercises": [ { "name": "Leg presses", "sets": "MC 70lbs × 12, MC 70lbs × 15, MC 80lbs × 12" }, { "name": "Romanian DLs", "sets": "SB 20kg × 12, SB 20kg × 12" }, { "name": "Supported pull ups", "sets": "BW × 12, BW × 12, BW × 12" }, { "name": "Lat pulldowns narrow", "sets": "CBL 5 × 12, CBL 5 × 12" }, { "name": "Incline push ups", "sets": "BW × 15, BW × 15, BW × 12" }, { "name": "Tricep pressdowns", "sets": "CBL 4 × 15, CBL 4 × 15, CBL 5 × 12" }, { "name": "Stand curls", "sets": "SB 12.5kg × 12, SB 12.5kg × 12, SB 12.5kg × 12" } ] }
-                ]
-            },
-            "Ramneek": {
-                bodyMetrics: [
-                    { date: '2025-12-01', weight: 78, muscle: 38, fatMass: 16, bmi: 24, bodyFatPct: 18 },
-                    { date: '2026-03-01', weight: 77.2, muscle: 38.5, fatMass: 15.5, bmi: 23.8, bodyFatPct: 17.5 },
-                    { date: '2026-08-26', weight: 99.0, muscle: 46.9, fatMass: 17.5, bmi: 26.0, bodyFatPct: 17.6 }
-                ],
-                sessions: [
-                    { "date": "2025-12-03", "phase": "C2P1W2D1", "exercises": [ { "name": "Goblet squats", "sets": "DB 17.5kg × 15, DB 20kg × 15, DB 20kg × 15" }, { "name": "Hack squats", "sets": "MC 22.7kg × 15, MC 22.7kg × 15" }, { "name": "Bench press", "sets": "DB 20kg × 15, DB 22.5kg × 15, DB 22.5kg × 15" }, { "name": "Lat pulldowns N", "sets": "CBL 9 × 15, CBL 10 × 15, CBL 10 × 15" }, { "name": "Seated rows", "sets": "CBL 10 × 15, CBL 10 × 15" } ] },
-                    { "date": "2025-12-11", "phase": "C1P1W2D2", "exercises": [ { "name": "Goblet sumo squats", "sets": "DB 17.5kg × 15, DB 20kg × 15, DB 20kg × 15" }, { "name": "Leg press", "sets": "MC 100lbs × 12, MC 110lbs × 12" }, { "name": "Bench press", "sets": "BB 20kg × 15, BB 25kg × 15, BB 30kg × 15" }, { "name": "Chest fly high", "sets": "CBL 5 × 15, CBL 5 × 15" }, { "name": "Bent over rows", "sets": "BB 30kg × 15, BB 30kg × 15, BB 30kg × 15" }, { "name": "Supported pull ups", "sets": "BW × 12, BW × 12" }, { "name": "Stand curls", "sets": "SB 25kg × 12, SB 20kg × 15, SB 20kg × 12" }, { "name": "Tricep rope pulldowns", "sets": "CBL 8 × 15, CBL 8 × 12, CBL 8 × 12" } ] },
-                    { "date": "2025-12-13", "phase": "C1P1W2D3", "exercises": [ { "name": "Romanian deadlift", "sets": "DB 20kg × 12, DB 22.5kg × 12" }, { "name": "Curtsy lunges", "sets": "BW × 12, BW × 12, BW × 12 a side" }, { "name": "Chest fly", "sets": "CBL 4 × 15, CBL 5 × 15" }, { "name": "Incline press", "sets": "SM 30kg × 12, SM 30kg × 12, SM 30kg × 12" }, { "name": "Lat pulldowns D", "sets": "CBL 13 × 12, CBL 13 × 12, CBL 13 × 10" }, { "name": "Seated rows D", "sets": "CBL 12 × 12, CBL 11 × 12" } ] },
-                    { "date": "2026-01-03", "phase": "C2P1W1", "exercises": [ { "name": "Goblet sumo squats", "sets": "DB 17.5kg × 15, DB 20kg × 15, DB 22.5kg × 15, DB 22.5kg × 15" }, { "name": "Seated shoulder press", "sets": "DB 20lbs × 15, DB 25lbs × 15, DB 30lbs × 15, DB 30lbs × 12" }, { "name": "Chest press", "sets": "BB 30kg × 12, BB 30kg × 12, BB 30kg × 12" }, { "name": "Seated curls", "sets": "DB 20lbs × 12, DB 20lbs × 12, DB 20lbs × 12" }, { "name": "Lat pulldowns", "sets": "CBL 11 × 15, CBL 11 × 12, CBL 11 × 12" }, { "name": "Tricep rope pulldowns", "sets": "CBL 7 × 15, CBL 7 × 15, CBL 7 × 15" } ] },
-                    { "date": "2026-01-07", "phase": "C2P1W2D2", "exercises": [ { "name": "Bulgarian split squats", "sets": "BW × 12, DB 25lbs × 12, DB 25lbs × 12, DB 30lbs × 12, DB 30lbs × 12 a side" }, { "name": "Rear delt fly", "sets": "DB 20lbs × 15, DB 20lbs × 16" }, { "name": "Bench press", "sets": "BB 35kg × 12, BB 35kg × 12, BB 35kg × 12, BB 35kg × 10" }, { "name": "Seated rows wide", "sets": "CBL 11 × 12, CBL 11 × 12, CBL 11 × 12, CBL 11 × 12" } ] },
-                    { "date": "2026-01-09", "phase": "C2P1W2D3", "exercises": [ { "name": "Hack squats", "sets": "MC 31kg × 12, MC 31kg × 12, MC 31kg × 12, MC 31kg × 10" }, { "name": "Incline press", "sets": "DB 17.5kg × 15, DB 20kg × 12, DB 20kg × 12, DB 20kg × 12" }, { "name": "Supported pull ups", "sets": "BW × 12, BW × 12, BW × 12, BW × 10" }, { "name": "Tricep extension", "sets": "DB 10kg × 10, DB 10kg × 10, DB 5kg × 12, DB 5kg × 12" }, { "name": "Hammer curls", "sets": "DB 10kg × 10, DB 10kg × 10, DB 5kg × 12, DB 5kg × 12" } ] },
-                    { "date": "2026-01-16", "phase": "C2P1W3D1", "exercises": [ { "name": "Goblet squats", "sets": "DB 22.5kg × 12, DB 22.5kg × 12, DB 22.5kg × 12" }, { "name": "Romanian DLs", "sets": "EZB 10kg × 12, EZB 20kg × 12" }, { "name": "Single leg Split hops", "sets": "BW × 10, BW × 10, BW × 10 a side" }, { "name": "Clean & press", "sets": "KB 16kg × 10, KB 16kg × 10 a side" }, { "name": "Supported pull ups", "sets": "BW × 12, BW × 12" }, { "name": "Back extensions", "sets": "BW 5kg × 12, BW 5kg × 12" } ] },
-                    { "date": "2026-01-17", "phase": "C2P1W3D2", "exercises": [ { "name": "Walking lunges", "sets": "DB 10lbs × 24, DB 15lbs × 24, DB 15lbs × 24 steps" }, { "name": "Box jumps", "sets": "BW × 12, BW × 12" }, { "name": "Chest press", "sets": "BB 35kg × 12, BB 35kg × 12, BB 35kg × 10" }, { "name": "Shrugs", "sets": "DB 30lbs × 20, DB 17.5kg × 18" }, { "name": "Seated rows UHG", "sets": "CBL 11 × 12, CBL 11 × 12, CBL 11 × 12" }, { "name": "Core rotations", "sets": "CBL 5 × 12, CBL 5 × 12" }, { "name": "Calf raise", "sets": "BW × 25, BW × 25" } ] },
-                    { "date": "2026-01-23", "phase": "C2P1W4D1", "exercises": [ { "name": "Front Squats", "sets": "DB 20lbs × 10, DB 20lbs × 10, DB 25lbs × 10" }, { "name": "Single floor to overhead", "sets": "DB 25lbs × 10, DB 30lbs × 10, DB 30lbs × 10" }, { "name": "Supported pull ups", "sets": "BW × 10, BW × 10, BW × 10, BW × 10" }, { "name": "Half Swings", "sets": "KB 16kg × 10, KB 16kg × 10, KB 20kg × 10, KB 20kg × 10" }, { "name": "Aus pull ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Push ups", "sets": "BW × 10, BW × 10, BW × 10" } ] },
-                    { "date": "2026-01-26", "phase": "C2P1W5D1", "exercises": [ { "name": "Bulgarian split squats", "sets": "BW × 15, DB 10lbs × 15, DB 15lbs × 12, DB 15lbs × 12" }, { "name": "Rear delt fly", "sets": "DB 15lbs × 15, DB 15lbs × 15" }, { "name": "Stand shoulder press", "sets": "DB 25lbs × 15, DB 30lbs × 12" }, { "name": "Chest press", "sets": "BB 35kg × 12, BB 40kg × 12, BB 40kg × 10" }, { "name": "Lat pulldowns", "sets": "CBL 11 × 12, CBL 12 × 12" }, { "name": "Single arm rows", "sets": "CBL 6 × 12, CBL 6 × 12" }, { "name": "Stand curls", "sets": "SB 15kg × 12, SB 15kg × 12, SB 15kg × 12" }, { "name": "Tricep pressdowns", "sets": "CBL 9 × 12, CBL 9 × 12, CBL 9 × 12" } ] },
-                    { "date": "2026-01-30", "phase": "C2P1W5D2", "exercises": [ { "name": "Hack squats", "sets": "MC 32kg × 12, MC 32kg × 12, MC 36kg × 12" }, { "name": "Explosive squats", "sets": "BW × 12, BW × 15" }, { "name": "Rear delt fly", "sets": "DB 15lbs × 15, DB 15lbs × 15" }, { "name": "Incline press", "sets": "DB 20kg × 12, DB 22.5kg × 12, DB 22.5kg × 12" }, { "name": "Single bent over rows", "sets": "CBL 10 × 12, CBL 10 × 12" }, { "name": "Seated rows wide", "sets": "CBL 11 × 12, CBL 11 × 12" }, { "name": "Stand curls", "sets": "SB 17.5kg × 12, SB 20kg × 12, SB 25kg × 8" }, { "name": "Tricep rope pulldowns", "sets": "CBL 8 × 12, CBL 9 × 12, CBL 10 × 12" } ] },
-                    { "date": "2026-02-07", "phase": "C2P1W6D1", "exercises": [ { "name": "Squats", "sets": "SM 40kg × 8, SM 40kg × 8, SM 40kg × 8" }, { "name": "Facepulls", "sets": "CBL 4 × 20, CBL 5 × 15" }, { "name": "Seated shoulder press", "sets": "DB 17.5kg × 12, DB 20kg × 10, DB 20kg × 10" }, { "name": "Lat pulldowns N", "sets": "CBL 12 × 10, CBL 13 × 10" }, { "name": "Hammer curls", "sets": "DB 25lbs × 12, DB 25lbs × 12, DB 25lbs × 12" }, { "name": "Tricep pressdowns", "sets": "CBL 10 × 12, CBL 10 × 12, CBL 11 × 10" } ] },
-                    { "date": "2026-02-09", "phase": "C2P1W7D1", "exercises": [ { "name": "Walking lunges", "sets": "DB 5lbs × 24, DB 15lbs × 24, DB 20lbs × 24, DB 25lbs × 20 steps" }, { "name": "Lying leg curls", "sets": "MC 9 × 15, MC 10 × 12" }, { "name": "Facepulls", "sets": "CBL 5 × 15, CBL 5 × 15" }, { "name": "Bench press", "sets": "BB 30kg × 15, BB 40kg × 12, BB 45kg × 8" }, { "name": "Lateral raise", "sets": "DB 10lbs × 15, DB 15lbs × 12, DB 15lbs × 12" }, { "name": "Seated rows D", "sets": "CBL 12 × 12, CBL 13 × 12, CBL 13 × 10, CBL 13 × 10" } ] },
-                    { "date": "2026-02-11", "phase": "C2P1W7D1", "exercises": [ { "name": "Step ups", "sets": "BW × 20, DB 5kg × 20 steps" }, { "name": "Deep squats", "sets": "BW × 15, DB 5kg × 12" }, { "name": "Squats", "sets": "SM 40kg × 10, SM 40kg × 8, SM 40kg × 8, SM 40kg × 8" }, { "name": "Romanian DLs", "sets": "SB 30kg × 12, SB 35kg × 12" }, { "name": "Chest fly mid", "sets": "CBL 4 × 15, CBL 5 × 12, CBL 5 × 12" }, { "name": "Lat pulldowns W", "sets": "CBL 12 × 12, CBL 12 × 12, CBL 13 × 12" }, { "name": "Stand curls", "sets": "SB 20kg × 12, SB 20kg × 12, SB 20kg × 10" }, { "name": "Tricep rope pulldowns", "sets": "CBL 10kg × 12, CBL 10kg × 12, CBL 10kg × 12" } ] },
-                    { "date": "2026-03-02", "phase": "C2P1W8D1", "exercises": [ { "name": "Step ups", "sets": "BW × 20, DB 5kg × 20 steps" }, { "name": "Deep squats", "sets": "BW × 15, DB 5kg × 12" }, { "name": "Squats", "sets": "SM 40kg × 10, SM 40kg × 10, SM 40kg × 10" }, { "name": "Romanian DLs", "sets": "SB 35kg × 12, SB 35kg × 12" }, { "name": "Seated shoulder press", "sets": "DB 30lbs × 15, DB 30lbs × 15, DB 17.5kg × 12" }, { "name": "Single rows", "sets": "CBL 10 × 12, CBL 10 × 12, CBL 10 × 12" } ] },
-                    { "date": "2026-03-06", "phase": "C2P1W8D2", "exercises": [ { "name": "Romanian DLs", "sets": "DB 30lbs × 12, SB 17.5kg × 12, SB 20kg × 12" }, { "name": "Lat pulldowns", "sets": "CBL 7 × 15, CBL 9 × 15, CBL 11 × 15" }, { "name": "Deadlifts", "sets": "BB 40kg × 8, BB 40kg × 8, BB 40kg × 8" }, { "name": "Single reverse lunges", "sets": "DB 15lbs × 12, DB 20lbs × 12, DB 25lbs × 12 a side" }, { "name": "Chest fly mid", "sets": "CBL 4 × 15, CBL 5 × 15, CBL 5 × 14" }, { "name": "Lat pulldowns UHG", "sets": "CBL 12 × 12, CBL 13 × 12, CBL 13 × 12" } ] },
-                    { "date": "2026-03-09", "phase": "C2P1W9D1", "exercises": [ { "name": "Step ups", "sets": "BW 5kg × 20, BW 5kg × 20 steps" }, { "name": "Deep squats", "sets": "BW × 10, BW × 10" }, { "name": "Goblet squats", "sets": "DB 30lbs × 14, DB 30lbs × 12, DB 30lbs × 12" }, { "name": "Incline press", "sets": "DB 30lbs × 12, DB 17.5kg × 12, DB 20kg × 12, DB 22.5kg × 12" }, { "name": "Lat pulldowns N", "sets": "CBL 12 × 12, CBL 13 × 12, CBL 13 × 12, CBL 14 × 10" } ] },
-                    { "date": "2026-03-16", "phase": "C2P1W10D1", "exercises": [ { "name": "Farmers carry OH", "sets": "DB 15lbs × 1, DB 20lbs × 1, DB 25lbs × 1" }, { "name": "Step ups", "sets": "BW 5kg × 20, BW 5kg × 20 steps" }, { "name": "Deep squats", "sets": "DB 10kg × 10, DB 10kg × 10" }, { "name": "Front squats", "sets": "DB 30lbs × 12" }, { "name": "Stand shoulder press", "sets": "SB 25kg × 15, SB 30kg × 12, SB 35kg × 12" }, { "name": "Lat pulldowns W", "sets": "CBL 12 × 12, CBL 12 × 12, CBL 12 × 12" }, { "name": "Stand calf raise", "sets": "MC 13.6kg × 20, MC 13.6kg × 20, MC 13.6kg × 15" } ] },
-                    { "date": "2026-03-30", "phase": "C2P1W11D1", "exercises": [ { "name": "Squats", "sets": "SM 30kg × 12, SM 40kg × 10, SM 40kg × 10" }, { "name": "Seated shoulder press", "sets": "DB 30lbs × 15, DB 17.5kg × 12, DB 20kg × 10" }, { "name": "Lat pulldowns N", "sets": "CBL 12 × 12, CBL 12 × 12, CBL 12 × 12" }, { "name": "Climbers", "sets": "BW × 15, BW × 15 a side" }, { "name": "Crunches", "sets": "BW × 15, BW × 15" } ] },
-                    { "date": "2026-04-01", "phase": "C2P1W11D2", "exercises": [ { "name": "Step overs", "sets": "BW × 30, DB 5kg × 30, DB 10kg × 30, DB 15kg × 30 steps" }, { "name": "Stand shoulder press", "sets": "DB 20lbs × 15, DB 25lbs × 15, DB 30lbs × 15, DB 17.5kg × 15" }, { "name": "Supported pull ups", "sets": "BW × 10, BW × 10, BW × 10, BW × 10" }, { "name": "Half burpees", "sets": "BW × 15, BW × 10, BW × 10, BW × 10" }, { "name": "Dips", "sets": "BW × 15, BW × 15, BW × 15" }, { "name": "Squats", "sets": "BW × 15, BW × 15, BW × 15" } ] },
-                    { "date": "2026-04-10", "phase": "C2P1W11D2", "exercises": [ { "name": "Front squats", "sets": "DB 30lbs × 10" }, { "name": "Stand shoulder press", "sets": "DB 30lbs × 10" }, { "name": "Bent over rows", "sets": "BB 10kg × 10, BB 20kg × 10, BB 20kg × 10, BB 20kg × 10" }, { "name": "Box jumps", "sets": "BW × 10, BW × 10, BW × 10, BW × 10" }, { "name": "Aus pull ups", "sets": "BW × 10" }, { "name": "Push ups", "sets": "BW × 10" } ] },
-                    { "date": "2026-04-20", "phase": "C2P1W13D1", "exercises": [ { "name": "Squats", "sets": "SM 35kg × 10" }, { "name": "Clean & press", "sets": "DB 25lbs × 10, DB 30lbs × 10, DB 30lbs × 10, DB 30lbs × 10" }, { "name": "Bench press", "sets": "BB 40kg × 10, BB 40kg × 10, BB 40kg × 10, BB 40kg × 8" }, { "name": "KB swings", "sets": "KB 20kg × 10" }, { "name": "Forward leaps", "sets": "BW × 10" }, { "name": "Aus pull ups", "sets": "BW × 10" } ] },
-                    { "date": "2026-04-22", "phase": "C2P1W13D2", "exercises": [ { "name": "Goblet squats", "sets": "DB 30lbs × 10" }, { "name": "Stand shoulder press", "sets": "DB 30lbs × 10" }, { "name": "Supported pull ups", "sets": "BW × 10" }, { "name": "Push ups", "sets": "BW × 10" }, { "name": "KB swings", "sets": "KB 16kg × 10" }, { "name": "Bent over rows", "sets": "CBL 12 × 10, CBL 13 × 10, CBL 14 × 10, CBL 16 × 10" } ] },
-                    { "date": "2026-04-27", "phase": "", "exercises": [ { "name": "Deadlifts", "sets": "BB 35kg × 10" }, { "name": "Box jumps", "sets": "BW × 10" }, { "name": "Single stand shoulder press", "sets": "DB 30lbs × 10" }, { "name": "Goblet sumo squats", "sets": "DB 30lbs × 10" }, { "name": "Aus pull ups", "sets": "BW × 10" }, { "name": "Push ups", "sets": "BW × 10" } ] },
-                    { "date": "2026-05-08", "phase": "", "exercises": [ { "name": "Bulgarian split squats", "sets": "BW × 10, DB 20lbs × 10, DB 20lbs × 10, DB 20lbs × 10" }, { "name": "Single arm rows", "sets": "DB 17.5kg × 15, DB 17.5kg × 15, DB 20kg × 12" }, { "name": "Chest fly mid", "sets": "CBL 5 × 12, CBL 4 × 15, CBL 4 × 15" }, { "name": "Stand curls", "sets": "DB 20lbs × 15, DB 20lbs × 12, DB 20lbs × 12" }, { "name": "Tricep pressdowns", "sets": "CBL 10 × 15, CBL 10 × 15, CBL 10 × 12" } ] },
-                    { "date": "2026-05-11", "phase": "", "exercises": [ { "name": "Goblet squats", "sets": "DB 30lbs × 10, DB 30lbs × 10, DB 17.5kg × 10, DB 17.5kg × 10" }, { "name": "Single clean & press", "sets": "DB 30lbs × 10, DB 30lbs × 10, DB 30lbs × 10, DB 30lbs × 10" }, { "name": "Aus pull ups", "sets": "BW × 10" }, { "name": "Push ups", "sets": "BW × 10" }, { "name": "Med Ball slams", "sets": "MB 9kg × 10" }, { "name": "Bent over rows", "sets": "CBL 16 × 10" } ] },
-                    { "date": "2026-05-15", "phase": "", "exercises": [ { "name": "Hack squats", "sets": "MC 50lbs × 10, MC 50lbs × 10, MC 50lbs × 10, MC 50lbs × 10, MC 50lbs × 10, MC 50lbs × 10" }, { "name": "Lat pulldowns", "sets": "CBL 9 × 10, CBL 10 × 10, CBL 10 × 10, CBL 10 × 10, CBL 10 × 10, CBL 10 × 10" }, { "name": "Incline press", "sets": "DB 17.5kg × 10, DB 17.5kg × 10, DB 17.5kg × 10, DB 17.5kg × 10, DB 17.5kg × 10, DB 17.5kg × 10" }, { "name": "Stand curls", "sets": "DB 15lbs × 10, DB 15lbs × 10, DB 15lbs × 10, DB 15lbs × 10, DB 15lbs × 10, DB 15lbs × 10" }, { "name": "Tricep pressdowns", "sets": "CBL 9 × 10, CBL 8 × 10, CBL 8 × 10, CBL 8 × 10, CBL 8 × 10, CBL 8 × 10" } ] },
-                    { "date": "2026-06-01", "phase": "", "exercises": [ { "name": "Bulgarian split squats", "sets": "DB 20lbs × 10, DB 20lbs × 10, DB 20lbs × 10" }, { "name": "Lateral raise", "sets": "DB 15lbs × 10, DB 15lbs × 10, DB 15lbs × 10" }, { "name": "Landmine rows", "sets": "BB 35kg × 10, BB 35kg × 10, BB 35kg × 10" }, { "name": "Stand curls", "sets": "DB 25lbs × 10, DB 25lbs × 10, DB 25lbs × 10" }, { "name": "Push ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Tricep pressdowns", "sets": "CBL 8 × 10, CBL 9 × 10, CBL 9 × 10" } ] },
-                    { "date": "2026-06-05", "phase": "", "exercises": [ { "name": "Hack squats", "sets": "MC 27kg × 10, MC 31kg × 10, MC 31kg × 10" }, { "name": "Stand overhead press", "sets": "HS 13kg × 10, HS 18kg × 10, HS 18kg × 10" }, { "name": "Reverse lunges", "sets": "DB 25lbs × 10, DB 30lbs × 10" }, { "name": "Supported pull ups", "sets": "BW × 10, BW × 10" }, { "name": "Seated Rows", "sets": "CBL 12 × 10" }, { "name": "Seated curls", "sets": "DB 25lbs × 10" }, { "name": "Incline press", "sets": "DB 20kg × 10" }, { "name": "Tricep rope pulldowns", "sets": "CBL 8 × 10" } ] },
-                    { "date": "2026-06-08", "phase": "", "exercises": [ { "name": "Step overs", "sets": "DB 25lbs × 10, DB 25lbs × 10, DB 30lbs × 10" }, { "name": "Med ball slams", "sets": "MB 9kg × 10, MB 9kg × 10, MB 9kg × 10" }, { "name": "Box jumps", "sets": "BW 24\" × 10, BW 24\" × 10, BW 24\" × 10" }, { "name": "Stand shoulder press", "sets": "DB 30lbs × 10, DB 30lbs × 10, DB 30lbs × 10" }, { "name": "Front squats", "sets": "DB 30lbs × 10, DB 30lbs × 10, DB 30lbs × 10" }, { "name": "Push ups", "sets": "BW × 10, BW × 10, BW × 10" } ] },
-                    { "date": "2026-06-19", "phase": "", "exercises": [ { "name": "Stand shoulder press", "sets": "DB 25lbs × 15, DB 25lbs × 15" }, { "name": "Romanian DL", "sets": "SB 30kg × 12, SB 30kg × 12" }, { "name": "Single arm rows", "sets": "DB 17.5kg × 12, DB 20kg × 12, DB 22.5kg × 12" }, { "name": "Supported pull ups", "sets": "BW × 12, BW × 12, BW × 12" }, { "name": "Seated shoulder press", "sets": "DB 17.5kg × 12, DB 17.5kg × 12, DB 17.5kg × 12" }, { "name": "Seated curls", "sets": "DB 20lbs × 12, DB 25lbs × 10, DB 25lbs × 10" }, { "name": "Tricep pressdowns", "sets": "CBL 8 × 12, CBL 9 × 12, CBL 9 × 12" } ] },
-                    { "date": "2026-06-22", "phase": "", "exercises": [ { "name": "Leg extensions", "sets": "MC 10 × 10, MC 12 × 12, MC 12 × 10" }, { "name": "Leg curls", "sets": "MC 6 × 12, MC 8 × 12, MC 10 × 12" }, { "name": "Lat pull downs", "sets": "CBL 12 × 12, CBL 13 × 12, CBL 13 × 12" }, { "name": "Aus pull ups", "sets": "BW × 10, BW × 10, BW × 5" }, { "name": "Incline press", "sets": "DB 17.5kg × 12, DB 20kg × 12, DB 22.5kg × 12" }, { "name": "Chest fly low", "sets": "CBL 2 × 12, CBL 3 × 12, CBL 3 × 12" } ] },
-                    { "date": "2026-06-24", "phase": "", "exercises": [ { "name": "Stand shoulder press", "sets": "DB 25lbs × 12, DB 30lbs × 12" }, { "name": "Romanian DLs", "sets": "SB 40kg × 12, SB 45kg × 10" }, { "name": "Leg extensions", "sets": "MC 12 × 12, MC 12 × 12, MC 14 × 12" }, { "name": "Leg curls", "sets": "MC 8 × 12, MC 8 × 12, MC 8 × 12" }, { "name": "Seated rows", "sets": "CBL 13 × 12, CBL 14 × 10, CBL 15 × 10" }, { "name": "Supported pull ups", "sets": "BW × 12, BW × 12" }, { "name": "Seated shoulder press", "sets": "DB 17.5kg × 12, DB 20kg × 12, DB 22.5kg × 8" }, { "name": "Lateral raise", "sets": "DB 15lbs × 12, DB 15lbs × 12, DB 15lbs × 12" }, { "name": "Seated curls", "sets": "DB 25lbs × 10, DB 25lbs × 10, DB 25lbs × 10, DB 25lbs × 10" }, { "name": "Skullcrushers", "sets": "SB 20kg × 10, SB 20kg × 10, SB 20kg × 10, SB 20kg × 10" } ] },
-                    { "date": "2026-06-29", "phase": "", "exercises": [ { "name": "Reverse lunges", "sets": "DB 15lbs × 12, DB 25lbs × 12, DB 30lbs × 10, DB 17.5kg × 8" }, { "name": "Lat pull downs", "sets": "CBL 12 × 12, CBL 13 × 12, CBL 14 × 10" }, { "name": "Bench press", "sets": "BB 35kg × 12, BB 40kg × 10, BB 40kg × 10, BB 40kg × 8" }, { "name": "Hammer curls", "sets": "DB 25lbs × 12, DB 25lbs × 12, DB 30lbs × 10, DB 30lbs × 8" }, { "name": "Tricep rope pulldowns", "sets": "CBL 8 × 12, CBL 8 × 12, CBL 9 × 10, CBL 9 × 10" } ] },
-                    { "date": "2026-07-01", "phase": "", "exercises": [ { "name": "Romanian deadlifts", "sets": "SB 30kg × 12, SB 30kg × 12" }, { "name": "Supported pull ups", "sets": "BW × 12, BW × 12" }, { "name": "Deadlifts", "sets": "BB 20kg × 10, BB 30kg × 10, BB 30kg × 10, BB 40kg × 8" }, { "name": "Box jumps", "sets": "BW × 15, BW × 15, BW × 15" }, { "name": "Push ups", "sets": "BW × 12, BW × 12, BW × 12" }, { "name": "Skullcrushers", "sets": "SB 20kg × 12, SB 25kg × 10, SB 25kg × 10" }, { "name": "Seated curls", "sets": "DB 25lbs × 12, DB 25lbs × 12, DB 25lbs × 12" } ] },
-                    { "date": "2026-07-06", "phase": "", "exercises": [ { "name": "Squats", "sets": "SM 40kg × 10, SM 40kg × 10, SM 40kg × 10, SM 40kg × 8" }, { "name": "Bench press", "sets": "BB 40kg × 12, BB 40kg × 10, BB 40kg × 10, BB 40kg × 8" }, { "name": "Seated rows", "sets": "CBL 15 × 12, CBL 15 × 12, CBL 15 × 8, CBL 15 × 8" }, { "name": "Tricep pressdowns", "sets": "CBL 9 × 12, CBL 10 × 12, CBL 10 × 12, CBL 10 × 10" }, { "name": "Stand curls", "sets": "DB 25lbs × 10, DB 25lbs × 10, DB 25lbs × 10, DB 25lbs × 10" } ] },
-                    { "date": "2026-07-10", "phase": "", "exercises": [ { "name": "Walking lunges w static curls", "sets": "DB 30lbs × 10, DB 30lbs × 10, DB 30lbs × 10" }, { "name": "Supported pull ups", "sets": "BW × 10, BW × 10" }, { "name": "Aus pull ups", "sets": "BW × 10, BW × 10" }, { "name": "Push ups", "sets": "BW × 12, BW × 12, BW × 12" }, { "name": "Chest fly mid", "sets": "CBL 5 × 12, CBL 5 × 12" } ] },
-                    { "date": "2026-07-13", "phase": "", "exercises": [ { "name": "Squats", "sets": "SM 40kg × 12, SM 40kg × 12, SM 40kg × 12, SM 40kg × 12" }, { "name": "Single seated rows", "sets": "CBL 8 × 12, CBL 7 × 12, CBL 7 × 12, CBL 7 × 10" }, { "name": "Seated shoulder press", "sets": "DB 20kg × 12, DB 20kg × 12, DB 20kg × 10, DB 20kg × 8" }, { "name": "Seated curls", "sets": "DB 25lbs × 10, DB 25lbs × 10, DB 25lbs × 10" }, { "name": "Tricep pressdowns", "sets": "CBL 10 × 10, CBL 10 × 10, CBL 10 × 10" } ] },
-                    { "date": "2026-07-17", "phase": "", "exercises": [ { "name": "Bulgarian split squats", "sets": "BW × 12, DB 15lbs × 12, DB 25lbs × 10, DB 25lbs × 10" }, { "name": "Pull ups", "sets": "BW × 8, BW × 6, BW × 6" }, { "name": "Aus pull ups", "sets": "BW × 12, BW × 12, BW × 12" }, { "name": "Dips", "sets": "BW × 10, BW × 10, BW × 7" }, { "name": "Seated curls", "sets": "DB 25lbs × 10, DB 25lbs × 10, DB 25lbs × 10" }, { "name": "Tricep pressdowns", "sets": "CBL 11 × 10, CBL 11 × 10, CBL 11 × 10" } ] },
-                    { "date": "2026-07-20", "phase": "P3", "exercises": [ { "name": "Reverse lunges", "sets": "DB 30lbs × 10, DB 30lbs × 10, DB 30lbs × 10" }, { "name": "Goblet sumo squats", "sets": "BW × 15, BW × 15, BW × 15" }, { "name": "Pull ups", "sets": "BW × 8, BW × 6, BW × 6" }, { "name": "Lat pulldowns", "sets": "CBL 8 × 15, CBL 9 × 15, CBL 12 × 15" }, { "name": "Push ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Chest fly", "sets": "CBL 4 × 15, CBL 4 × 15, CBL 4 × 15" }, { "name": "Stand curls", "sets": "DB 20lbs × 15, DB 20lbs × 15, DB 20lbs × 15" }, { "name": "Tricep rope pulldowns", "sets": "CBL 8 × 15, CBL 8 × 15, CBL 8 × 15" } ] },
-                    { "date": "2026-07-22", "phase": "P3", "exercises": [ { "name": "Bulgarian split squats", "sets": "DB 10kg × 15, DB 10kg × 15, DB 10kg × 15, DB 10kg × 15" }, { "name": "Aus pull ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Stand rows", "sets": "CBL 10 × 15, CBL 10 × 15, CBL 10 × 15" }, { "name": "Seated shoulder press", "sets": "DB 25lbs × 15, DB 25lbs × 15, DB 25lbs × 15" }, { "name": "Lateral raise", "sets": "DB 10lbs × 15, DB 10lbs × 15, DB 10lbs × 16" }, { "name": "hammer curls", "sets": "CBL 6 × 15, CBL 6 × 15, CBL 6 × 15" }, { "name": "Tricep pressdowns", "sets": "CBL 8 × 15, CBL 8 × 15, CBL 8 × 15" } ] },
-                    { "date": "2026-07-24", "phase": "P3", "exercises": [ { "name": "Deadlifts", "sets": "BB 30kg × 10, BB 35kg × 10, BB 40kg × 10, BB 40kg × 8" }, { "name": "Supported pull ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Aus pull ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Push ups", "sets": "BW × 10, BW × 10, BW × 10" }, { "name": "Stand shoulder press", "sets": "DB 20lbs × 15, DB 20lbs × 15, DB 20lbs × 15" } ] },
-                    { "date": "2026-07-27", "phase": "P3", "exercises": [ { "name": "Goblet sumo squats", "sets": "DB 30lbs × 15" }, { "name": "Clean & press", "sets": "DB 20lbs × 15" }, { "name": "Lat pulldowns rope", "sets": "CBL 12 × 15" }, { "name": "Stand curls", "sets": "DB 20lbs × 15" }, { "name": "Incline push ups", "sets": "BW × 15" }, { "name": "Tricep pressdowns", "sets": "CBL 8 × 15" } ] },
-                    { "date": "2026-07-31", "phase": "P3", "exercises": [ { "name": "Reverse lunges", "sets": "DB 30lbs × 10 a side" }, { "name": "Box jumps", "sets": "BW × 10" }, { "name": "Pull ups", "sets": "BW × 5" }, { "name": "Push ups", "sets": "BW × 10" }, { "name": "Seated curls", "sets": "DB 20lbs × 15" }, { "name": "Tricep extensions", "sets": "CBL 8 × 15" } ] },
-                    { "date": "2026-08-10", "phase": "P1", "exercises": [ { "name": "Hack squats", "sets": "MC 27kg × 12, MC 27kg × 12, MC 27kg × 12" }, { "name": "Romanian deadlifts", "sets": "SB 30kg × 12, SB 30kg × 12, SB 35kg × 12" }, { "name": "Lat pulldowns", "sets": "CBL 10 × 15, CBL 11 × 12, CBL 12 × 12" }, { "name": "Bench press", "sets": "BB 20kg × 15, BB 25kg × 12, BB 25kg × 15" }, { "name": "Seated shoulder press", "sets": "DB 20lbs × 15, DB 20lbs × 15, DB 20lbs × 15" }, { "name": "Incline curls", "sets": "DB 15lbs × 15, DB 15lbs × 15, DB 15lbs × 15" }, { "name": "Skull crushers", "sets": "SB 5kg × 15, SB 5kg × 15, SB 5kg × 15" } ] },
-                    { "date": "2026-08-17", "phase": "P1", "exercises": [ { "name": "Squats", "sets": "SM 20kg × 15, SM 30kg × 12, SM 40kg × 12" }, { "name": "Lat pulldowns", "sets": "CBL 11 × 15, CBL 12 × 13, CBL 12 × 12" }, { "name": "Incline press", "sets": "DB 20kg × 15, DB 20kg × 15, DB 22.5kg × 12" }, { "name": "Rear delt fly", "sets": "DB 15lbs × 15, DB 15lbs × 15, DB 15lbs × 15" } ] },
-                    { "date": "2026-08-24", "phase": "P2", "exercises": [ { "name": "Reverse lunges", "sets": "DB 30lbs × 12, DB 30lbs × 12, DB 17.5kg × 8, DB 17.5kg × 8 a side" }, { "name": "Pull ups", "sets": "BW × 8, BW × 6, BW × 5" }, { "name": "Lat pulldowns narrow", "sets": "CBL 13 × 10, CBL 13 × 10" }, { "name": "Bench press", "sets": "BB 30kg × 12, BB 35kg × 10, BB 35kg × 10" }, { "name": "Seated shoulder press", "sets": "DB 20kg × 10, DB 20kg × 10, DB 20kg × 8" } ] },
-                    { "date": "2026-08-28", "phase": "P2", "exercises": [ { "name": "Squats", "sets": "SM 20kg × 10, SM 30kg × 10, SM 40kg × 10, SM 45kg × 10, SM 50kg × 10" }, { "name": "Pull ups", "sets": "BW × 9.5, BW × 7.5, BW × 6" }, { "name": "Bench press", "sets": "BB 40kg × 10, BB 45kg × 10, BB 45kg × 8" }, { "name": "Skullcrushers", "sets": "SB 25kg × 10, SB 25kg × 10, SB 25kg × 10" }, { "name": "Seated curls", "sets": "DB 25lbs × 10, DB 25lbs × 10, DB 25lbs × 10" } ] },
-                    { "date": "2026-08-31", "phase": "P2", "exercises": [ { "name": "Bulgarian split squats", "sets": "DB 15lbs × 12, DB 20lbs × 12, DB 25lbs × 10" }, { "name": "Aus pull ups", "sets": "BW × 15, BW × 15" }, { "name": "Pull ups", "sets": "BW × 6, BW × 5, BW × 5" }, { "name": "Incline press", "sets": "SM 40kg × 12, SM 50kg × 10, SM 55kg × 10" }, { "name": "Narrow push ups", "sets": "BW × 12, BW × 12, BW × 10" } ] }
+                    { date: "2026-06-12", phase: "W1", exercises: [ { name: "Leg press", setsArray: [{type:"MC", weight:60, reps:12}, {type:"MC", weight:70, reps:12}] } ] }
                 ]
             }
         };
 
-        let currentClient = "Ramneek";
+        let currentClient = Object.keys(db)[0] || "Rajal";
+        let isTrainerMode = true;
         let activeModalExercise = null;
         let modalChartInstance = null;
         let bodyStatsChartInstance = null;
 
         const weightTypes = ["BW", "CBL", "DB", "BB", "KB", "SB", "MC", "SM", "HS", "EZB", "MB"];
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-animate pointer-events-auto px-4 py-3 rounded-2xl shadow-lg text-xs font-bold text-white flex items-center space-x-2 ${type === 'success' ? 'bg-emerald-600' : 'bg-rose-600'}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function persistDb() {
+            localStorage.setItem('protrainer_db', JSON.stringify(db));
+        }
+
+        function toggleRoleMode() {
+            isTrainerMode = !isTrainerMode;
+            const btn = document.getElementById('roleToggleBtn');
+            btn.textContent = isTrainerMode ? "Trainer Mode" : "Client View Mode";
+            btn.className = isTrainerMode ? "bg-indigo-50 text-indigo-700 text-[10px] px-2.5 py-1.5 rounded-xl font-bold transition border border-indigo-200" : "bg-emerald-50 text-emerald-700 text-[10px] px-2.5 py-1.5 rounded-xl font-bold transition border border-emerald-200";
+            
+            document.querySelectorAll('.trainer-only').forEach(el => {
+                el.style.display = isTrainerMode ? '' : 'none';
+            });
+            showToast(`Switched to ${isTrainerMode ? 'Trainer' : 'Client'} perspective`, 'success');
+        }
 
         function formatDate(dateStr) {
             if (!dateStr) return '';
@@ -336,9 +272,7 @@
             if (isNaN(d)) return dateStr;
             const day = String(d.getDate()).padStart(2, '0');
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const mon = months[d.getMonth()];
-            const yr = String(d.getFullYear()).slice(-2);
-            return `${day}-${mon}-${yr}`;
+            return `${day}-${months[d.getMonth()]}-${String(d.getFullYear()).slice(-2)}`;
         }
 
         function getMonthYearKey(dateStr) {
@@ -350,13 +284,21 @@
 
         function getMuscleGroup(exerciseName) {
             const name = exerciseName.toLowerCase();
-            if (name.includes('squat') || name.includes('lunge') || name.includes('leg press') || name.includes('step') || name.includes('jump') || name.includes('extension')) return 'Quads & Glutes';
-            if (name.includes('rdl') || name.includes('romanian') || name.includes('deadlift') || name.includes('curl') && name.includes('leg')) return 'Hamstrings & Posterior';
-            if (name.includes('bench') || name.includes('press') && (name.includes('incline') || name.includes('chest')) || name.includes('push up') || name.includes('fly') || name.includes('dips')) return 'Chest & Push';
-            if (name.includes('pull') || name.includes('row') || name.includes('lat') || name.includes('chin')) return 'Back & Pull';
-            if (name.includes('shoulder') || name.includes('press') || name.includes('raise') || name.includes('facepull')) return 'Shoulders';
+            if (name.includes('squat') || name.includes('lunge') || name.includes('leg press') || name.includes('step')) return 'Quads & Glutes';
+            if (name.includes('rdl') || name.includes('romanian') || name.includes('deadlift')) return 'Hamstrings & Posterior';
+            if (name.includes('bench') || name.includes('press') && (name.includes('incline') || name.includes('chest')) || name.includes('push up')) return 'Chest & Push';
+            if (name.includes('pull') || name.includes('row') || name.includes('lat')) return 'Back & Pull';
+            if (name.includes('shoulder') || name.includes('raise') || name.includes('facepull')) return 'Shoulders';
             if (name.includes('curl') || name.includes('tricep') || name.includes('skull')) return 'Arms (Biceps/Triceps)';
             return 'Core & Full Body';
+        }
+
+        function formatSetsDisplay(setsArray) {
+            if (!setsArray || setsArray.length === 0) return 'No sets recorded';
+            return setsArray.map(s => {
+                if (s.weight > 0) return `${s.type} ${s.weight} × ${s.reps}`;
+                return `${s.type} × ${s.reps}`;
+            }).join(', ');
         }
 
         function initApp() {
@@ -389,43 +331,39 @@
         }
 
         function switchTab(tab) {
+            if(!isTrainerMode && tab === 'log') return;
             ['dashboard', 'exercises', 'analytics', 'log'].forEach(t => {
-                document.getElementById('content-' + t).classList.add('hidden');
-                document.getElementById('tab-' + t).classList.remove('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/30');
-                document.getElementById('tab-' + t).classList.add('text-slate-600');
+                const el = document.getElementById('content-' + t);
+                const btn = document.getElementById('tab-' + t);
+                if(el) el.classList.add('hidden');
+                if(btn) {
+                    btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/30');
+                    btn.classList.add('text-slate-600');
+                }
             });
             document.getElementById('content-' + tab).classList.remove('hidden');
-            document.getElementById('tab-' + tab).classList.add('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/30');
-            document.getElementById('tab-' + tab).classList.remove('text-slate-600');
+            const activeBtn = document.getElementById('tab-' + tab);
+            activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/30');
+            activeBtn.classList.remove('text-slate-600');
             if(tab === 'analytics') renderAnalytics();
         }
 
         function toggleMonthAccordion(monthId) {
             const content = document.getElementById(`month-content-${monthId}`);
             const arrow = document.getElementById(`month-arrow-${monthId}`);
-            if (content.classList.contains('hidden')) {
-                content.classList.remove('hidden');
-                arrow.style.transform = 'rotate(180deg)';
-            } else {
-                content.classList.add('hidden');
-                arrow.style.transform = 'rotate(0deg)';
-            }
+            content.classList.toggle('hidden');
+            arrow.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
         }
 
         function toggleSessionAccordion(sessionId) {
             const content = document.getElementById(`session-content-${sessionId}`);
             const arrow = document.getElementById(`session-arrow-${sessionId}`);
-            if (content.classList.contains('hidden')) {
-                content.classList.remove('hidden');
-                arrow.style.transform = 'rotate(180deg)';
-            } else {
-                content.classList.add('hidden');
-                arrow.style.transform = 'rotate(0deg)';
-            }
+            content.classList.toggle('hidden');
+            arrow.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
         }
 
         function renderDashboard() {
-            const clientData = db[currentClient];
+            const clientData = db[currentClient] || { sessions: [] };
             const totalSessions = clientData.sessions.length;
             let uniqueExercises = new Set();
             clientData.sessions.forEach(s => s.exercises.forEach(e => uniqueExercises.add(e.name)));
@@ -448,7 +386,6 @@
             const container = document.getElementById('allSessionsContainer');
             let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(b.date) - new Date(a.date));
             
-            // Group sessions by Month-Year
             let groupedByMonth = {};
             sortedSessions.forEach(session => {
                 let myKey = getMonthYearKey(session.date);
@@ -495,13 +432,14 @@
 
                     session.exercises.forEach(ex => {
                         let muscle = getMuscleGroup(ex.name);
+                        let displaySets = ex.setsArray ? formatSetsDisplay(ex.setsArray) : (ex.sets || '');
                         html += `
                             <div class="flex justify-between items-center bg-white p-2.5 rounded-xl text-xs border border-slate-200/60 shadow-xs mt-2">
                                 <div>
                                     <span class="font-bold text-slate-800 block">${ex.name}</span>
                                     <span class="text-[9px] font-semibold text-slate-400 uppercase tracking-wide">${muscle}</span>
                                 </div>
-                                <span class="font-mono font-bold text-emerald-600 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-lg text-right">${ex.sets}</span>
+                                <span class="font-mono font-bold text-emerald-600 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-lg text-right">${displaySets}</span>
                             </div>
                         `;
                     });
@@ -512,16 +450,13 @@
                 html += `</div></div>`;
             });
 
-            container.innerHTML = html;
+            container.innerHTML = html || '<p class="text-xs text-slate-400 text-center py-6">No session records found.</p>';
         }
 
-        // ENHANCED WORKOUT LOGGER: MULTI-SET & MULTI-WEIGHT BLOCKS
         function addExerciseBlock() {
             const container = document.getElementById('logExerciseBlocksContainer');
             const blockId = 'ex-block-' + Date.now() + Math.random().toString(36).substring(2, 7);
             
-            let weightTypeOptions = weightTypes.map(wt => `<option value="${wt}">${wt}</option>`).join('');
-
             const blockDiv = document.createElement('div');
             blockDiv.id = blockId;
             blockDiv.className = "bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-3";
@@ -538,9 +473,7 @@
                         <span class="text-[10px] font-bold text-slate-500 uppercase">Sets & Weights</span>
                         <button type="button" onclick="addSetRow('${blockId}-sets')" class="text-[10px] bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-bold px-2.5 py-1 rounded-lg border border-indigo-200/60 transition">+ Add Set</button>
                     </div>
-                    <div id="${blockId}-sets" class="space-y-2">
-                        <!-- Default Set Row -->
-                    </div>
+                    <div id="${blockId}-sets" class="space-y-2"></div>
                 </div>
             `;
             container.appendChild(blockDiv);
@@ -556,9 +489,7 @@
             rowDiv.id = rowId;
             rowDiv.className = "flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-200 shadow-xs";
             rowDiv.innerHTML = `
-                <select class="set-wtype bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-600">
-                    ${weightTypeOptions}
-                </select>
+                <select class="set-wtype bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-600">${weightTypeOptions}</select>
                 <input type="number" step="0.5" placeholder="Weight" class="set-weight w-20 bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-600">
                 <span class="text-xs font-bold text-slate-400">×</span>
                 <input type="number" placeholder="Reps" class="set-reps w-16 bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-600">
@@ -570,41 +501,29 @@
         function saveStructuredSession() {
             const date = document.getElementById('logDate').value || new Date().toISOString().split('T')[0];
             const phase = document.getElementById('logPhase').value.trim();
-            
             const blockDivs = document.querySelectorAll('#logExerciseBlocksContainer > div');
             let newExercises = [];
 
             blockDivs.forEach(block => {
                 let nameInput = block.querySelector('.log-ex-name');
                 let name = nameInput ? nameInput.value.trim() : '';
-                
                 let setRows = block.querySelectorAll('[id$="-sets"] > div');
                 let setsArray = [];
 
                 setRows.forEach(row => {
-                    let wType = row.querySelector('.set-wtype').value;
-                    let weight = row.querySelector('.set-weight').value.trim();
-                    let reps = row.querySelector('.set-reps').value.trim();
-
-                    if (reps) {
-                        if (weight !== '') {
-                            setsArray.push(`${wType} ${weight} × ${reps}`);
-                        } else {
-                            setsArray.push(`${wType} × ${reps}`);
-                        }
-                    }
+                    let type = row.querySelector('.set-wtype').value;
+                    let weight = parseFloat(row.querySelector('.set-weight').value) || 0;
+                    let reps = parseInt(row.querySelector('.set-reps').value) || 0;
+                    if (reps > 0) setsArray.push({ type, weight, reps });
                 });
 
                 if (name && setsArray.length > 0) {
-                    newExercises.push({
-                        name: name,
-                        sets: setsArray.join(', ')
-                    });
+                    newExercises.push({ name, setsArray });
                 }
             });
 
             if (newExercises.length === 0) {
-                alert("Please add at least one exercise with valid sets, weights, and repetitions.");
+                showToast("Please add at least one exercise with valid sets and repetitions.", "error");
                 return;
             }
 
@@ -618,7 +537,8 @@
             session.exercises.push(...newExercises);
             if(phase) session.phase = phase;
 
-            alert("Workout session logged successfully!");
+            persistDb();
+            showToast("Workout session logged successfully!", "success");
             
             document.getElementById('logPhase').value = '';
             document.getElementById('logExerciseBlocksContainer').innerHTML = '';
@@ -631,7 +551,7 @@
         }
 
         function renderExerciseDirectory(filter = '') {
-            const clientData = db[currentClient];
+            const clientData = db[currentClient] || { sessions: [] };
             const container = document.getElementById('exerciseDirectoryContainer');
 
             let exerciseMap = {};
@@ -642,14 +562,12 @@
                         exerciseMap[cleanName] = { name: cleanName, muscle: getMuscleGroup(cleanName), count: 0, lastSets: '' };
                     }
                     exerciseMap[cleanName].count++;
-                    exerciseMap[cleanName].lastSets = ex.sets;
+                    exerciseMap[cleanName].lastSets = ex.setsArray ? formatSetsDisplay(ex.setsArray) : (ex.sets || '');
                 });
             });
 
             let exercises = Object.values(exerciseMap).sort((a,b) => b.count - a.count);
-            if (filter) {
-                exercises = exercises.filter(e => e.name.toLowerCase().includes(filter.toLowerCase()));
-            }
+            if (filter) exercises = exercises.filter(e => e.name.toLowerCase().includes(filter.toLowerCase()));
 
             let html = '';
             exercises.forEach(ex => {
@@ -669,13 +587,11 @@
         }
 
         function filterExercises() {
-            let query = document.getElementById('exerciseSearch').value;
-            renderExerciseDirectory(query);
+            renderExerciseDirectory(document.getElementById('exerciseSearch').value);
         }
 
         function renderAnalytics() {
-            const clientData = db[currentClient];
-            
+            const clientData = db[currentClient] || { sessions: [], bodyMetrics: [] };
             let muscleCounts = {};
             clientData.sessions.forEach(s => {
                 s.exercises.forEach(e => {
@@ -708,50 +624,20 @@
             let metrics = clientData.bodyMetrics || [];
             metrics.sort((a,b) => new Date(a.date) - new Date(b.date));
 
-            let mDates = metrics.map(m => formatDate(m.date));
-            let mWeights = metrics.map(m => m.weight);
-            let mMuscles = metrics.map(m => m.muscle || null);
-            let mFat = metrics.map(m => m.fatMass || null);
-
             const ctx = document.getElementById('bodyStatsChart').getContext('2d');
             if (bodyStatsChartInstance) bodyStatsChartInstance.destroy();
             bodyStatsChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: mDates.length ? mDates : ['No Data'],
+                    labels: metrics.length ? metrics.map(m => formatDate(m.date)) : ['No Data'],
                     datasets: [
-                        {
-                            label: 'Weight (kg)',
-                            data: mWeights.length ? mWeights : [0],
-                            borderColor: '#0284c7',
-                            backgroundColor: 'rgba(2, 132, 199, 0.05)',
-                            borderWidth: 2.5,
-                            fill: true,
-                            tension: 0.25
-                        },
-                        {
-                            label: 'Muscle Mass (kg)',
-                            data: mMuscles.length ? mMuscles : [0],
-                            borderColor: '#10b981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.05)',
-                            borderWidth: 2.5,
-                            fill: true,
-                            tension: 0.25
-                        },
-                        {
-                            label: 'Body Fat (kg)',
-                            data: mFat.length ? mFat : [0],
-                            borderColor: '#f43f5e',
-                            backgroundColor: 'rgba(244, 63, 94, 0.05)',
-                            borderWidth: 2.5,
-                            fill: true,
-                            tension: 0.25
-                        }
+                        { label: 'Weight (kg)', data: metrics.length ? metrics.map(m => m.weight) : [0], borderColor: '#0284c7', backgroundColor: 'rgba(2, 132, 199, 0.05)', borderWidth: 2.5, fill: true, tension: 0.25 },
+                        { label: 'Muscle Mass (kg)', data: metrics.length ? metrics.map(m => m.muscle || 0) : [0], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.05)', borderWidth: 2.5, fill: true, tension: 0.25 },
+                        { label: 'Body Fat (kg)', data: metrics.length ? metrics.map(m => m.fatMass || 0) : [0], borderColor: '#f43f5e', backgroundColor: 'rgba(244, 63, 94, 0.05)', borderWidth: 2.5, fill: true, tension: 0.25 }
                     ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { labels: { color: '#475569', font: { size: 9, family: 'Plus Jakarta Sans', weight: '700' } } } },
                     scales: {
                         x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#e2e8f0' } },
@@ -759,42 +645,6 @@
                     }
                 }
             });
-        }
-
-        function parseSetsData(setsStr) {
-            let setEntries = setsStr.split(/[,;]/);
-            let parsedSets = [];
-
-            setEntries.forEach(entry => {
-                let weightVal = 0;
-                let repsVal = 0;
-
-                let weightMatch = entry.match(/(?:DB|SB|BB|KB|EZB|MC|HS|CBL|BW|SM)\s*(\d+(\.\d+)?)/i) || entry.match(/(\d+(\.\d+)?)\s*(kg|lbs)/i);
-                if (weightMatch) {
-                    weightVal = parseFloat(weightMatch[1]);
-                } else {
-                    let prefixNum = entry.match(/^[^xX]*?(\d+(\.\d+)?)\s*[xX]/);
-                    if (prefixNum) {
-                        weightVal = parseFloat(prefixNum[1]);
-                    }
-                }
-
-                let repMatch = entry.match(/[xX]\s*(\d+(\.\d+)?)/);
-                if (repMatch) {
-                    repsVal = parseFloat(repMatch[1]);
-                } else {
-                    let nums = [...entry.matchAll(/(\d+(\.\d+)?)/g)];
-                    if (nums.length >= 2) {
-                        repsVal = parseFloat(nums[1][1]);
-                    } else if (nums.length === 1 && !weightMatch) {
-                        repsVal = parseFloat(nums[0][1]);
-                    }
-                }
-
-                parsedSets.push({ weight: weightVal, reps: repsVal });
-            });
-
-            return parsedSets;
         }
 
         function openExerciseModal(exerciseName) {
@@ -810,10 +660,11 @@
             sortedSessions.forEach(session => {
                 session.exercises.forEach(ex => {
                     if (ex.name.toLowerCase() === exerciseName.toLowerCase()) {
+                        let displaySets = ex.setsArray ? formatSetsDisplay(ex.setsArray) : (ex.sets || '');
                         historyHtml += `
                             <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl text-xs border border-slate-200">
                                 <span class="text-indigo-600 font-bold">${formatDate(session.date)}</span>
-                                <span class="font-mono text-emerald-600 font-bold">${ex.sets}</span>
+                                <span class="font-mono text-emerald-600 font-bold">${displaySets}</span>
                             </div>
                         `;
                     }
@@ -830,26 +681,18 @@
             const metric = document.getElementById('modalMetricSelect').value;
             const setType = document.getElementById('modalSetTypeSelect').value;
 
-            let dates = [];
-            let values = [];
+            let dates = [], values = [];
             let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(a.date) - new Date(b.date));
 
             sortedSessions.forEach(session => {
                 session.exercises.forEach(ex => {
-                    if (ex.name.toLowerCase() === activeModalExercise.toLowerCase()) {
-                        let parsedSets = parseSetsData(ex.sets);
-                        if (parsedSets.length > 0) {
-                            let metricValues = parsedSets.map(s => metric === 'weight' ? s.weight : s.reps);
+                    if (ex.name.toLowerCase() === activeModalExercise.toLowerCase() && ex.setsArray) {
+                        let metricValues = ex.setsArray.map(s => metric === 'weight' ? s.weight : s.reps);
+                        if (metricValues.length > 0) {
                             let computedVal = 0;
-
-                            if (setType === 'max') {
-                                computedVal = Math.max(...metricValues);
-                            } else if (setType === 'average') {
-                                let sum = metricValues.reduce((a, b) => a + b, 0);
-                                computedVal = Number((sum / metricValues.length).toFixed(1));
-                            } else if (setType === 'total') {
-                                computedVal = metricValues.reduce((a, b) => a + b, 0);
-                            }
+                            if (setType === 'max') computedVal = Math.max(...metricValues);
+                            else if (setType === 'average') computedVal = Number((metricValues.reduce((a,b)=>a+b,0)/metricValues.length).toFixed(1));
+                            else if (setType === 'total') computedVal = metricValues.reduce((a,b)=>a+b,0);
 
                             dates.push(formatDate(session.date));
                             values.push(computedVal);
@@ -858,10 +701,6 @@
                 });
             });
 
-            let metricNameLabel = metric === 'weight' ? 'Weight / Resistance' : 'Repetitions';
-            let aggNameLabel = setType === 'max' ? 'Max' : (setType === 'average' ? 'Average' : 'Total Volume');
-            document.getElementById('modalChartTitle').textContent = `${aggNameLabel} ${metricNameLabel} Progression Chart`;
-
             const ctx = document.getElementById('exerciseModalChart').getContext('2d');
             if (modalChartInstance) modalChartInstance.destroy();
             modalChartInstance = new Chart(ctx, {
@@ -869,18 +708,15 @@
                 data: {
                     labels: dates.length ? dates : ['No Data Available'],
                     datasets: [{
-                        label: `${aggNameLabel} ${metricNameLabel}`,
+                        label: `${setType} ${metric}`,
                         data: values.length ? values : [0],
                         borderColor: metric === 'weight' ? '#4f46e5' : '#10b981',
                         backgroundColor: metric === 'weight' ? 'rgba(79, 70, 229, 0.08)' : 'rgba(16, 185, 129, 0.08)',
-                        borderWidth: 2.5,
-                        fill: true,
-                        tension: 0.25
+                        borderWidth: 2.5, fill: true, tension: 0.25
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
                         x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#e2e8f0' } },
@@ -901,13 +737,8 @@
         function saveBodyMetric() {
             const date = document.getElementById('metricDate').value;
             const weight = parseFloat(document.getElementById('metricWeight').value);
-            const muscle = parseFloat(document.getElementById('metricMuscle').value);
-            const fatMass = parseFloat(document.getElementById('metricFatMass').value);
-            const bmi = parseFloat(document.getElementById('metricBmi').value);
-            const bodyFatPct = parseFloat(document.getElementById('metricBodyFatPct').value);
-
             if(!date || isNaN(weight)) {
-                alert("Please provide a valid date and body weight.");
+                showToast("Please provide a valid date and body weight.", "error");
                 return;
             }
 
@@ -916,15 +747,15 @@
 
             clientData.bodyMetrics = clientData.bodyMetrics.filter(m => m.date !== date);
             clientData.bodyMetrics.push({ 
-                date, 
-                weight, 
-                muscle: isNaN(muscle) ? null : muscle, 
-                fatMass: isNaN(fatMass) ? null : fatMass, 
-                bmi: isNaN(bmi) ? null : bmi, 
-                bodyFatPct: isNaN(bodyFatPct) ? null : bodyFatPct 
+                date, weight, 
+                muscle: parseFloat(document.getElementById('metricMuscle').value) || null, 
+                fatMass: parseFloat(document.getElementById('metricFatMass').value) || null, 
+                bmi: parseFloat(document.getElementById('metricBmi').value) || null, 
+                bodyFatPct: parseFloat(document.getElementById('metricBodyFatPct').value) || null 
             });
 
-            alert("InBody scan metrics saved successfully!");
+            persistDb();
+            showToast("InBody scan metrics saved successfully!", "success");
             closeBodyMetricModal();
             renderAnalytics();
         }
@@ -937,12 +768,14 @@
             if(name && !db[name]) {
                 db[name] = { bodyMetrics: [], sessions: [] };
                 currentClient = name;
+                persistDb();
                 updateClientDropdown();
                 renderDashboard();
                 renderExerciseDirectory();
                 renderAnalytics();
                 closeAddClientModal();
                 document.getElementById('newClientName').value = '';
+                showToast(`Client ${name} created successfully!`, "success");
             }
         }
 
