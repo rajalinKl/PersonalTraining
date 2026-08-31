@@ -39,13 +39,14 @@
         <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700/60 shadow-inner">
             <button onclick="switchTab('dashboard')" id="tab-dashboard" class="flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow transition">Sessions</button>
             <button onclick="switchTab('exercises')" id="tab-exercises" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">Exercises</button>
+            <button onclick="switchTab('analytics')" id="tab-analytics" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">Progress</button>
             <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">+ Log</button>
         </div>
 
         <!-- TAB 1: ALL SESSIONS HISTORY -->
         <div id="content-dashboard" class="space-y-3">
             <div class="flex justify-between items-center px-1">
-                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Complete Session Logs (30+ Recorded)</h2>
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Complete Session Logs</h2>
             </div>
             <div id="allSessionsContainer" class="space-y-3">
                 <!-- Populated by JS -->
@@ -62,29 +63,53 @@
             </div>
         </div>
 
-        <!-- TAB 3: LOG NEW SESSION -->
+        <!-- TAB 3: ADVANCED ANALYTICS & PROGRESS -->
+        <div id="content-analytics" class="space-y-4 hidden">
+            <!-- Body Metrics Tracking Card -->
+            <div class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60 space-y-3">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Body Weight & Muscle Mass</h2>
+                    <button onclick="openBodyMetricModal()" class="text-[10px] bg-indigo-600 hover:bg-indigo-500 px-2.5 py-1 rounded-lg font-semibold text-white transition">+ Update Stats</button>
+                </div>
+                <div class="relative h-48 bg-slate-900/50 p-2 rounded-xl border border-slate-700/50">
+                    <canvas id="bodyStatsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Muscle Group Progression Overview -->
+            <div class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60 space-y-3">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Muscle Group Volume Distribution</h2>
+                <div id="muscleGroupStatsContainer" class="space-y-2">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: LOG MULTI-EXERCISE SESSION -->
         <div id="content-log" class="space-y-4 hidden">
             <div class="bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-700/60 space-y-3.5">
-                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Add New Workout Session</h2>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Session Date</label>
-                    <input type="date" id="logDate" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Phase / Tag (Optional)</label>
-                    <input type="text" id="logPhase" placeholder="e.g. P2, W1D1" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
-                </div>
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Record Full Workout Session</h2>
+                
                 <div class="grid grid-cols-2 gap-2.5">
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Exercise Name</label>
-                        <input type="text" id="logExerciseName" placeholder="e.g. Bench press" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Session Date</label>
+                        <input type="date" id="logDate" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Sets & Weights</label>
-                        <input type="text" id="logSetsDetail" placeholder="e.g. 40kgx10 45kgx8" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Phase / Tag</label>
+                        <input type="text" id="logPhase" placeholder="e.g. P2, W1D1" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
                     </div>
                 </div>
-                <button onclick="saveNewSession()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl text-sm font-semibold shadow-lg transition mt-2">Save Session Entry</button>
+
+                <div class="space-y-2 pt-2">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Exercises Performed</label>
+                    <div id="logExerciseRowsContainer" class="space-y-2">
+                        <!-- Dynamic rows injected here -->
+                    </div>
+                    <button type="button" onclick="addExerciseRow()" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 py-2 rounded-xl text-xs font-semibold transition border border-slate-600">+ Add Another Exercise</button>
+                </div>
+
+                <button onclick="saveMultiExerciseSession()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl text-sm font-semibold shadow-lg transition mt-3">Save Complete Session</button>
             </div>
         </div>
 
@@ -108,9 +133,30 @@
             </div>
             <div class="space-y-2">
                 <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Historical Performance Logs</h4>
-                <div id="modalHistoryList" class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-                    <!-- Populated by JS -->
-                </div>
+                <div id="modalHistoryList" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPDATE BODY METRICS MODAL -->
+    <div id="bodyMetricModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 w-full max-w-sm p-5 rounded-2xl border border-slate-700 shadow-2xl space-y-4">
+            <h3 class="font-bold text-base text-white">Log Body Weight & Muscle Mass</h3>
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Date</label>
+                <input type="date" id="metricDate" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Body Weight (kg)</label>
+                <input type="number" step="0.1" id="metricWeight" placeholder="e.g. 72.5" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Muscle Mass (kg) [Optional]</label>
+                <input type="number" step="0.1" id="metricMuscle" placeholder="e.g. 34.2" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white outline-none">
+            </div>
+            <div class="flex space-x-3 pt-2">
+                <button onclick="closeBodyMetricModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 py-2 rounded-xl text-xs font-semibold text-slate-300">Cancel</button>
+                <button onclick="saveBodyMetric()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-xl text-xs font-semibold">Save Stats</button>
             </div>
         </div>
     </div>
@@ -121,17 +167,22 @@
             <h3 class="font-bold text-base text-white">Add New Client</h3>
             <input type="text" id="newClientName" placeholder="Client Full Name" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
             <div class="flex space-x-3 pt-2">
-                <button onclick="closeAddClientModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 py-2.5 rounded-xl text-xs font-semibold text-slate-300 transition">Cancel</button>
-                <button onclick="addNewClient()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-xl text-xs font-semibold transition shadow">Save Client</button>
+                <button onclick="closeAddClientModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 py-2.5 rounded-xl text-xs font-semibold text-slate-300">Cancel</button>
+                <button onclick="addNewClient()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-xl text-xs font-semibold">Save Client</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Full dataset containing over 30 sessions for Rajal and Ramneek
+        // Full complete dataset for Rajal and Ramneek with added body metrics storage
         let db = {
             "Rajal": {
-                "sessions": [
+                bodyMetrics: [
+                    { date: '2025-12-01', weight: 65, muscle: 30 },
+                    { date: '2026-03-01', weight: 64.5, muscle: 30.2 },
+                    { date: '2026-06-01', weight: 64, muscle: 30.5 }
+                ],
+                sessions: [
                     { "date": "2025-12-10", "phase": "C1P1W1D1", "exercises": [ { "name": "Goblet squats", "sets": "10lbsx15 15lbx15/15" }, { "name": "Incline push ups", "sets": "BW x15/15/15" }, { "name": "Seated rows", "sets": "CBL4x15/15/15" }, { "name": "Seated shoulder press", "sets": "DB10lbsx12/8/8" } ] },
                     { "date": "2025-12-12", "phase": "C1P1W1D2", "exercises": [ { "name": "Reverse lunges", "sets": "24/24/24 steps" }, { "name": "Chest press", "sets": "DB10lbsx12/12/12" }, { "name": "Lat pulldowns", "sets": "CBL4x15 no5x12/10" }, { "name": "Rear delt flys", "sets": "DB5lbsx12 2.5lbsx12/12" }, { "name": "Stand curls", "sets": "DB10lbs x12/12" }, { "name": "Tricep pressdowns", "sets": "CBL3x15/15" } ] },
                     { "date": "2026-01-14", "phase": "P1W2D1", "exercises": [ { "name": "Reverse lunges", "sets": "BWx12 10lbsx12/10 a side" }, { "name": "Rear delt fly", "sets": "DB6lbsx20/15" }, { "name": "Chest press", "sets": "DB15lbsx12/12/12" }, { "name": "Bent over rows", "sets": "CBL4x15 no5x15/15/15" } ] },
@@ -161,11 +212,25 @@
                     { "date": "2026-06-03", "phase": "", "exercises": [ { "name": "Bulgarian split squats", "sets": "BWx10 2.5kgx10/10/10" }, { "name": "Lateral raise", "sets": "DB8lbsx10/10/10/10" }, { "name": "Landmine rows", "sets": "BB5kgx10/10/10/10" }, { "name": "Stand curls", "sets": "SB10kgx10/10/10/10" }, { "name": "Push ups", "sets": "BWx10/10/10/10" }, { "name": "Tricep pressdowns", "sets": "CBL5x10/10/10/10" } ] },
                     { "date": "2026-06-06", "phase": "", "exercises": [ { "name": "Hack squats", "sets": "MC13kgx10 9kgx10/10" }, { "name": "Stand shoulder press", "sets": "DB10lbsx12/12/12" }, { "name": "Single arm rows", "sets": "DB20lbs x12/12/12" }, { "name": "Supported pull ups", "sets": "BWx12/12" }, { "name": "Incline push ups", "sets": "BW10/10/10" }, { "name": "Landmine 180s", "sets": "BBx15 2.5kgx15/15" }, { "name": "Cleans", "sets": "DB15lbsx12/12/12" } ] },
                     { "date": "2026-06-10", "phase": "", "exercises": [ { "name": "Bulgarian split squats", "sets": "BWx12 2.5kgx12/12/12" }, { "name": "Lat pulldowns", "sets": "CBL5x12/12/8/8" }, { "name": "Push ups", "sets": "BWx10/15/15" }, { "name": "Seated shoulder press", "sets": "DB10lbsx10/10/12/12" } ] },
-                    { "date": "2026-06-12", "phase": "", "exercises": [ { "name": "Leg press", "sets": "MC40lbsx15 60lbsx12/12/12 70lbsx12" }, { "name": "Aus pull ups", "sets": "BWx10/10/10/10" }, { "name": "Seated shoulder press", "sets": "DB10lbsx12/12/10/10" }, { "name": "Stand curls", "sets": "DB8lbsx15/15/15/15" }, { "name": "Tricep pressdowns", "sets": "CBL3x15 no4x15/15/15" } ] }
+                    { "date": "2026-06-12", "phase": "", "exercises": [ { "name": "Leg press", "sets": "MC40lbsx15 60lbsx12/12/12 70lbsx12" }, { "name": "Aus pull ups", "sets": "BWx10/10/10/10" }, { "name": "Seated shoulder press", "sets": "DB10lbsx12/12/10/10" }, { "name": "Stand curls", "sets": "DB8lbsx15/15/15/15" }, { "name": "Tricep pressdowns", "sets": "CBL3x15 no4x15/15/15" } ] },
+                    { "date": "2026-07-08", "phase": "", "exercises": [ { "name": "Lateral lunges", "sets": "BWx12/12 a side" }, { "name": "Reverse lunges", "sets": "BWx12/12 a side" }, { "name": "Lat pulldowns", "sets": "CBL4x12 no6x12/10/8" }, { "name": "Seated shoulder press", "sets": "DB10lbsx12/12 15lbsx8" }, { "name": "Stand curls", "sets": "DB10lbsx12/12/12" }, { "name": "Tricep rope pulldowns", "sets": "CBL4x12/10 no3x12" } ] },
+                    { "date": "2026-07-15", "phase": "", "exercises": [ { "name": "Clean & press", "sets": "DB10lbsx10/10" }, { "name": "Romanian DLs", "sets": "DB15lbsx10/10" }, { "name": "Leg press", "sets": "MC70lbsx12/12 80lbsx10/10" }, { "name": "Supported pull ups", "sets": "BWx12/12/12/10" }, { "name": "Incline push ups", "sets": "BWx12/12/12/12" }, { "name": "Curl and press", "sets": "DB10lbsx8/8/8/8" }, { "name": "Core rotations", "sets": "CBL4x12/12/12" } ] },
+                    { "date": "2026-07-19", "phase": "", "exercises": [ { "name": "Deadlifts", "sets": "EZB20kgx10/10/10" }, { "name": "Seated shoulder press", "sets": "DB10lbsx10/10/10" }, { "name": "Single arm rows", "sets": "DB20lbsx10" }, { "name": "Stand curls", "sets": "SB10kgx10" }, { "name": "Incline push ups", "sets": "BWx10" }, { "name": "Tricep rope pulldowns", "sets": "CBL3x10" }, { "name": "Lat pulldowns", "sets": "CBL6x10" }, { "name": "Ball slams", "sets": "MB5kgx10" } ] },
+                    { "date": "2026-07-26", "phase": "", "exercises": [ { "name": "Box squats", "sets": "20lbsx15" }, { "name": "Stand shoulder press", "sets": "DB10lbsx15" }, { "name": "Lat pulldowns", "sets": "CBL4x15" }, { "name": "Hammer curls", "sets": "DB6lbsx15" }, { "name": "Incline push ups", "sets": "BWx15" }, { "name": "Tricep rope pulldowns", "sets": "CBL2x15" }, { "name": "Landmine 180s", "sets": "2.5kgx15/15/15" } ] },
+                    { "date": "2026-07-29", "phase": "", "exercises": [ { "name": "Lunges", "sets": "10lbsx15 15lbsx12/12" }, { "name": "Supported pull ups", "sets": "BWx15/15/15/15" }, { "name": "Single arm OH press", "sets": "10lbsx12/12/12" }, { "name": "Stand curls", "sets": "SB10kgx12/12/12" }, { "name": "Tricep ext", "sets": "CBL2x12/12/12" }, { "name": "Single Calf raises", "sets": "BWx12/12/12/12" } ] },
+                    { "date": "2026-08-12", "phase": "", "exercises": [ { "name": "Hack squats", "sets": "MC9kgx12/12/12" }, { "name": "Reverse lunges", "sets": "5kgx12/12 a side" }, { "name": "Single arm rows", "sets": "DB15lbsx12 20lbsx12/12" }, { "name": "Supported pull ups", "sets": "BWx12/12" }, { "name": "Incline push ups", "sets": "BWx12/12/12" }, { "name": "Military press", "sets": "SB10kgx10/10" } ] },
+                    { "date": "2026-08-19", "phase": "", "exercises": [ { "name": "Walking lunges", "sets": "5kgx12/12/12" }, { "name": "Romanian DLs", "sets": "SB20kgx12/12" }, { "name": "Lat pulldowns UHG", "sets": "CBL4x15 no5x12/12" }, { "name": "Aus pull ups", "sets": "BWx10/12" }, { "name": "Chest fly mid", "sets": "CBL2x12/12/12" } ] },
+                    { "date": "2026-08-23", "phase": "", "exercises": [ { "name": "Step ups", "sets": "BWx15 5kgx12/12" }, { "name": "Single seated rows", "sets": "CBL2x15/15 no3x10/10" }, { "name": "Lat pulldowns Narrow", "sets": "CBL5kgx12/12/12" }, { "name": "Incline push ups", "sets": "20\"x12/12/12" }, { "name": "Stand curls", "sets": "DB8lbsx15 10lbsx15 12.5kgx12" }, { "name": "Tricep rope pulldowns", "sets": "CBL3x15 no4x12/12" } ] },
+                    { "date": "2026-08-26", "phase": "", "exercises": [ { "name": "Leg presses", "sets": "MC70lbsx12/15 80lbs" }, { "name": "Romanian DLs", "sets": "SB20kgx12/12" }, { "name": "Supported pull ups", "sets": "BWx12/12/12" }, { "name": "Lat pulldowns narrow", "sets": "CBL5x12/12" }, { "name": "Incline push ups", "sets": "BWx15/15/12" }, { "name": "Tricep pressdowns", "sets": "CBL4x15/15 no5x12" }, { "name": "Stand curls", "sets": "SB12.5kgx12/12/12" } ] }
                 ]
             },
             "Ramneek": {
-                "sessions": [
+                bodyMetrics: [
+                    { date: '2025-12-01', weight: 78, muscle: 38 },
+                    { date: '2026-03-01', weight: 77.2, muscle: 38.5 },
+                    { date: '2026-08-31', weight: 77.5, muscle: 39 }
+                ],
+                sessions: [
                     { "date": "2025-12-03", "phase": "C2P1W2D1", "exercises": [ { "name": "Goblet squats", "sets": "DB17.5kgx15 20kgx15/15" }, { "name": "Hack squats", "sets": "MC22.7kgx15/15" }, { "name": "Bench press", "sets": "DB20kgx15 22.5kgx15/15" }, { "name": "Lat pulldowns N", "sets": "CBL9x15 no10x15/15" }, { "name": "Seated rows", "sets": "CBL10x15/15" } ] },
                     { "date": "2025-12-11", "phase": "C1P1W2D2", "exercises": [ { "name": "Goblet sumo squats", "sets": "17.5kgx15 20kgx15/15" }, { "name": "Leg press", "sets": "MC100lbsx12 110lbsx12" }, { "name": "Bench press", "sets": "BB20kg x15 25kgx15 30kgx15" }, { "name": "Chest fly high", "sets": "CBL5x15/15" }, { "name": "Bent over rows", "sets": "BB30kgx15/15/15" }, { "name": "Supported pull ups", "sets": "BWx12/12" }, { "name": "Stand curls", "sets": "SB25kgx12 20kgx15/12" }, { "name": "Tricep rope pulldowns", "sets": "CBL8x15/12/12" } ] },
                     { "date": "2025-12-13", "phase": "C1P1W2D3", "exercises": [ { "name": "Romanian deadlift", "sets": "DB20kgx12 22.5kgx12" }, { "name": "Curtsy lunges", "sets": "BWx12/12/12 a side" }, { "name": "Chest fly", "sets": "CBL4x15 no5x15" }, { "name": "Incline press", "sets": "SM30kgx12/12/12" }, { "name": "Lat pulldowns D", "sets": "CBL13x12/12/10" }, { "name": "Seated rows D", "sets": "CBL12x12 no11x12" } ] },
@@ -221,8 +286,8 @@
 
         let currentClient = "Ramneek";
         let modalChartInstance = null;
+        let bodyStatsChartInstance = null;
 
-        // Muscle Group Mapping Helper
         function getMuscleGroup(exerciseName) {
             const name = exerciseName.toLowerCase();
             if (name.includes('squat') || name.includes('lunge') || name.includes('leg press') || name.includes('step') || name.includes('jump') || name.includes('extension')) return 'Quads & Glutes';
@@ -238,7 +303,10 @@
             updateClientDropdown();
             renderDashboard();
             renderExerciseDirectory();
+            renderAnalytics();
             document.getElementById('logDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('metricDate').value = new Date().toISOString().split('T')[0];
+            addExerciseRow(); // Start logger with 1 row
         }
 
         function updateClientDropdown() {
@@ -257,10 +325,11 @@
             currentClient = document.getElementById('clientSelect').value;
             renderDashboard();
             renderExerciseDirectory();
+            renderAnalytics();
         }
 
         function switchTab(tab) {
-            ['dashboard', 'exercises', 'log'].forEach(t => {
+            ['dashboard', 'exercises', 'analytics', 'log'].forEach(t => {
                 document.getElementById('content-' + t).classList.add('hidden');
                 document.getElementById('tab-' + t).classList.remove('bg-indigo-600', 'text-white', 'shadow');
                 document.getElementById('tab-' + t).classList.add('text-slate-400');
@@ -268,12 +337,11 @@
             document.getElementById('content-' + tab).classList.remove('hidden');
             document.getElementById('tab-' + tab).classList.add('bg-indigo-600', 'text-white', 'shadow');
             document.getElementById('tab-' + tab).classList.remove('text-slate-400');
+            if(tab === 'analytics') renderAnalytics();
         }
 
         function renderDashboard() {
             const clientData = db[currentClient];
-            
-            // Stats Header
             const totalSessions = clientData.sessions.length;
             let uniqueExercises = new Set();
             clientData.sessions.forEach(s => s.exercises.forEach(e => uniqueExercises.add(e.name)));
@@ -293,7 +361,6 @@
                 </div>
             `;
 
-            // Sessions List (Sorted newest first)
             const container = document.getElementById('allSessionsContainer');
             let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(b.date) - new Date(a.date));
             
@@ -328,7 +395,6 @@
             const clientData = db[currentClient];
             const container = document.getElementById('exerciseDirectoryContainer');
 
-            // Aggregate all unique exercises across all sessions
             let exerciseMap = {};
             clientData.sessions.forEach(session => {
                 session.exercises.forEach(ex => {
@@ -368,6 +434,146 @@
             renderExerciseDirectory(query);
         }
 
+        function renderAnalytics() {
+            const clientData = db[currentClient];
+            
+            // 1. Muscle Group Distribution Calculation
+            let muscleCounts = {};
+            clientData.sessions.forEach(s => {
+                s.exercises.forEach(e => {
+                    let m = getMuscleGroup(e.name);
+                    muscleCounts[m] = (muscleCounts[m] || 0) + 1;
+                });
+            });
+
+            let muscleContainer = document.getElementById('muscleGroupStatsContainer');
+            let muscleHtml = '';
+            let totalExCount = Object.values(muscleCounts).reduce((a,b) => a+b, 0) || 1;
+
+            Object.keys(muscleCounts).forEach(muscle => {
+                let count = muscleCounts[muscle];
+                let percent = Math.round((count / totalExCount) * 100);
+                muscleHtml += `
+                    <div class="bg-slate-900/50 p-2.5 rounded-xl border border-slate-700/40 space-y-1">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-semibold text-slate-200">${muscle}</span>
+                            <span class="font-mono text-indigo-400 font-bold">${count} sets/exercises (${percent}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-indigo-500 h-full rounded-full" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            muscleContainer.innerHTML = muscleHtml || '<p class="text-xs text-slate-500">No workout data available.</p>';
+
+            // 2. Body Metrics Chart (Weight & Muscle Mass)
+            let metrics = clientData.bodyMetrics || [];
+            metrics.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            let mDates = metrics.map(m => m.date);
+            let mWeights = metrics.map(m => m.weight);
+            let mMuscles = metrics.map(m => m.muscle || null);
+
+            const ctx = document.getElementById('bodyStatsChart').getContext('2d');
+            if (bodyStatsChartInstance) bodyStatsChartInstance.destroy();
+            bodyStatsChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: mDates.length ? mDates : ['No Data'],
+                    datasets: [
+                        {
+                            label: 'Body Weight (kg)',
+                            data: mWeights.length ? mWeights : [0],
+                            borderColor: '#38bdf8',
+                            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'Muscle Mass (kg)',
+                            data: mMuscles.length ? mMuscles : [0],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10 } } } },
+                    scales: {
+                        x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#334155' } },
+                        y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#334155' } }
+                    }
+                }
+            });
+        }
+
+        // Dynamic Rows for Multi-Exercise Logging
+        function addExerciseRow() {
+            const container = document.getElementById('logExerciseRowsContainer');
+            const rowId = 'ex-row-' + Date.now() + Math.random();
+            const rowDiv = document.createElement('div');
+            rowDiv.id = rowId;
+            rowDiv.className = "flex gap-2 items-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/50";
+            rowDiv.innerHTML = `
+                <div class="flex-1 space-y-1">
+                    <input type="text" placeholder="Exercise Name (e.g. Bench press)" class="log-ex-name w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white outline-none">
+                    <input type="text" placeholder="Sets/Weights (e.g. 40kgx10 45kgx8)" class="log-ex-sets w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white outline-none">
+                </div>
+                <button type="button" onclick="document.getElementById('${rowId}').remove()" class="text-rose-400 hover:text-rose-300 font-bold px-2 text-sm">✕</button>
+            `;
+            container.appendChild(rowDiv);
+        }
+
+        function saveMultiExerciseSession() {
+            const date = document.getElementById('logDate').value || new Date().toISOString().split('T')[0];
+            const phase = document.getElementById('logPhase').value.trim();
+            
+            const nameInputs = document.querySelectorAll('.log-ex-name');
+            const setInputs = document.querySelectorAll('.log-ex-sets');
+            
+            let newExercises = [];
+            for(let i=0; i<nameInputs.length; i++) {
+                let name = nameInputs[i].value.trim();
+                let sets = setInputs[i].value.trim();
+                if(name && sets) {
+                    newExercises.push({ name, sets });
+                }
+            }
+
+            if(newExercises.length === 0) {
+                alert("Please fill out at least one complete exercise with name and sets.");
+                return;
+            }
+
+            let clientData = db[currentClient];
+            let session = clientData.sessions.find(s => s.date === date);
+            if (!session) {
+                session = { date, phase, exercises: [] };
+                clientData.sessions.push(session);
+            }
+
+            // Append new exercises
+            session.exercises.push(...newExercises);
+            if(phase) session.phase = phase;
+
+            alert("Workout session logged successfully!");
+            
+            // Reset form
+            document.getElementById('logPhase').value = '';
+            document.getElementById('logExerciseRowsContainer').innerHTML = '';
+            addExerciseRow();
+            
+            renderDashboard();
+            renderExerciseDirectory();
+            renderAnalytics();
+            switchTab('dashboard');
+        }
+
         function openExerciseModal(exerciseName) {
             const clientData = db[currentClient];
             document.getElementById('modalExerciseTitle').textContent = exerciseName;
@@ -378,7 +584,6 @@
             let maxWeights = [];
             let historyHtml = '';
 
-            // Sort chronological for charting
             let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(a.date) - new Date(b.date));
 
             sortedSessions.forEach(session => {
@@ -391,7 +596,6 @@
                             </div>
                         ` + historyHtml;
 
-                        // extract first numeric weight found for chart
                         let match = ex.sets.match(/(\d+(\.\d+)?)\s*(kg|lbs)/i);
                         if (match) {
                             dates.push(session.date);
@@ -403,7 +607,6 @@
 
             document.getElementById('modalHistoryList').innerHTML = historyHtml || '<p class="text-xs text-slate-500">No logs for this exercise.</p>';
 
-            // Render Chart
             const ctx = document.getElementById('exerciseModalChart').getContext('2d');
             if (modalChartInstance) modalChartInstance.destroy();
             modalChartInstance = new Chart(ctx, {
@@ -432,49 +635,44 @@
             });
         }
 
-        function closeExerciseModal() {
-            document.getElementById('exerciseModal').classList.add('hidden');
-        }
+        function closeExerciseModal() { document.getElementById('exerciseModal').classList.add('hidden'); }
+        
+        function openBodyMetricModal() { document.getElementById('bodyMetricModal').classList.remove('hidden'); }
+        function closeBodyMetricModal() { document.getElementById('bodyMetricModal').classList.add('hidden'); }
+        
+        function saveBodyMetric() {
+            const date = document.getElementById('metricDate').value;
+            const weight = parseFloat(document.getElementById('metricWeight').value);
+            const muscle = parseFloat(document.getElementById('metricMuscle').value);
 
-        function saveNewSession() {
-            const date = document.getElementById('logDate').value || new Date().toISOString().split('T')[0];
-            const phase = document.getElementById('logPhase').value.trim();
-            const exName = document.getElementById('logExerciseName').value.trim();
-            const setsDetail = document.getElementById('logSetsDetail').value.trim();
-
-            if(!exName || !setsDetail) {
-                alert("Please fill out exercise name and sets/weight details.");
+            if(!date || isNaN(weight)) {
+                alert("Please provide a valid date and body weight.");
                 return;
             }
 
             let clientData = db[currentClient];
-            let session = clientData.sessions.find(s => s.date === date);
-            if (!session) {
-                session = { date, phase, exercises: [] };
-                clientData.sessions.push(session);
-            }
+            if(!clientData.bodyMetrics) clientData.bodyMetrics = [];
 
-            session.exercises.push({ name: exName, sets: setsDetail });
+            clientData.bodyMetrics = clientData.bodyMetrics.filter(m => m.date !== date);
+            clientData.bodyMetrics.push({ date, weight, muscle: isNaN(muscle) ? null : muscle });
 
-            alert("Session logged successfully!");
-            document.getElementById('logExerciseName').value = '';
-            document.getElementById('logSetsDetail').value = '';
-            document.getElementById('logPhase').value = '';
-            renderDashboard();
-            renderExerciseDirectory();
-            switchTab('dashboard');
+            alert("Body metrics updated successfully!");
+            closeBodyMetricModal();
+            renderAnalytics();
         }
 
         function openAddClientModal() { document.getElementById('clientModal').classList.remove('hidden'); }
         function closeAddClientModal() { document.getElementById('clientModal').classList.add('hidden'); }
+        
         function addNewClient() {
             const name = document.getElementById('newClientName').value.trim();
             if(name && !db[name]) {
-                db[name] = { sessions: [] };
+                db[name] = { bodyMetrics: [], sessions: [] };
                 currentClient = name;
                 updateClientDropdown();
                 renderDashboard();
                 renderExerciseDirectory();
+                renderAnalytics();
                 closeAddClientModal();
                 document.getElementById('newClientName').value = '';
             }
