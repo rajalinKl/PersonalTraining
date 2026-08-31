@@ -48,7 +48,7 @@
             <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all">+ Log</button>
         </div>
 
-        <!-- TAB 1: ALL SESSIONS HISTORY (Grouped by Month) -->
+        <!-- TAB 1: SESSIONS (Collapsible Month-Year Grouping) -->
         <div id="content-dashboard" class="space-y-4">
             <div class="flex justify-between items-center px-1">
                 <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Sessions by Month</h2>
@@ -90,7 +90,7 @@
             </div>
         </div>
 
-        <!-- TAB 4: LOG MULTI-EXERCISE SESSION -->
+        <!-- TAB 4: ENHANCED MULTI-SET WORKOUT LOGGER -->
         <div id="content-log" class="space-y-4 hidden">
             <div class="bg-white p-5 rounded-2xl shadow-md border border-slate-200 space-y-4">
                 <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Record Full Workout Session</h2>
@@ -106,15 +106,15 @@
                     </div>
                 </div>
 
-                <div class="space-y-2.5 pt-1">
+                <div class="space-y-3 pt-1">
                     <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Exercises Performed</label>
-                    <div id="logExerciseRowsContainer" class="space-y-2.5">
-                        <!-- Dynamic rows injected here -->
+                    <div id="logExerciseBlocksContainer" class="space-y-4">
+                        <!-- Dynamic Exercise Blocks injected here -->
                     </div>
-                    <button type="button" onclick="addExerciseRow()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl text-xs font-bold transition border border-slate-200 shadow-sm">+ Add Another Exercise</button>
+                    <button type="button" onclick="addExerciseBlock()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl text-xs font-bold transition border border-slate-200 shadow-sm">+ Add Another Exercise</button>
                 </div>
 
-                <button onclick="saveMultiExerciseSession()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/20 transition-all mt-2 active:scale-98">Save Complete Session</button>
+                <button onclick="saveStructuredSession()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/20 transition-all mt-2 active:scale-98">Save Complete Session</button>
             </div>
         </div>
 
@@ -328,6 +328,8 @@
         let modalChartInstance = null;
         let bodyStatsChartInstance = null;
 
+        const weightTypes = ["BW", "CBL", "DB", "BB", "KB", "SB", "MC", "SM", "HS", "EZB", "MB"];
+
         function formatDate(dateStr) {
             if (!dateStr) return '';
             const d = new Date(dateStr);
@@ -339,9 +341,9 @@
             return `${day}-${mon}-${yr}`;
         }
 
-        function getMonthKey(dateStr) {
+        function getMonthYearKey(dateStr) {
             const d = new Date(dateStr);
-            if (isNaN(d)) return 'Unknown Month';
+            if (isNaN(d)) return 'Unknown Period';
             const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             return `${months[d.getMonth()]} ${d.getFullYear()}`;
         }
@@ -364,7 +366,7 @@
             renderAnalytics();
             document.getElementById('logDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('metricDate').value = new Date().toISOString().split('T')[0];
-            addExerciseRow();
+            addExerciseBlock();
         }
 
         function updateClientDropdown() {
@@ -446,27 +448,27 @@
             const container = document.getElementById('allSessionsContainer');
             let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(b.date) - new Date(a.date));
             
-            // Group sessions by month
+            // Group sessions by Month-Year
             let groupedByMonth = {};
             sortedSessions.forEach(session => {
-                let mKey = getMonthKey(session.date);
-                if (!groupedByMonth[mKey]) groupedByMonth[mKey] = [];
-                groupedByMonth[mKey].push(session);
+                let myKey = getMonthYearKey(session.date);
+                if (!groupedByMonth[myKey]) groupedByMonth[myKey] = [];
+                groupedByMonth[myKey].push(session);
             });
 
             let html = '';
             let monthIndex = 0;
             let sessionGlobalIndex = 0;
 
-            Object.keys(groupedByMonth).forEach(monthKey => {
-                let monthSessions = groupedByMonth[monthKey];
+            Object.keys(groupedByMonth).forEach(myKey => {
+                let monthSessions = groupedByMonth[myKey];
                 let mId = `month-${monthIndex++}`;
 
                 html += `
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition mb-3">
                         <button onclick="toggleMonthAccordion('${mId}')" class="w-full p-4 flex justify-between items-center bg-slate-50/80 hover:bg-slate-100/80 transition text-left border-b border-slate-100">
                             <div class="flex items-center space-x-2.5">
-                                <span class="text-xs font-extrabold text-slate-800 uppercase tracking-wider">${monthKey}</span>
+                                <span class="text-xs font-extrabold text-slate-800 uppercase tracking-wider">${myKey}</span>
                                 <span class="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full border border-indigo-100">${monthSessions.length} sessions</span>
                             </div>
                             <svg id="month-arrow-${mId}" class="w-4 h-4 text-slate-400 transition-transform duration-200 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
@@ -511,6 +513,121 @@
             });
 
             container.innerHTML = html;
+        }
+
+        // ENHANCED WORKOUT LOGGER: MULTI-SET & MULTI-WEIGHT BLOCKS
+        function addExerciseBlock() {
+            const container = document.getElementById('logExerciseBlocksContainer');
+            const blockId = 'ex-block-' + Date.now() + Math.random().toString(36).substring(2, 7);
+            
+            let weightTypeOptions = weightTypes.map(wt => `<option value="${wt}">${wt}</option>`).join('');
+
+            const blockDiv = document.createElement('div');
+            blockDiv.id = blockId;
+            blockDiv.className = "bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-3";
+            blockDiv.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Exercise Item</span>
+                    <button type="button" onclick="document.getElementById('${blockId}').remove()" class="text-rose-500 hover:text-rose-600 bg-rose-50 border border-rose-200 w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs transition">✕</button>
+                </div>
+                <div>
+                    <input type="text" placeholder="Exercise Name (e.g. Bench press)" class="log-ex-name w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-semibold text-slate-800 placeholder-slate-400 outline-none focus:ring-2 focus:ring-indigo-600">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase">Sets & Weights</span>
+                        <button type="button" onclick="addSetRow('${blockId}-sets')" class="text-[10px] bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-bold px-2.5 py-1 rounded-lg border border-indigo-200/60 transition">+ Add Set</button>
+                    </div>
+                    <div id="${blockId}-sets" class="space-y-2">
+                        <!-- Default Set Row -->
+                    </div>
+                </div>
+            `;
+            container.appendChild(blockDiv);
+            addSetRow(`${blockId}-sets`);
+        }
+
+        function addSetRow(containerId) {
+            const container = document.getElementById(containerId);
+            const rowId = 'set-row-' + Date.now() + Math.random().toString(36).substring(2, 7);
+            let weightTypeOptions = weightTypes.map(wt => `<option value="${wt}">${wt}</option>`).join('');
+
+            const rowDiv = document.createElement('div');
+            rowDiv.id = rowId;
+            rowDiv.className = "flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-200 shadow-xs";
+            rowDiv.innerHTML = `
+                <select class="set-wtype bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-600">
+                    ${weightTypeOptions}
+                </select>
+                <input type="number" step="0.5" placeholder="Weight" class="set-weight w-20 bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-600">
+                <span class="text-xs font-bold text-slate-400">×</span>
+                <input type="number" placeholder="Reps" class="set-reps w-16 bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-600">
+                <button type="button" onclick="document.getElementById('${rowId}').remove()" class="text-slate-400 hover:text-rose-500 font-bold text-xs p-1 ml-auto">✕</button>
+            `;
+            container.appendChild(rowDiv);
+        }
+
+        function saveStructuredSession() {
+            const date = document.getElementById('logDate').value || new Date().toISOString().split('T')[0];
+            const phase = document.getElementById('logPhase').value.trim();
+            
+            const blockDivs = document.querySelectorAll('#logExerciseBlocksContainer > div');
+            let newExercises = [];
+
+            blockDivs.forEach(block => {
+                let nameInput = block.querySelector('.log-ex-name');
+                let name = nameInput ? nameInput.value.trim() : '';
+                
+                let setRows = block.querySelectorAll('[id$="-sets"] > div');
+                let setsArray = [];
+
+                setRows.forEach(row => {
+                    let wType = row.querySelector('.set-wtype').value;
+                    let weight = row.querySelector('.set-weight').value.trim();
+                    let reps = row.querySelector('.set-reps').value.trim();
+
+                    if (reps) {
+                        if (weight !== '') {
+                            setsArray.push(`${wType} ${weight} × ${reps}`);
+                        } else {
+                            setsArray.push(`${wType} × ${reps}`);
+                        }
+                    }
+                });
+
+                if (name && setsArray.length > 0) {
+                    newExercises.push({
+                        name: name,
+                        sets: setsArray.join(', ')
+                    });
+                }
+            });
+
+            if (newExercises.length === 0) {
+                alert("Please add at least one exercise with valid sets, weights, and repetitions.");
+                return;
+            }
+
+            let clientData = db[currentClient];
+            let session = clientData.sessions.find(s => s.date === date);
+            if (!session) {
+                session = { date, phase, exercises: [] };
+                clientData.sessions.push(session);
+            }
+
+            session.exercises.push(...newExercises);
+            if(phase) session.phase = phase;
+
+            alert("Workout session logged successfully!");
+            
+            document.getElementById('logPhase').value = '';
+            document.getElementById('logExerciseBlocksContainer').innerHTML = '';
+            addExerciseBlock();
+            
+            renderDashboard();
+            renderExerciseDirectory();
+            renderAnalytics();
+            switchTab('dashboard');
         }
 
         function renderExerciseDirectory(filter = '') {
@@ -644,65 +761,6 @@
             });
         }
 
-        function addExerciseRow() {
-            const container = document.getElementById('logExerciseRowsContainer');
-            const rowId = 'ex-row-' + Date.now() + Math.random();
-            const rowDiv = document.createElement('div');
-            rowDiv.id = rowId;
-            rowDiv.className = "flex gap-2 items-center bg-slate-50 p-3 rounded-2xl border border-slate-200 shadow-xs";
-            rowDiv.innerHTML = `
-                <div class="flex-1 space-y-2">
-                    <input type="text" placeholder="Exercise Name (e.g. Bench press)" class="log-ex-name w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-semibold text-slate-800 placeholder-slate-400 outline-none focus:ring-2 focus:ring-indigo-600">
-                    <input type="text" placeholder="Sets/Weights (e.g. DB 40kg × 10, CBL 5 × 12)" class="log-ex-sets w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-semibold text-slate-800 placeholder-slate-400 outline-none focus:ring-2 focus:ring-indigo-600">
-                </div>
-                <button type="button" onclick="document.getElementById('${rowId}').remove()" class="text-rose-500 hover:text-rose-600 bg-rose-50 border border-rose-200 w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs transition">✕</button>
-            `;
-            container.appendChild(rowDiv);
-        }
-
-        function saveMultiExerciseSession() {
-            const date = document.getElementById('logDate').value || new Date().toISOString().split('T')[0];
-            const phase = document.getElementById('logPhase').value.trim();
-            
-            const nameInputs = document.querySelectorAll('.log-ex-name');
-            const setInputs = document.querySelectorAll('.log-ex-sets');
-            
-            let newExercises = [];
-            for(let i=0; i<nameInputs.length; i++) {
-                let name = nameInputs[i].value.trim();
-                let sets = setInputs[i].value.trim();
-                if(name && sets) {
-                    newExercises.push({ name, sets });
-                }
-            }
-
-            if(newExercises.length === 0) {
-                alert("Please fill out at least one complete exercise with name and sets.");
-                return;
-            }
-
-            let clientData = db[currentClient];
-            let session = clientData.sessions.find(s => s.date === date);
-            if (!session) {
-                session = { date, phase, exercises: [] };
-                clientData.sessions.push(session);
-            }
-
-            session.exercises.push(...newExercises);
-            if(phase) session.phase = phase;
-
-            alert("Workout session logged successfully!");
-            
-            document.getElementById('logPhase').value = '';
-            document.getElementById('logExerciseRowsContainer').innerHTML = '';
-            addExerciseRow();
-            
-            renderDashboard();
-            renderExerciseDirectory();
-            renderAnalytics();
-            switchTab('dashboard');
-        }
-
         function parseSetsData(setsStr) {
             let setEntries = setsStr.split(/[,;]/);
             let parsedSets = [];
@@ -711,7 +769,7 @@
                 let weightVal = 0;
                 let repsVal = 0;
 
-                let weightMatch = entry.match(/(?:DB|SB|BB|KB|EZB|MC|HS|CBL)\s*(\d+(\.\d+)?)/i) || entry.match(/(\d+(\.\d+)?)\s*(kg|lbs)/i);
+                let weightMatch = entry.match(/(?:DB|SB|BB|KB|EZB|MC|HS|CBL|BW|SM)\s*(\d+(\.\d+)?)/i) || entry.match(/(\d+(\.\d+)?)\s*(kg|lbs)/i);
                 if (weightMatch) {
                     weightVal = parseFloat(weightMatch[1]);
                 } else {
@@ -747,17 +805,17 @@
             document.getElementById('exerciseModal').classList.remove('hidden');
 
             let historyHtml = '';
-            let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(a.date) - new Date(b.date));
+            let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(b.date) - new Date(a.date));
 
             sortedSessions.forEach(session => {
                 session.exercises.forEach(ex => {
                     if (ex.name.toLowerCase() === exerciseName.toLowerCase()) {
-                        historyHtml = `
+                        historyHtml += `
                             <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl text-xs border border-slate-200">
                                 <span class="text-indigo-600 font-bold">${formatDate(session.date)}</span>
                                 <span class="font-mono text-emerald-600 font-bold">${ex.sets}</span>
                             </div>
-                        ` + historyHtml;
+                        `;
                     }
                 });
             });
