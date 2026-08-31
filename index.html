@@ -48,12 +48,12 @@
             <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all">+ Log</button>
         </div>
 
-        <!-- TAB 1: ALL SESSIONS HISTORY -->
-        <div id="content-dashboard" class="space-y-3">
+        <!-- TAB 1: ALL SESSIONS HISTORY (Grouped by Month) -->
+        <div id="content-dashboard" class="space-y-4">
             <div class="flex justify-between items-center px-1">
-                <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Complete Session Logs</h2>
+                <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Sessions by Month</h2>
             </div>
-            <div id="allSessionsContainer" class="space-y-2.5">
+            <div id="allSessionsContainer" class="space-y-3">
                 <!-- Populated by JS -->
             </div>
         </div>
@@ -339,6 +339,13 @@
             return `${day}-${mon}-${yr}`;
         }
 
+        function getMonthKey(dateStr) {
+            const d = new Date(dateStr);
+            if (isNaN(d)) return 'Unknown Month';
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            return `${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
         function getMuscleGroup(exerciseName) {
             const name = exerciseName.toLowerCase();
             if (name.includes('squat') || name.includes('lunge') || name.includes('leg press') || name.includes('step') || name.includes('jump') || name.includes('extension')) return 'Quads & Glutes';
@@ -391,9 +398,21 @@
             if(tab === 'analytics') renderAnalytics();
         }
 
-        function toggleSessionAccordion(index) {
-            const content = document.getElementById(`session-content-${index}`);
-            const arrow = document.getElementById(`session-arrow-${index}`);
+        function toggleMonthAccordion(monthId) {
+            const content = document.getElementById(`month-content-${monthId}`);
+            const arrow = document.getElementById(`month-arrow-${monthId}`);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function toggleSessionAccordion(sessionId) {
+            const content = document.getElementById(`session-content-${sessionId}`);
+            const arrow = document.getElementById(`session-arrow-${sessionId}`);
             if (content.classList.contains('hidden')) {
                 content.classList.remove('hidden');
                 arrow.style.transform = 'rotate(180deg)';
@@ -427,36 +446,70 @@
             const container = document.getElementById('allSessionsContainer');
             let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(b.date) - new Date(a.date));
             
+            // Group sessions by month
+            let groupedByMonth = {};
+            sortedSessions.forEach(session => {
+                let mKey = getMonthKey(session.date);
+                if (!groupedByMonth[mKey]) groupedByMonth[mKey] = [];
+                groupedByMonth[mKey].push(session);
+            });
+
             let html = '';
-            sortedSessions.forEach((session, index) => {
+            let monthIndex = 0;
+            let sessionGlobalIndex = 0;
+
+            Object.keys(groupedByMonth).forEach(monthKey => {
+                let monthSessions = groupedByMonth[monthKey];
+                let mId = `month-${monthIndex++}`;
+
                 html += `
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition">
-                        <button onclick="toggleSessionAccordion(${index})" class="w-full p-4 flex justify-between items-center bg-white hover:bg-slate-50/80 transition text-left">
-                            <div class="flex items-center space-x-3">
-                                <span class="text-xs font-extrabold text-indigo-600">${formatDate(session.date)}</span>
-                                ${session.phase ? `<span class="text-[10px] font-mono bg-indigo-50 text-indigo-700 border border-indigo-200/60 px-2 py-0.5 rounded-md font-bold">${session.phase}</span>` : ''}
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition mb-3">
+                        <button onclick="toggleMonthAccordion('${mId}')" class="w-full p-4 flex justify-between items-center bg-slate-50/80 hover:bg-slate-100/80 transition text-left border-b border-slate-100">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="text-xs font-extrabold text-slate-800 uppercase tracking-wider">${monthKey}</span>
+                                <span class="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full border border-indigo-100">${monthSessions.length} sessions</span>
                             </div>
-                            <div class="flex items-center space-x-2">
-                                <span class="text-[10px] text-slate-400 font-bold">${session.exercises.length} exercises</span>
-                                <svg id="session-arrow-${index}" class="w-4 h-4 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
-                            </div>
+                            <svg id="month-arrow-${mId}" class="w-4 h-4 text-slate-400 transition-transform duration-200 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
-                        <div id="session-content-${index}" class="hidden p-4 pt-0 space-y-2.5 border-t border-slate-100 bg-slate-50/50">
+                        <div id="month-content-${mId}" class="p-3 space-y-2 bg-white">
                 `;
-                session.exercises.forEach(ex => {
-                    let muscle = getMuscleGroup(ex.name);
+
+                monthSessions.forEach(session => {
+                    let sId = `session-${sessionGlobalIndex++}`;
                     html += `
-                        <div class="flex justify-between items-center bg-white p-2.5 rounded-xl text-xs border border-slate-200/60 shadow-xs mt-2.5">
-                            <div>
-                                <span class="font-bold text-slate-800 block">${ex.name}</span>
-                                <span class="text-[9px] font-semibold text-slate-400 uppercase tracking-wide">${muscle}</span>
-                            </div>
-                            <span class="font-mono font-bold text-emerald-600 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-lg text-right">${ex.sets}</span>
-                        </div>
+                        <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden transition">
+                            <button onclick="toggleSessionAccordion('${sId}')" class="w-full p-3.5 flex justify-between items-center bg-white hover:bg-slate-50 transition text-left">
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-xs font-extrabold text-indigo-600">${formatDate(session.date)}</span>
+                                    ${session.phase ? `<span class="text-[10px] font-mono bg-indigo-50 text-indigo-700 border border-indigo-200/60 px-2 py-0.5 rounded-md font-bold">${session.phase}</span>` : ''}
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[10px] text-slate-400 font-bold">${session.exercises.length} exercises</span>
+                                    <svg id="session-arrow-${sId}" class="w-4 h-4 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </button>
+                            <div id="session-content-${sId}" class="hidden p-3.5 pt-0 space-y-2 border-t border-slate-100 bg-slate-50/50">
                     `;
+
+                    session.exercises.forEach(ex => {
+                        let muscle = getMuscleGroup(ex.name);
+                        html += `
+                            <div class="flex justify-between items-center bg-white p-2.5 rounded-xl text-xs border border-slate-200/60 shadow-xs mt-2">
+                                <div>
+                                    <span class="font-bold text-slate-800 block">${ex.name}</span>
+                                    <span class="text-[9px] font-semibold text-slate-400 uppercase tracking-wide">${muscle}</span>
+                                </div>
+                                <span class="font-mono font-bold text-emerald-600 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-lg text-right">${ex.sets}</span>
+                            </div>
+                        `;
+                    });
+
+                    html += `</div></div>`;
                 });
+
                 html += `</div></div>`;
             });
+
             container.innerHTML = html;
         }
 
@@ -651,7 +704,6 @@
         }
 
         function parseSetsData(setsStr) {
-            // Parses a multi-set string like "DB 15lbs × 12, DB 20lbs × 10" into individual set objects
             let setEntries = setsStr.split(/[,;]/);
             let parsedSets = [];
 
@@ -659,19 +711,16 @@
                 let weightVal = 0;
                 let repsVal = 0;
 
-                // Extract weight/resistance number if present
                 let weightMatch = entry.match(/(?:DB|SB|BB|KB|EZB|MC|HS|CBL)\s*(\d+(\.\d+)?)/i) || entry.match(/(\d+(\.\d+)?)\s*(kg|lbs)/i);
                 if (weightMatch) {
                     weightVal = parseFloat(weightMatch[1]);
                 } else {
-                    // Check for cable machine level numbers or standalone numbers before 'x'
                     let prefixNum = entry.match(/^[^xX]*?(\d+(\.\d+)?)\s*[xX]/);
                     if (prefixNum) {
                         weightVal = parseFloat(prefixNum[1]);
                     }
                 }
 
-                // Extract repetition count
                 let repMatch = entry.match(/[xX]\s*(\d+(\.\d+)?)/);
                 if (repMatch) {
                     repsVal = parseFloat(repMatch[1]);
@@ -697,7 +746,6 @@
             document.getElementById('modalMuscleTag').textContent = getMuscleGroup(exerciseName);
             document.getElementById('exerciseModal').classList.remove('hidden');
 
-            // Render historical performance log list
             let historyHtml = '';
             let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(a.date) - new Date(b.date));
 
@@ -721,8 +769,8 @@
         function updateExerciseModalChart() {
             if (!activeModalExercise) return;
             const clientData = db[currentClient];
-            const metric = document.getElementById('modalMetricSelect').value; // 'weight' or 'reps'
-            const setType = document.getElementById('modalSetTypeSelect').value; // 'max', 'average', 'total'
+            const metric = document.getElementById('modalMetricSelect').value;
+            const setType = document.getElementById('modalSetTypeSelect').value;
 
             let dates = [];
             let values = [];
