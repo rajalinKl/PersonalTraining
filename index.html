@@ -48,12 +48,12 @@
             <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all">+ Log</button>
         </div>
 
-        <!-- TAB 1: ALL SESSIONS HISTORY -->
+        <!-- TAB 1: ALL SESSIONS HISTORY (Collapsible Accordions) -->
         <div id="content-dashboard" class="space-y-3">
             <div class="flex justify-between items-center px-1">
                 <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Complete Session Logs</h2>
             </div>
-            <div id="allSessionsContainer" class="space-y-3">
+            <div id="allSessionsContainer" class="space-y-2.5">
                 <!-- Populated by JS -->
             </div>
         </div>
@@ -370,6 +370,18 @@
             if(tab === 'analytics') renderAnalytics();
         }
 
+        function toggleSessionAccordion(index) {
+            const content = document.getElementById(`session-content-${index}`);
+            const arrow = document.getElementById(`session-arrow-${index}`);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
         function renderDashboard() {
             const clientData = db[currentClient];
             const totalSessions = clientData.sessions.length;
@@ -395,24 +407,30 @@
             let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(b.date) - new Date(a.date));
             
             let html = '';
-            sortedSessions.forEach(session => {
+            sortedSessions.forEach((session, index) => {
                 html += `
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-2.5">
-                        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
-                            <span class="text-xs font-extrabold text-indigo-600">${formatDate(session.date)}</span>
-                            ${session.phase ? `<span class="text-[10px] font-mono bg-indigo-50 text-indigo-700 border border-indigo-200/60 px-2 py-0.5 rounded-md font-bold">${session.phase}</span>` : ''}
-                        </div>
-                        <div class="space-y-2">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition">
+                        <button onclick="toggleSessionAccordion(${index})" class="w-full p-4 flex justify-between items-center bg-white hover:bg-slate-50/80 transition text-left">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xs font-extrabold text-indigo-600">${formatDate(session.date)}</span>
+                                ${session.phase ? `<span class="text-[10px] font-mono bg-indigo-50 text-indigo-700 border border-indigo-200/60 px-2 py-0.5 rounded-md font-bold">${session.phase}</span>` : ''}
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[10px] text-slate-400 font-bold">${session.exercises.length} exercises</span>
+                                <svg id="session-arrow-${index}" class="w-4 h-4 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </button>
+                        <div id="session-content-${index}" class="hidden p-4 pt-0 space-y-2.5 border-t border-slate-100 bg-slate-50/50">
                 `;
                 session.exercises.forEach(ex => {
                     let muscle = getMuscleGroup(ex.name);
                     html += `
-                        <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl text-xs border border-slate-100 shadow-xs">
+                        <div class="flex justify-between items-center bg-white p-2.5 rounded-xl text-xs border border-slate-200/60 shadow-xs mt-2.5">
                             <div>
                                 <span class="font-bold text-slate-800 block">${ex.name}</span>
                                 <span class="text-[9px] font-semibold text-slate-400 uppercase tracking-wide">${muscle}</span>
                             </div>
-                            <span class="font-mono font-bold text-emerald-600 bg-emerald-50 border border-emerald-200/60 px-2 py-1 rounded-lg text-right">${ex.sets}</span>
+                            <span class="font-mono font-bold text-emerald-600 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-lg text-right">${ex.sets}</span>
                         </div>
                     `;
                 });
@@ -700,7 +718,7 @@
             const bodyFatPct = parseFloat(document.getElementById('metricBodyFatPct').value);
 
             if(!date || isNaN(weight)) {
-                alert("Please provide at least a valid date and body weight.");
+                alert("Please provide at date and body weight.");
                 return;
             }
 
