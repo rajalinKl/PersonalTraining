@@ -48,7 +48,7 @@
             <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all">+ Log</button>
         </div>
 
-        <!-- TAB 1: ALL SESSIONS HISTORY (Collapsible Accordions) -->
+        <!-- TAB 1: ALL SESSIONS HISTORY -->
         <div id="content-dashboard" class="space-y-3">
             <div class="flex justify-between items-center px-1">
                 <h2 class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Complete Session Logs</h2>
@@ -131,7 +131,7 @@
                 <button onclick="closeExerciseModal()" class="text-slate-400 hover:text-slate-700 bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition">✕</button>
             </div>
             <div class="space-y-2">
-                <h4 id="modalChartTitle" class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Weight & Level Progression Chart</h4>
+                <h4 id="modalChartTitle" class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Progression Chart</h4>
                 <div class="relative h-56 bg-slate-50 p-3 rounded-2xl border border-slate-200 shadow-inner">
                     <canvas id="exerciseModalChart"></canvas>
                 </div>
@@ -297,7 +297,7 @@
                     { "date": "2026-08-10", "phase": "P1", "exercises": [ { "name": "Hack squats", "sets": "MC 27kg × 12, MC 27kg × 12, MC 27kg × 12" }, { "name": "Romanian deadlifts", "sets": "SB 30kg × 12, SB 30kg × 12, SB 35kg × 12" }, { "name": "Lat pulldowns", "sets": "CBL 10 × 15, CBL 11 × 12, CBL 12 × 12" }, { "name": "Bench press", "sets": "BB 20kg × 15, BB 25kg × 12, BB 25kg × 15" }, { "name": "Seated shoulder press", "sets": "DB 20lbs × 15, DB 20lbs × 15, DB 20lbs × 15" }, { "name": "Incline curls", "sets": "DB 15lbs × 15, DB 15lbs × 15, DB 15lbs × 15" }, { "name": "Skull crushers", "sets": "SB 5kg × 15, SB 5kg × 15, SB 5kg × 15" } ] },
                     { "date": "2026-08-17", "phase": "P1", "exercises": [ { "name": "Squats", "sets": "SM 20kg × 15, SM 30kg × 12, SM 40kg × 12" }, { "name": "Lat pulldowns", "sets": "CBL 11 × 15, CBL 12 × 13, CBL 12 × 12" }, { "name": "Incline press", "sets": "DB 20kg × 15, DB 20kg × 15, DB 22.5kg × 12" }, { "name": "Rear delt fly", "sets": "DB 15lbs × 15, DB 15lbs × 15, DB 15lbs × 15" } ] },
                     { "date": "2026-08-24", "phase": "P2", "exercises": [ { "name": "Reverse lunges", "sets": "DB 30lbs × 12, DB 30lbs × 12, DB 17.5kg × 8, DB 17.5kg × 8 a side" }, { "name": "Pull ups", "sets": "BW × 8, BW × 6, BW × 5" }, { "name": "Lat pulldowns narrow", "sets": "CBL 13 × 10, CBL 13 × 10" }, { "name": "Bench press", "sets": "BB 30kg × 12, BB 35kg × 10, BB 35kg × 10" }, { "name": "Seated shoulder press", "sets": "DB 20kg × 10, DB 20kg × 10, DB 20kg × 8" } ] },
-                    { "date": "2026-08-28", "phase": "P2", "exercises": [ { "name": "Squats", "sets": "SM 20kg × 10, SM 30kg × 10, SM 40kg × 10, SM 45kg × 10, SM 50kg × 10" }, { "name": "Pull ups", "sets": "BW × 9.5, BW × 7.5, BW × 6" }, { "name": "Bench press", "sets": "BB 40kg × 10, BB 45kg × 10, BB 45kg × 8" }, { "name": "Skullcrushers", "sets": "SB 25kg × 10, SB 25kg × 10, SB 25kg × 10" }, { "name": "Seated curls", "sets": "DB 25lbs × 10, DB 25lbs × 10, DB 25lbs × 10" } ] },
+                    { "date": "2026-08-28", "phase": "P2", "exercises": [ { "name": "Squats", "sets": "SM 20kg × 10, SM 30kg × 10, SM 40kg × 10, SM 45kg × 10, SM 50kg × 10" }, { "name": "Pull ups", "sets": "BW × 9.5, / 7.5 / 6" }, { "name": "Bench press", "sets": "BB 40kg × 10, BB 45kg × 10, BB 45kg × 8" }, { "name": "Skullcrushers", "sets": "SB 25kg × 10, SB 25kg × 10, SB 25kg × 10" }, { "name": "Seated curls", "sets": "DB 25lbs × 10, DB 25lbs × 10, DB 25lbs × 10" } ] },
                     { "date": "2026-08-31", "phase": "P2", "exercises": [ { "name": "Bulgarian split squats", "sets": "DB 15lbs × 12, DB 20lbs × 12, DB 25lbs × 10" }, { "name": "Aus pull ups", "sets": "BW × 15, BW × 15" }, { "name": "Pull ups", "sets": "BW × 6, BW × 5, BW × 5" }, { "name": "Incline press", "sets": "SM 40kg × 12, SM 50kg × 10, SM 55kg × 10" }, { "name": "Narrow push ups", "sets": "BW × 12, BW × 12, BW × 10" } ] }
                 ]
             }
@@ -630,14 +630,26 @@
         }
 
         function parseMeasurement(setsStr) {
+            // Check for explicit weight indicators (DB, SB, BB, KB, EZB, MC, HS, CBL) followed by number
             let match = setsStr.match(/(?:DB|SB|BB|KB|EZB|MC|HS|CBL)\s*(\d+(\.\d+)?)/i) || setsStr.match(/(\d+(\.\d+)?)\s*(kg|lbs)/i);
             if (match) {
-                return { val: parseFloat(match[1]), unit: 'val' };
+                return { val: parseFloat(match[1]), type: 'weight' };
             }
-            let numMatch = setsStr.match(/^(\d+(\.\d+)?)\s*[xX]/);
-            if (numMatch) {
-                return { val: parseFloat(numMatch[1]), unit: 'val' };
+            
+            // If it's bodyweight or purely reps (e.g., BW x 12, 20" x 12, or just reps per set)
+            // Extract the maximum or average repetition count from the sets string
+            let repMatches = [...setsStr.matchAll(/[xX]\s*(\d+(\.\d+)?)/g)];
+            if (repMatches.length > 0) {
+                // Return the max reps performed in a set for progression tracking
+                let reps = repMatches.map(m => parseFloat(m[1]));
+                return { val: Math.max(...reps), type: 'reps' };
             }
+
+            let fallbackNum = setsStr.match(/(\d+(\.\d+)?)/);
+            if (fallbackNum) {
+                return { val: parseFloat(fallbackNum[1]), type: 'reps' };
+            }
+
             return null;
         }
 
@@ -649,10 +661,23 @@
 
             let dates = [];
             let values = [];
-            let detectedUnitLabel = 'Load / Level Progression';
+            let chartMetricLabel = 'Load Progression';
             let historyHtml = '';
 
             let sortedSessions = [...clientData.sessions].sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            // Determine if this exercise predominantly uses external weights or is bodyweight/reps-focused
+            let hasWeight = false;
+            sortedSessions.forEach(session => {
+                session.exercises.forEach(ex => {
+                    if (ex.name.toLowerCase() === exerciseName.toLowerCase()) {
+                        let parsed = parseMeasurement(ex.sets);
+                        if (parsed && parsed.type === 'weight') hasWeight = true;
+                    }
+                });
+            });
+
+            chartMetricLabel = hasWeight ? 'Weight / Resistance Value' : 'Repetitions Growth (Max Reps)';
 
             sortedSessions.forEach(session => {
                 session.exercises.forEach(ex => {
@@ -673,7 +698,7 @@
                 });
             });
 
-            document.getElementById('modalChartTitle').textContent = `${detectedUnitLabel} Chart`;
+            document.getElementById('modalChartTitle').textContent = chartMetricLabel;
             document.getElementById('modalHistoryList').innerHTML = historyHtml || '<p class="text-xs text-slate-400">No logs for this exercise.</p>';
 
             const ctx = document.getElementById('exerciseModalChart').getContext('2d');
@@ -683,7 +708,7 @@
                 data: {
                     labels: dates.length ? dates : ['No Data Available'],
                     datasets: [{
-                        label: 'Max Set Value',
+                        label: chartMetricLabel,
                         data: values.length ? values : [0],
                         borderColor: '#4f46e5',
                         backgroundColor: 'rgba(79, 70, 229, 0.08)',
@@ -718,7 +743,7 @@
             const bodyFatPct = parseFloat(document.getElementById('metricBodyFatPct').value);
 
             if(!date || isNaN(weight)) {
-                alert("Please provide at date and body weight.");
+                alert("Please provide a valid date and body weight.");
                 return;
             }
 
