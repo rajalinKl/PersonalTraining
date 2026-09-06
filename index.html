@@ -91,30 +91,33 @@
                 <div class="relative z-10 space-y-2 max-w-xl">
                     <span class="bg-brand-500/30 text-brand-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Coach Command Center</span>
                     <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Coach Rajal & Ramneek to Peak Performance</h2>
-                    <p class="text-slate-300 text-xs sm:text-sm">Manage client rosters, track gym sessions with superset support, InBody scans, and custom nutrition targets synced live to Google Sheets.</p>
+                    <p class="text-slate-300 text-xs sm:text-sm">Manage client rosters, calendar slots, workout logs with superset support, and nutrition targets synced to Google Sheets.</p>
                 </div>
                 <div class="relative z-10 flex flex-wrap gap-3">
                     <button onclick="switchTrainerTab('logger')" class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-5 py-3 rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-brand-500/30 flex items-center gap-2">
                         <i class="fa-solid fa-stopwatch text-base"></i> Open Gym Logger
                     </button>
-                    <button onclick="switchTrainerTab('clients')" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-5 py-3 rounded-2xl text-xs sm:text-sm transition backdrop-blur-md border border-white/10 flex items-center gap-2">
-                        <i class="fa-solid fa-users text-base"></i> Manage Clients
+                    <button onclick="switchTrainerTab('calendar')" class="bg-white/10 hover:bg-white/25 text-white font-semibold px-5 py-3 rounded-2xl text-xs sm:text-sm transition backdrop-blur-md border border-white/15 flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-days text-base"></i> Manage Calendar
                     </button>
                 </div>
             </div>
 
-            <!-- Trainer Sub-navigation tabs -->
-            <div class="flex overflow-x-auto space-x-2 pb-2 border-b border-slate-200">
-                <button onclick="switchTrainerTab('dashboard')" id="ttab-dashboard" class="trainer-tab px-4.5 py-2.5 rounded-2xl text-sm font-bold bg-brand-600 text-white flex items-center gap-2.5 whitespace-nowrap shadow-sm shadow-brand-600/20">
+            <!-- Trainer Sub-navigation tabs with relaxed margin -->
+            <div class="flex overflow-x-auto space-x-3 pb-3 pt-1 border-b border-slate-200">
+                <button onclick="switchTrainerTab('dashboard')" id="ttab-dashboard" class="trainer-tab px-5 py-3 rounded-2xl text-sm font-bold bg-brand-600 text-white flex items-center gap-2.5 whitespace-nowrap shadow-sm shadow-brand-600/20 transition">
                     <i class="fa-solid fa-chart-pie"></i> Master Overview
                 </button>
-                <button onclick="switchTrainerTab('clients')" id="ttab-clients" class="trainer-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap">
+                <button onclick="switchTrainerTab('clients')" id="ttab-clients" class="trainer-tab px-5 py-3 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap transition">
                     <i class="fa-solid fa-users"></i> Client Management
                 </button>
-                <button onclick="switchTrainerTab('logger')" id="ttab-logger" class="trainer-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap">
+                <button onclick="switchTrainerTab('calendar')" id="ttab-calendar" class="trainer-tab px-5 py-3 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap transition">
+                    <i class="fa-solid fa-calendar-check"></i> Calendar & Open Slots
+                </button>
+                <button onclick="switchTrainerTab('logger')" id="ttab-logger" class="trainer-tab px-5 py-3 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap transition">
                     <i class="fa-solid fa-stopwatch"></i> Gym Floor Logger
                 </button>
-                <button onclick="switchTrainerTab('analytics')" id="ttab-analytics" class="trainer-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap">
+                <button onclick="switchTrainerTab('analytics')" id="ttab-analytics" class="trainer-tab px-5 py-3 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap transition">
                     <i class="fa-solid fa-chart-line"></i> Progression & Muscles
                 </button>
             </div>
@@ -157,16 +160,21 @@
                     </div>
                 </div>
 
-                <!-- Client Side-by-Side Roster Cards -->
+                <!-- Client Roster Cards with Schedule Slots -->
                 <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
                         <div>
-                            <h3 class="text-lg font-bold text-slate-900">Active Client Roster</h3>
-                            <p class="text-xs text-slate-500">Quick status, latest weights, and direct nutrition prescription controls.</p>
+                            <h3 class="text-lg font-bold text-slate-900">Active Client Roster & Open Slot Identification</h3>
+                            <p class="text-xs text-slate-500">Monitor client schedules, spot open training slots, and manage upcoming bookings.</p>
                         </div>
-                        <button onclick="openNewClientModal()" class="bg-slate-900 hover:bg-brand-600 text-white px-4 py-2 rounded-2xl text-xs font-bold transition flex items-center gap-2 shadow-sm">
-                            <i class="fa-solid fa-user-plus"></i> Add New Client
-                        </button>
+                        <div class="flex gap-2">
+                            <button onclick="openScheduleModal()" class="bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-200 px-4 py-2 rounded-2xl text-xs font-bold transition flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-plus"></i> Schedule Session
+                            </button>
+                            <button onclick="openNewClientModal()" class="bg-slate-900 hover:bg-brand-600 text-white px-4 py-2 rounded-2xl text-xs font-bold transition flex items-center gap-2 shadow-sm">
+                                <i class="fa-solid fa-user-plus"></i> Add New Client
+                            </button>
+                        </div>
                     </div>
 
                     <div id="trainer-roster-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -190,7 +198,53 @@
                 </div>
             </div>
 
-            <!-- Tab 3: Gym Floor Live Session Logger -->
+            <!-- Tab 3: Calendar & Reschedule Approval Management -->
+            <div id="tcontent-calendar" class="trainer-content space-y-6 hidden">
+                <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                        <div>
+                            <span class="bg-brand-100 text-brand-700 text-xs font-bold px-3 py-1 rounded-full">Trainer Schedule</span>
+                            <h3 class="text-xl font-extrabold text-slate-900 mt-1">Calendar & Reschedule Approvals</h3>
+                            <p class="text-xs text-slate-500">Review client reschedule/cancellation requests and identify open slots.</p>
+                        </div>
+                        <button onclick="openScheduleModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-4.5 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-plus"></i> Book New Session Slot
+                        </button>
+                    </div>
+
+                    <!-- Pending Requests Section -->
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Pending Client Requests</h4>
+                        <div id="trainer-requests-list" class="space-y-3">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- All Scheduled Sessions Table -->
+                    <div class="space-y-3 pt-4">
+                        <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">All Booked Sessions & Slots</h4>
+                        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+                            <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                                <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[11px]">
+                                    <tr>
+                                        <th class="p-3.5">Client</th>
+                                        <th class="p-3.5">Title</th>
+                                        <th class="p-3.5">Date</th>
+                                        <th class="p-3.5">Time</th>
+                                        <th class="p-3.5">Status</th>
+                                        <th class="p-3.5">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trainer-schedule-tbody" class="divide-y divide-slate-100 bg-white">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Gym Floor Live Session Logger -->
             <div id="tcontent-logger" class="trainer-content space-y-6 hidden">
                 <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
@@ -247,7 +301,7 @@
                 </div>
             </div>
 
-            <!-- Tab 4: Progression & Muscle Group Analytics -->
+            <!-- Tab 5: Progression & Muscle Group Analytics -->
             <div id="tcontent-analytics" class="trainer-content space-y-6 hidden">
                 <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
@@ -299,12 +353,12 @@
         <div id="view-client" class="space-y-6 hidden">
             
             <!-- Client Hero Banner -->
-            <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-brand-800 via-brand-700 to-emerald-600 text-white p-6 sm:p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-slate-800 to-brand-900 text-white p-6 sm:p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="absolute inset-0 opacity-15 mix-blend-overlay bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1200&auto=format&fit=crop');"></div>
                 <div class="relative z-10 space-y-2 max-w-xl">
-                    <span class="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Client Portal</span>
+                    <span class="bg-brand-500/30 text-brand-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Client Portal</span>
                     <h2 id="client-welcome-title" class="text-2xl sm:text-3xl font-extrabold tracking-tight">Welcome back, Rajal!</h2>
-                    <p class="text-emerald-100 text-xs sm:text-sm">Track your scheduled gym logs, submit InBody scans, log extra weekly activities, and review your customized meal plan.</p>
+                    <p class="text-slate-300 text-xs sm:text-sm">Manage your upcoming session schedule, review workout history, log InBody scans, and check nutrition targets.</p>
                 </div>
                 <div class="relative z-10 bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl flex items-center gap-4">
                     <label class="text-xs font-bold text-white uppercase tracking-wider">Switch Profile:</label>
@@ -315,30 +369,47 @@
                 </div>
             </div>
 
-            <!-- Client Sub-navigation tabs -->
-            <div class="flex overflow-x-auto space-x-2 pb-2 border-b border-slate-200">
-                <button onclick="switchClientTab('workouts')" id="ctab-workouts" class="client-tab px-4.5 py-2.5 rounded-2xl text-sm font-bold bg-brand-600 text-white flex items-center gap-2.5 whitespace-nowrap shadow-sm shadow-brand-600/20">
-                    <i class="fa-solid fa-dumbbell"></i> My Workout History
+            <!-- Client Sub-navigation tabs with relaxed margin -->
+            <div class="flex overflow-x-auto space-x-3 pb-3 pt-1 border-b border-slate-200">
+                <button onclick="switchClientTab('summary')" id="ctab-summary" class="client-tab px-5 py-3 rounded-2xl text-sm font-bold bg-brand-600 text-white flex items-center gap-2.5 whitespace-nowrap shadow-sm shadow-brand-600/20 transition">
+                    <i class="fa-solid fa-house"></i> Summary & Workouts
                 </button>
-                <button onclick="switchClientTab('nutrition')" id="ctab-nutrition" class="client-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap">
-                    <i class="fa-solid fa-utensils"></i> Nutrition & Diet Plan
+                <button onclick="switchClientTab('nutrition')" id="ctab-nutrition" class="client-tab px-5 py-3 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap transition">
+                    <i class="fa-solid fa-utensils"></i> Nutrition & Diet
                 </button>
-                <button onclick="switchClientTab('inbody')" id="ctab-inbody" class="client-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap">
-                    <i class="fa-solid fa-scale-balanced"></i> InBody Scans & Progress
+                <button onclick="switchClientTab('inbody')" id="ctab-inbody" class="client-tab px-5 py-3 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap transition">
+                    <i class="fa-solid fa-scale-balanced"></i> InBody Scans
                 </button>
-                <button onclick="switchClientTab('activities')" id="ctab-activities" class="client-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap">
-                    <i class="fa-solid fa-person-running"></i> Weekly Activities & Steps
+                <button onclick="switchClientTab('activities')" id="ctab-activities" class="client-tab px-5 py-3 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap transition">
+                    <i class="fa-solid fa-person-running"></i> Activities & Steps
                 </button>
             </div>
 
-            <!-- Client Tab 1: Workouts & Progression -->
-            <div id="ccontent-workouts" class="client-content space-y-6">
-                <!-- Nutrition Widget Preview -->
-                <div id="client-nutrition-widget" class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+            <!-- Client Tab 1: Summary & Workouts (Next Session Scheduler right on top, then Workouts) -->
+            <div id="ccontent-summary" class="client-content space-y-6">
+                
+                <!-- 1. Next Session & Reschedule / Cancel Card (Less complicated, right on top) -->
+                <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                        <div>
+                            <span class="bg-brand-100 text-brand-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Next Session Booking</span>
+                            <h3 id="client-next-session-title" class="text-xl font-extrabold text-slate-900 mt-1">No upcoming sessions scheduled</h3>
+                        </div>
+                        <div id="client-next-session-actions" class="flex items-center gap-2">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                    <div id="client-next-session-details" class="text-xs sm:text-sm text-slate-600">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- 2. Client Nutrition KPI Quick Preview -->
+                <div id="client-nutrition-widget" class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
                     <!-- Injected dynamically -->
                 </div>
 
-                <!-- Past Workouts List -->
+                <!-- 3. Recorded Training Sessions -->
                 <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-6">
                     <h3 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">Recorded Training Sessions</h3>
                     <div id="client-workouts-list" class="space-y-4">
@@ -449,7 +520,7 @@
 
     <!-- Sync Settings Modal -->
     <div id="sync-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in duration-200">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6">
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div class="flex items-center gap-3">
                     <div class="bg-emerald-100 text-emerald-700 p-2.5 rounded-2xl"><i class="fa-solid fa-cloud text-xl"></i></div>
@@ -465,16 +536,7 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Google Apps Script Web App URL</label>
                     <input type="text" id="sync-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-3 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
-                    <p class="text-[11px] text-slate-500 mt-1">Paste your deployed Apps Script URL here to sync Clients, Workouts, Activities, and InBody Scans automatically.</p>
-                </div>
-
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs space-y-2 text-slate-600">
-                    <p class="font-bold text-slate-800"><i class="fa-solid fa-circle-info text-brand-600"></i> Setup Instructions:</p>
-                    <ol class="list-decimal list-inside space-y-1">
-                        <li>Create 5 sheets: <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200">Clients</code>, <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200">Workouts</code>, <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200">Activities</code>, <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200">InBodyScans</code>, <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200">Nutrition</code>.</li>
-                        <li>Deploy Apps Script as Web App (Execute as: Me, Access: Anyone).</li>
-                        <li>Paste the URL above and click Test & Save.</li>
-                    </ol>
+                    <p class="text-[11px] text-slate-500 mt-1">Paste your deployed Apps Script URL here to sync Clients, Workouts, Activities, InBody Scans, and Schedule automatically.</p>
                 </div>
             </div>
 
@@ -500,27 +562,68 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Weight (kg)</label>
-                        <input type="number" id="new-client-weight" value="65.0" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <input type="number" id="new-client-weight" value="65.0" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Body Fat %</label>
-                        <input type="number" id="new-client-bf" value="18.0" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <input type="number" id="new-client-bf" value="18.0" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Calories Target</label>
-                        <input type="number" id="new-client-cal" value="2200" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <input type="number" id="new-client-cal" value="2200" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Protein (g)</label>
-                        <input type="number" id="new-client-protein" value="150" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <input type="number" id="new-client-protein" value="150" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm">
                     </div>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
                 <button onclick="closeNewClientModal()" class="px-4 py-2 text-xs font-bold text-slate-600">Cancel</button>
                 <button onclick="submitNewClient()" class="bg-brand-600 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-md">Save Client</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Booking / Request Modal -->
+    <div id="schedule-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 id="schedule-modal-title" class="font-bold text-base text-slate-900">Schedule New Session Slot</h3>
+                <button onclick="closeScheduleModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Trainee</label>
+                    <select id="sched-client-id" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold">
+                        <option value="c_1">Rajal</option>
+                        <option value="c_2">Ramneek</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Session Title</label>
+                    <input type="text" id="sched-title" value="Personal Training Session" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Date</label>
+                        <input type="date" id="sched-date" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Time</label>
+                        <input type="time" id="sched-time" value="10:00" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm">
+                    </div>
+                </div>
+                <div id="sched-note-container" class="space-y-1 hidden">
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Reschedule / Cancel Reason Note</label>
+                    <textarea id="sched-note" rows="2" placeholder="e.g., Flying out for work, need to reschedule to Thursday..." class="w-full border border-slate-300 rounded-xl p-3 text-sm"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                <button onclick="closeScheduleModal()" class="px-4 py-2 text-xs font-bold text-slate-600">Cancel</button>
+                <button onclick="submitScheduleModal()" id="sched-submit-btn" class="bg-brand-600 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-md">Confirm Booking</button>
             </div>
         </div>
     </div>
@@ -627,6 +730,10 @@
                 { id: 'ib_4', clientId: 'c_2', date: '2025-12-01', weight: 72.0, bodyFat: 17.2, smm: 29.5, visceral: 5.0, bmr: 1510 },
                 { id: 'ib_5', clientId: 'c_2', date: '2026-03-01', weight: 71.5, bodyFat: 16.8, smm: 30.1, visceral: 4.6, bmr: 1530 },
                 { id: 'ib_6', clientId: 'c_2', date: '2026-06-01', weight: 71.2, bodyFat: 16.5, smm: 30.6, visceral: 4.2, bmr: 1550 }
+            ],
+            schedule: [
+                { id: 'sch_1', clientId: 'c_1', clientName: 'Rajal', title: 'Phase 2 Strength & Conditioning', date: '2026-09-09', time: '10:00 AM', status: 'Confirmed', requestType: 'None', requestNote: '' },
+                { id: 'sch_2', clientId: 'c_2', clientName: 'Ramneek', title: 'Hypertrophy Session D2', date: '2026-09-10', time: '04:30 PM', status: 'Confirmed', requestType: 'None', requestNote: '' }
             ]
         };
 
@@ -635,19 +742,47 @@
         let googleSheetUrl = localStorage.getItem('protrainer_sheets_url') || '';
         let inbodyChartInstance = null;
 
-        // Initialize App
+        // Initialize App & Fetch from Google Sheets if connected
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('log-session-date').valueAsDate = new Date();
             document.getElementById('ib-date').valueAsDate = new Date();
             document.getElementById('act-from').valueAsDate = new Date();
             document.getElementById('act-to').valueAsDate = new Date();
+            document.getElementById('sched-date').valueAsDate = new Date();
+
             if (googleSheetUrl) {
                 document.getElementById('sync-url-input').value = googleSheetUrl;
                 document.getElementById('sync-status-text').innerText = 'Connected to Sheets';
+                fetchDataFromGoogleSheets();
+            } else {
+                initExerciseBuilder();
+                renderAll();
             }
-            initExerciseBuilder();
-            renderAll();
         });
+
+        // Fetch Data from Google Sheets API
+        function fetchDataFromGoogleSheets() {
+            if (!googleSheetUrl) return;
+            fetch(googleSheetUrl + '?action=getData')
+                .then(res => res.json())
+                .then(response => {
+                    if (response.status === 'success') {
+                        if (response.clients && response.clients.length) db.clients = response.clients;
+                        if (response.workouts && response.workouts.length) db.workouts = response.workouts;
+                        if (response.activities && response.activities.length) db.activities = response.activities;
+                        if (response.inbodyScans && response.inbodyScans.length) db.inbodyScans = response.inbodyScans;
+                        if (response.schedule && response.schedule.length) db.schedule = response.schedule;
+                        console.log('Successfully loaded all data from Google Sheets!');
+                    }
+                    initExerciseBuilder();
+                    renderAll();
+                })
+                .catch(err => {
+                    console.error('Fetch error:', err);
+                    initExerciseBuilder();
+                    renderAll();
+                });
+        }
 
         // Role & Tab Switchers
         function switchRole(role) {
@@ -661,26 +796,27 @@
         }
 
         function switchTrainerTab(tab) {
-            ['dashboard', 'clients', 'logger', 'analytics'].forEach(t => {
+            ['dashboard', 'clients', 'calendar', 'logger', 'analytics'].forEach(t => {
                 document.getElementById('tcontent-' + t).classList.toggle('hidden', t !== tab);
                 const btn = document.getElementById('ttab-' + t);
                 if (t === tab) {
-                    btn.className = 'trainer-tab px-4.5 py-2.5 rounded-2xl text-sm font-bold bg-brand-600 text-white flex items-center gap-2.5 whitespace-nowrap shadow-sm shadow-brand-600/20';
+                    btn.className = 'trainer-tab px-5 py-3 rounded-2xl text-sm font-bold bg-brand-600 text-white flex items-center gap-2.5 whitespace-nowrap shadow-sm shadow-brand-600/20 transition';
                 } else {
-                    btn.className = 'trainer-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap';
+                    btn.className = 'trainer-tab px-5 py-3 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap transition';
                 }
             });
             if (tab === 'analytics') renderMuscleAnalytics();
+            if (tab === 'calendar') renderTrainerScheduleManagement();
         }
 
         function switchClientTab(tab) {
-            ['workouts', 'nutrition', 'inbody', 'activities'].forEach(t => {
+            ['summary', 'nutrition', 'inbody', 'activities'].forEach(t => {
                 document.getElementById('ccontent-' + t).classList.toggle('hidden', t !== tab);
                 const btn = document.getElementById('ctab-' + t);
                 if (t === tab) {
-                    btn.className = 'client-tab px-4.5 py-2.5 rounded-2xl text-sm font-bold bg-brand-600 text-white flex items-center gap-2.5 whitespace-nowrap shadow-sm shadow-brand-600/20';
+                    btn.className = 'client-tab px-5 py-3 rounded-2xl text-sm font-bold bg-brand-600 text-white flex items-center gap-2.5 whitespace-nowrap shadow-sm shadow-brand-600/20 transition';
                 } else {
-                    btn.className = 'client-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap';
+                    btn.className = 'client-tab px-5 py-3 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap transition';
                 }
             });
             if (tab === 'inbody') renderInBodyChart();
@@ -695,6 +831,7 @@
         function renderAll() {
             renderTrainerDashboard();
             renderClientManagement();
+            renderTrainerScheduleManagement();
             renderClientPortal();
         }
 
@@ -711,6 +848,7 @@
             const rosterEl = document.getElementById('trainer-roster-grid');
             rosterEl.innerHTML = db.clients.map(c => {
                 const clientWorkouts = db.workouts.filter(w => w.clientId === c.id);
+                const nextBooking = db.schedule.find(s => s.clientId === c.id && s.status !== 'Cancelled') || { date: 'No upcoming slot', time: 'Available' };
                 const lastWorkout = clientWorkouts.length ? clientWorkouts[clientWorkouts.length - 1].date : 'No sessions';
                 return `
                     <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 space-y-4 hover:border-brand-500/50 transition">
@@ -719,7 +857,7 @@
                                 <div class="w-12 h-12 rounded-2xl bg-brand-600 text-white font-extrabold flex items-center justify-center text-lg shadow-md shadow-brand-600/20">${c.name[0]}</div>
                                 <div>
                                     <h4 class="font-bold text-slate-900 text-base">${c.name}</h4>
-                                    <p class="text-xs text-slate-500">Last active: ${lastWorkout}</p>
+                                    <p class="text-xs text-slate-500">Next Slot: <span class="font-bold text-brand-600">${nextBooking.date} at ${nextBooking.time}</span></p>
                                 </div>
                             </div>
                             <button onclick="switchClientProfile('${c.id}'); switchRole('client');" class="bg-white hover:bg-brand-50 text-brand-700 border border-brand-200 px-3 py-1.5 rounded-xl text-xs font-bold transition">
@@ -783,29 +921,96 @@
             `).join('');
         }
 
+        function renderTrainerScheduleManagement() {
+            const requestsEl = document.getElementById('trainer-requests-list');
+            const pendingRequests = db.schedule.filter(s => s.status === 'Pending Reschedule' || s.status === 'Pending Cancel');
+            
+            requestsEl.innerHTML = pendingRequests.length ? pendingRequests.map(r => `
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <span class="bg-amber-200 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">${r.status}</span>
+                        <h4 class="font-bold text-slate-900 text-sm mt-1">${r.clientName} &bull; ${r.title}</h4>
+                        <p class="text-xs text-slate-600">Requested Slot: <strong>${r.date} at ${r.time}</strong></p>
+                        ${r.requestNote ? `<p class="text-xs text-amber-900 mt-1 italic">"${r.requestNote}"</p>` : ''}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="approveScheduleRequest('${r.id}', true)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm">Accept</button>
+                        <button onclick="approveScheduleRequest('${r.id}', false)" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm">Reject</button>
+                    </div>
+                </div>
+            `).join('') : '<p class="text-xs text-slate-400 italic">No pending client reschedule or cancellation requests.</p>';
+
+            const tbody = document.getElementById('trainer-schedule-tbody');
+            tbody.innerHTML = db.schedule.length ? db.schedule.map(s => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3.5 font-bold text-slate-900">${s.clientName}</td>
+                    <td class="p-3.5 font-semibold text-slate-800">${s.title}</td>
+                    <td class="p-3.5 text-slate-600">${s.date}</td>
+                    <td class="p-3.5 font-semibold text-brand-600">${s.time}</td>
+                    <td class="p-3.5"><span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${s.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${s.status}</span></td>
+                    <td class="p-3.5">
+                        <button onclick="deleteScheduleItem('${s.id}')" class="text-rose-500 hover:text-rose-700 font-bold text-xs"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('') : `<tr><td colspan="6" class="p-4 text-center text-slate-400">No scheduled sessions.</td></tr>`;
+        }
+
         // --- CLIENT PORTAL RENDERERS ---
         function renderClientPortal() {
             const client = db.clients.find(c => c.id === activeClientId) || db.clients[0];
             document.getElementById('client-welcome-title').innerText = `Welcome back, ${client.name}!`;
             document.getElementById('active-client-portal-id').value = client.id;
 
-            // Nutrition Widget
+            // Client KPIs: Sessions done this year & First session date
+            const clientWorkouts = db.workouts.filter(w => w.clientId === client.id).sort((a,b) => new Date(a.date) - new Date(b.date));
+            const currentYear = new Date().getFullYear().toString();
+            const sessionsThisYear = clientWorkouts.filter(w => w.date && w.date.startsWith(currentYear)).length;
+            const firstSessionDate = clientWorkouts.length ? clientWorkouts[0].date : 'N/A';
+
+            // Next Session & Scheduler Widget (Right on top)
+            const nextSession = db.schedule.find(s => s.clientId === client.id && s.status !== 'Cancelled') || null;
+            const nextTitleEl = document.getElementById('client-next-session-title');
+            const nextDetailsEl = document.getElementById('client-next-session-details');
+            const nextActionsEl = document.getElementById('client-next-session-actions');
+
+            if (nextSession) {
+                nextTitleEl.innerText = `${nextSession.title} (${nextSession.status})`;
+                nextDetailsEl.innerHTML = `<p class="font-bold text-slate-800 text-base"><i class="fa-regular fa-calendar-check text-brand-600"></i> ${nextSession.date} at ${nextSession.time}</p>`;
+                nextActionsEl.innerHTML = `
+                    <button onclick="openClientRescheduleModal('${nextSession.id}')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3.5 py-2 rounded-xl text-xs font-bold transition">Request Reschedule</button>
+                    <button onclick="clientCancelSession('${nextSession.id}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3.5 py-2 rounded-xl text-xs font-bold transition">Cancel Session</button>
+                `;
+            } else {
+                nextTitleEl.innerText = 'No upcoming session booked';
+                nextDetailsEl.innerHTML = `<p class="text-slate-500">Coordinate with your trainer to schedule your next coaching slot.</p>`;
+                nextActionsEl.innerHTML = `
+                    <button onclick="openScheduleModal()" class="bg-brand-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm">Request Slot</button>
+                `;
+            }
+
+            // Nutrition Widget with Year KPI
             document.getElementById('client-nutrition-widget').innerHTML = `
                 <div class="space-y-1">
-                    <span class="bg-emerald-200/60 text-emerald-800 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase">Active Nutrition Target</span>
-                    <h4 class="text-xl font-extrabold text-slate-900">${client.calories} kcal / day</h4>
-                    <p class="text-xs text-slate-600">${client.protein}g Protein Target Daily</p>
+                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase">Active Nutrition Target</span>
+                    <h4 class="text-xl font-extrabold text-slate-900">${client.calories} kcal / day &bull; ${client.protein}g Protein</h4>
+                    <p class="text-xs text-slate-500">${client.dietNotes}</p>
                 </div>
-                <div class="bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-emerald-200/60 max-w-sm text-xs text-slate-700 shadow-sm">
-                    <p class="font-bold text-emerald-900 mb-1"><i class="fa-solid fa-utensils"></i> Diet Guidelines:</p>
-                    <p>${client.dietNotes}</p>
+                <div class="flex gap-3">
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-center">
+                        <span class="text-[10px] text-slate-400 uppercase font-bold">2026 Sessions</span>
+                        <p class="text-lg font-extrabold text-brand-600">${sessionsThisYear}</p>
+                    </div>
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-center">
+                        <span class="text-[10px] text-slate-400 uppercase font-bold">First Session</span>
+                        <p class="text-xs font-extrabold text-slate-800 mt-1">${firstSessionDate}</p>
+                    </div>
                 </div>
             `;
 
             // Workouts List
             const workoutsEl = document.getElementById('client-workouts-list');
-            const clientWorkouts = db.workouts.filter(w => w.clientId === client.id).reverse();
-            workoutsEl.innerHTML = clientWorkouts.length ? clientWorkouts.map(w => {
+            const clientWorkoutsReverse = [...clientWorkouts].reverse();
+            workoutsEl.innerHTML = clientWorkoutsReverse.length ? clientWorkoutsReverse.map(w => {
                 let exercises = [];
                 try { exercises = typeof w.exercisesJson === 'string' ? JSON.parse(w.exercisesJson) : w.exercisesJson; } catch(e){}
                 return `
@@ -963,6 +1168,106 @@
             switchTrainerTab('dashboard');
         }
 
+        // --- SCHEDULING WORKFLOWS ---
+        let schedulingActionId = null;
+
+        function openScheduleModal() {
+            schedulingActionId = null;
+            document.getElementById('schedule-modal-title').innerText = 'Schedule New Training Session';
+            document.getElementById('sched-note-container').classList.add('hidden');
+            document.getElementById('sched-submit-btn').innerText = 'Confirm Booking';
+            document.getElementById('schedule-modal').classList.remove('hidden');
+        }
+
+        function openClientRescheduleModal(scheduleId) {
+            schedulingActionId = scheduleId;
+            document.getElementById('schedule-modal-title').innerText = 'Request Session Reschedule';
+            document.getElementById('sched-note-container').classList.remove('hidden');
+            document.getElementById('sched-submit-btn').innerText = 'Submit Request to Trainer';
+            document.getElementById('schedule-modal').classList.remove('hidden');
+        }
+
+        function closeScheduleModal() { document.getElementById('schedule-modal').classList.add('hidden'); }
+
+        function submitScheduleModal() {
+            const clientId = currentRole === 'trainer' ? document.getElementById('sched-client-id').value : activeClientId;
+            const clientObj = db.clients.find(c => c.id === clientId);
+            const title = document.getElementById('sched-title').value;
+            const date = document.getElementById('sched-date').value;
+            const time = document.getElementById('sched-time').value;
+            const note = document.getElementById('sched-note').value;
+
+            if (schedulingActionId) {
+                // Client reschedule request
+                const sch = db.schedule.find(s => s.id === schedulingActionId);
+                if (sch) {
+                    sch.date = date;
+                    sch.time = time;
+                    sch.status = 'Pending Reschedule';
+                    sch.requestType = 'Reschedule';
+                    sch.requestNote = note;
+                }
+                alert('Reschedule request submitted to your trainer for approval!');
+            } else {
+                // New booking
+                const newSch = {
+                    id: 'sch_' + Date.now(),
+                    clientId: clientId,
+                    clientName: clientObj ? clientObj.name : 'Client',
+                    title: title,
+                    date: date,
+                    time: time,
+                    status: 'Confirmed',
+                    requestType: 'None',
+                    requestNote: ''
+                };
+                db.schedule.push(newSch);
+                alert('Session successfully scheduled and synced!');
+            }
+
+            syncToGoogleSheets('Schedule', db.schedule);
+            closeScheduleModal();
+            renderAll();
+        }
+
+        function clientCancelSession(scheduleId) {
+            const sch = db.schedule.find(s => s.id === scheduleId);
+            if (sch) {
+                sch.status = 'Pending Cancel';
+                sch.requestType = 'Cancel';
+                sch.requestNote = 'Client requested cancellation.';
+                syncToGoogleSheets('Schedule', db.schedule);
+                alert('Cancellation request submitted to your trainer.');
+                renderAll();
+            }
+        }
+
+        function approveScheduleRequest(scheduleId, approved) {
+            const sch = db.schedule.find(s => s.id === scheduleId);
+            if (sch) {
+                if (approved) {
+                    sch.status = 'Confirmed';
+                    sch.requestType = 'None';
+                    sch.requestNote = '';
+                } else {
+                    if (sch.requestType === 'Cancel') {
+                        sch.status = 'Cancelled';
+                    } else {
+                        sch.status = 'Confirmed'; // Revert to old slot
+                    }
+                }
+                syncToGoogleSheets('Schedule', db.schedule);
+                alert(`Request ${approved ? 'approved' : 'rejected'} successfully.`);
+                renderAll();
+            }
+        }
+
+        function deleteScheduleItem(scheduleId) {
+            db.schedule = db.schedule.filter(s => s.id !== scheduleId);
+            syncToGoogleSheets('Schedule', db.schedule);
+            renderAll();
+        }
+
         // --- MUSCLE GROUP & PROGRESSION ANALYTICS ---
         function classifyMuscleGroup(exName) {
             const name = exName.toLowerCase();
@@ -1089,7 +1394,7 @@
             document.getElementById('sync-status-text').innerText = 'Connected to Sheets';
             closeSyncModal();
             alert('Google Sheets Web App URL saved successfully!');
-            syncAllDataToGoogleSheets();
+            fetchDataFromGoogleSheets();
         }
 
         function openNewClientModal() { document.getElementById('new-client-modal').classList.remove('hidden'); }
@@ -1165,7 +1470,7 @@
 
         // --- DIRECT GOOGLE SHEETS SYNC HANDLER ---
         function syncToGoogleSheets(tableType, data) {
-            if (!googleSheetUrl) return; // Silent return if URL not configured yet
+            if (!googleSheetUrl) return;
             
             const payload = {
                 table: tableType,
@@ -1182,14 +1487,6 @@
             }).catch(err => {
                 console.error('Sync error:', err);
             });
-        }
-
-        function syncAllDataToGoogleSheets() {
-            if (!googleSheetUrl) return;
-            syncToGoogleSheets('Clients', db.clients);
-            syncToGoogleSheets('Workouts', db.workouts);
-            syncToGoogleSheets('Activities', db.activities);
-            syncToGoogleSheets('InBodyScans', db.inbodyScans);
         }
     </script>
 </body>
