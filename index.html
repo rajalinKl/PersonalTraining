@@ -7,44 +7,46 @@
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); }
-    .tab-btn { transition: all 0.2s ease; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #1e293b; }
+    .glass-card { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); }
+    .tab-btn { transition: all 0.2s ease; border-radius: 0.75rem; padding: 0.65rem 1.25rem; font-weight: 600; font-size: 0.8125rem; }
     .tab-btn.active { background-color: #059669; color: white; box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2); }
+    .tab-btn:not(.active) { color: #475569; background-color: #ffffff; border: 1px solid #e2e8f0; }
+    .tab-btn:not(.active):hover { background-color: #f1f5f9; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen">
+<body class="min-h-screen">
 
   <!-- TOP HEADER BAR -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="w-11 h-11 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-emerald-600/20">
-          <i class="fa-solid fa-dumbbell text-lg"></i>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-md shadow-emerald-600/20">
+          <i class="fa-solid fa-dumbbell text-xl"></i>
         </div>
         <div>
           <div class="flex items-center space-x-2">
-            <h1 class="font-bold text-lg text-slate-900 tracking-tight">ProTrainer Elite</h1>
-            <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2 py-0.5 rounded-full">ELITE</span>
+            <h1 class="font-extrabold text-lg text-slate-900 tracking-tight">ProTrainer</h1>
+            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full tracking-wider">ELITE</span>
           </div>
-          <p class="text-xs text-slate-500 font-medium">Cloud-Connected Coaching Portal</p>
+          <p class="text-xs text-slate-500 font-medium">Cloud-Connected Coaching & Client Portal</p>
         </div>
       </div>
 
       <div class="flex items-center space-x-4">
-        <button onclick="openSyncModal()" id="syncStatusBadge" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg transition-colors cursor-pointer border border-slate-200">
-          <span id="syncDot" class="w-2 h-2 rounded-full bg-amber-500"></span>
-          <span id="syncText">Configure Sync</span>
+        <button onclick="openSyncModal()" id="syncStatusBadge" class="hidden sm:flex items-center space-x-2 px-3.5 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl transition-all cursor-pointer border border-slate-200 shadow-xs">
+          <span id="syncDot" class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+          <span id="syncText">Configure Sheets Sync</span>
         </button>
 
-        <div class="bg-slate-100 p-1 rounded-xl flex space-x-1 border border-slate-200">
-          <button onclick="switchRole('trainer')" id="roleBtnTrainer" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center space-x-1.5">
+        <div class="bg-slate-100 p-1 rounded-2xl flex space-x-1.5 border border-slate-200/80">
+          <button onclick="switchRole('trainer')" id="roleBtnTrainer" class="px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-2">
             <i class="fa-solid fa-user-tie"></i>
-            <span>Trainer</span>
+            <span>Trainer View</span>
           </button>
-          <button onclick="switchRole('client')" id="roleBtnClient" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center space-x-1.5">
+          <button onclick="switchRole('client')" id="roleBtnClient" class="px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-2">
             <i class="fa-solid fa-user"></i>
-            <span>Client</span>
+            <span>Client Portal</span>
           </button>
         </div>
       </div>
@@ -57,45 +59,46 @@
     <!-- ==================== TRAINER VIEW ==================== -->
     <div id="trainerView" class="space-y-6">
       
-      <div class="flex flex-wrap gap-2.5 bg-white p-2 rounded-2xl border border-slate-200 shadow-xs">
-        <button onclick="switchTrainerTab('overview')" id="ttab_overview" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer active">Master Overview</button>
-        <button onclick="switchTrainerTab('clients')" id="ttab_clients" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Client Management</button>
-        <button onclick="switchTrainerTab('logger')" id="ttab_logger" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Live Session Logger</button>
-        <button onclick="switchTrainerTab('workouts')" id="ttab_workouts" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Workout Database</button>
-        <button onclick="switchTrainerTab('schedule')" id="ttab_schedule" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Schedule & Open Slots</button>
-        <button onclick="switchTrainerTab('database')" id="ttab_database" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Google Sheets Sync</button>
+      <!-- Comfortable Tab Buttons with spacing -->
+      <div class="flex flex-wrap gap-3 bg-white p-3 rounded-2xl border border-slate-200/80 shadow-xs">
+        <button onclick="switchTrainerTab('overview')" id="ttab_overview" class="tab-btn active">Master Overview</button>
+        <button onclick="switchTrainerTab('clients')" id="ttab_clients" class="tab-btn">Client Management</button>
+        <button onclick="switchTrainerTab('logger')" id="ttab_logger" class="tab-btn">Live Session Logger</button>
+        <button onclick="switchTrainerTab('workouts')" id="ttab_workouts" class="tab-btn">Workout Database</button>
+        <button onclick="switchTrainerTab('schedule')" id="ttab_schedule" class="tab-btn">Schedule & Open Slots</button>
+        <button onclick="switchTrainerTab('database')" id="ttab_database" class="tab-btn">Google Sheets Sync</button>
       </div>
 
       <!-- Tab 1: Master Overview -->
       <div id="tcontent_overview" class="trainer-tab-content space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Clients</div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+          <div class="glass-card p-6 rounded-2xl">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Clients</div>
             <div id="statActiveClients" class="text-3xl font-extrabold text-slate-900 mt-2">2</div>
           </div>
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Workouts Logged</div>
+          <div class="glass-card p-6 rounded-2xl">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Workouts Logged</div>
             <div id="statTotalWorkouts" class="text-3xl font-extrabold text-emerald-600 mt-2">0</div>
           </div>
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Sync Status</div>
+          <div class="glass-card p-6 rounded-2xl">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sync Status</div>
             <div id="statSyncStatus" class="text-sm font-bold text-slate-700 mt-3 flex items-center space-x-2">
               <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
               <span>Local Mode</span>
             </div>
           </div>
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+          <div class="glass-card p-6 rounded-2xl flex items-center justify-between">
             <div>
-              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Quick Action</div>
-              <div class="text-sm font-bold text-slate-800 mt-1">Start Live Session</div>
+              <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Quick Action</div>
+              <div class="text-sm font-extrabold text-slate-800 mt-1">Start Live Session</div>
             </div>
-            <button onclick="switchTrainerTab('logger')" class="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center hover:bg-emerald-700 cursor-pointer shadow-md">
+            <button onclick="switchTrainerTab('logger')" class="w-11 h-11 bg-emerald-600 text-white rounded-xl flex items-center justify-center hover:bg-emerald-700 cursor-pointer shadow-md shadow-emerald-600/20 transition-all">
               <i class="fa-solid fa-play"></i>
             </button>
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+        <div class="glass-card rounded-2xl p-6">
           <h2 class="font-bold text-slate-900 text-base mb-4">Active Client Roster & Latest Schedule</h2>
           <div id="trainerClientRosterList" class="space-y-3"></div>
         </div>
@@ -103,61 +106,64 @@
 
       <!-- Tab 2: Client Management -->
       <div id="tcontent_clients" class="trainer-tab-content space-y-6 hidden">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+        <div class="glass-card rounded-2xl p-6">
           <div class="flex justify-between items-center mb-6">
-            <h2 class="font-bold text-slate-900 text-lg">Manage Clients & Nutrition Targets</h2>
-            <button onclick="openClientModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl cursor-pointer shadow-sm">
-              <i class="fa-solid fa-plus mr-1.5"></i> Add Client
+            <div>
+              <h2 class="font-bold text-slate-900 text-base">Manage Clients & Nutrition Targets</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Configure daily calories, protein targets, and diet prescriptions.</p>
+            </div>
+            <button onclick="openClientModal()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm transition-all flex items-center space-x-2">
+              <i class="fa-solid fa-plus"></i><span>Add Client</span>
             </button>
           </div>
-          <div id="clientManagementList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          <div id="clientManagementList" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
         </div>
       </div>
 
-      <!-- Tab 3: Live Session Logger -->
+      <!-- Tab 3: Live Session Logger (Structured with Correct #1 Numbering) -->
       <div id="tcontent_logger" class="trainer-tab-content space-y-6 hidden">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 max-w-4xl mx-auto">
+        <div class="glass-card rounded-2xl p-6 max-w-4xl mx-auto">
           <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
             <div>
               <h2 class="font-bold text-slate-900 text-lg">Gym Floor Live Session Logger</h2>
-              <p class="text-xs text-slate-500">Structured logging to eliminate data-entry errors and standardize spreadsheet inputs.</p>
+              <p class="text-xs text-slate-500">Structured logging with separate fields to eliminate manual data-entry errors.</p>
             </div>
-            <span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-lg">Gym Floor Mode</span>
+            <span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200">Gym Floor Mode</span>
           </div>
 
           <form id="liveLoggerForm" onsubmit="saveLiveWorkout(event)" class="space-y-6">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80">
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Select Trainee</label>
-                <select id="logClientSelect" required class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none"></select>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Select Trainee</label>
+                <select id="logClientSelect" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-emerald-500 outline-none"></select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Session Title / Phase</label>
-                <input type="text" id="logTitle" placeholder="e.g. P1W1D1 Session" required class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Session Title / Phase</label>
+                <input type="text" id="logTitle" placeholder="e.g. P1W1D1 Session" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-emerald-500 outline-none">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Session Date</label>
-                <input type="date" id="logDate" required class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Session Date</label>
+                <input type="date" id="logDate" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-emerald-500 outline-none">
               </div>
             </div>
 
             <div class="space-y-4">
               <div class="flex justify-between items-center">
                 <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Exercises Logged</label>
-                <button type="button" onclick="addExerciseRow()" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-xl cursor-pointer transition-colors border border-emerald-200">
-                  <i class="fa-solid fa-plus mr-1"></i> Add Exercise
+                <button type="button" onclick="addExerciseRow()" class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-xl cursor-pointer transition-colors border border-emerald-200 flex items-center space-x-1.5">
+                  <i class="fa-solid fa-plus"></i><span>Add Exercise</span>
                 </button>
               </div>
               <div id="loggerExercisesContainer" class="space-y-4"></div>
             </div>
 
             <div class="pt-2">
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Coach Notes / Energy Level</label>
-              <textarea id="logNotes" rows="2" placeholder="e.g., Great energy, mobility drills completed, hit new PR on squats..." class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">Coach Notes / Energy Level</label>
+              <textarea id="logNotes" rows="2" placeholder="e.g., Great energy, mobility drills completed, hit new PR on squats..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
             </div>
 
             <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
-              <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl cursor-pointer shadow-md shadow-emerald-600/20">
+              <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl cursor-pointer shadow-md shadow-emerald-600/20 transition-all">
                 Save & Sync Workout
               </button>
             </div>
@@ -167,25 +173,25 @@
 
       <!-- Tab 4: Workout Database -->
       <div id="tcontent_workouts" class="trainer-tab-content space-y-6 hidden">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+        <div class="glass-card rounded-2xl p-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
-              <h2 class="font-bold text-slate-900 text-lg">Workout Database Explorer</h2>
-              <p class="text-xs text-slate-500">All historical workouts logged across clients.</p>
+              <h2 class="font-bold text-slate-900 text-base">Workout Database Explorer</h2>
+              <p class="text-xs text-slate-500 mt-0.5">All historical workouts logged across clients.</p>
             </div>
             <div class="flex items-center space-x-2 w-full sm:w-auto">
-              <input type="text" id="workoutSearchInput" oninput="renderWorkoutsTable()" placeholder="Search workouts or exercises..." class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium w-full sm:w-64 outline-none focus:ring-2 focus:ring-emerald-500">
+              <input type="text" id="workoutSearchInput" oninput="renderWorkoutsTable()" placeholder="Search workouts or exercises..." class="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium w-full sm:w-72 outline-none focus:ring-2 focus:ring-emerald-500">
             </div>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead class="bg-slate-50 text-slate-500 uppercase font-semibold">
+              <thead class="bg-slate-50 text-slate-500 uppercase font-bold tracking-wider">
                 <tr>
-                  <th class="p-3">Date</th>
-                  <th class="p-3">Client</th>
-                  <th class="p-3">Title</th>
-                  <th class="p-3">Exercises</th>
-                  <th class="p-3">Notes</th>
+                  <th class="p-3.5">Date</th>
+                  <th class="p-3.5">Client</th>
+                  <th class="p-3.5">Title</th>
+                  <th class="p-3.5">Exercises</th>
+                  <th class="p-3.5">Notes</th>
                 </tr>
               </thead>
               <tbody id="trainerWorkoutsTableBody" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
@@ -196,14 +202,14 @@
 
       <!-- Tab 5: Schedule & Open Slots -->
       <div id="tcontent_schedule" class="trainer-tab-content space-y-6 hidden">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+        <div class="glass-card rounded-2xl p-6">
           <div class="flex justify-between items-center mb-6">
             <div>
-              <h2 class="font-bold text-slate-900 text-lg">Calendar & Schedule Management</h2>
-              <p class="text-xs text-slate-500">Identify open slots and review client reschedule requests.</p>
+              <h2 class="font-bold text-slate-900 text-base">Calendar & Schedule Management</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Identify open slots and review client reschedule requests.</p>
             </div>
-            <button onclick="openScheduleModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl cursor-pointer shadow-sm">
-              <i class="fa-solid fa-plus mr-1.5"></i> Schedule Session / Slot
+            <button onclick="openScheduleModal()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm transition-all flex items-center space-x-2">
+              <i class="fa-solid fa-plus"></i><span>Schedule Session / Slot</span>
             </button>
           </div>
 
@@ -211,14 +217,14 @@
 
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead class="bg-slate-50 text-slate-500 uppercase font-semibold">
+              <thead class="bg-slate-50 text-slate-500 uppercase font-bold tracking-wider">
                 <tr>
-                  <th class="p-3">Date</th>
-                  <th class="p-3">Time</th>
-                  <th class="p-3">Client</th>
-                  <th class="p-3">Session Title</th>
-                  <th class="p-3">Status</th>
-                  <th class="p-3 text-right">Actions</th>
+                  <th class="p-3.5">Date</th>
+                  <th class="p-3.5">Time</th>
+                  <th class="p-3.5">Client</th>
+                  <th class="p-3.5">Session Title</th>
+                  <th class="p-3.5">Status</th>
+                  <th class="p-3.5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody id="trainerScheduleTableBody" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
@@ -229,23 +235,23 @@
 
       <!-- Tab 6: Google Sheets Sync Setup -->
       <div id="tcontent_database" class="trainer-tab-content space-y-6 hidden">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 max-w-2xl mx-auto space-y-6">
+        <div class="glass-card rounded-2xl p-6 max-w-2xl mx-auto space-y-6">
           <div>
-            <h2 class="font-bold text-slate-900 text-lg">Google Sheets Two-Way Sync Configuration</h2>
+            <h2 class="font-bold text-slate-900 text-base">Google Sheets Two-Way Sync Configuration</h2>
             <p class="text-xs text-slate-500 mt-1">Connect your Google Apps Script Web App URL to automatically sync data across all 6 database tabs (<code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">Clients</code>, <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">Workouts</code>, <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">Activities</code>, <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">InBodyScans</code>, <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">Nutrition</code>, <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">Schedule</code>).</p>
           </div>
 
           <div class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Google Apps Script Web App URL</label>
-              <input type="url" id="syncWebhookUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">Google Apps Script Web App URL</label>
+              <input type="url" id="syncWebhookUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
             </div>
 
             <div class="flex items-center space-x-3 pt-2">
-              <button onclick="saveWebhookUrl()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl cursor-pointer shadow-sm">
+              <button onclick="saveWebhookUrl()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl cursor-pointer shadow-sm transition-all">
                 Save & Connect Sheet
               </button>
-              <button onclick="syncDataFromCloud()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl cursor-pointer border border-slate-200">
+              <button onclick="syncDataFromCloud()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer border border-slate-200 transition-all">
                 Fetch Latest From Google Sheet
               </button>
             </div>
@@ -257,10 +263,10 @@
 
     <!-- ==================== CLIENT VIEW ==================== -->
     <div id="clientView" class="space-y-6 hidden">
-      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="glass-card p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4">
         <div class="flex items-center space-x-3 w-full sm:w-auto">
           <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Viewing As:</span>
-          <select id="clientPortalSelector" onchange="switchActiveClientPortal(this.value)" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"></select>
+          <select id="clientPortalSelector" onchange="switchActiveClientPortal(this.value)" class="px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"></select>
         </div>
         <div class="text-xs font-medium text-slate-500">
           Personalized Training & Nutrition Portal
@@ -268,10 +274,11 @@
       </div>
 
       <div class="space-y-6">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+        <!-- 1. SCHEDULER & NEXT SESSION WIDGET (Top of Page) -->
+        <div class="glass-card rounded-2xl p-6">
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md">Next Scheduled Session</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">Next Scheduled Session</span>
               <h2 id="clientNextSessionTitle" class="text-lg font-extrabold text-slate-900 mt-2">No upcoming session scheduled</h2>
               <p id="clientNextSessionTime" class="text-xs text-slate-500 mt-0.5">Please check your schedule or request a session.</p>
             </div>
@@ -279,35 +286,37 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Daily Calorie Target</div>
+        <!-- 2. HIGH-LEVEL NUTRITION & SESSION KPIS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="glass-card p-6 rounded-2xl">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Daily Calorie Target</div>
             <div id="clientKpiCalories" class="text-2xl font-extrabold text-slate-900 mt-2">2,100 kcal</div>
           </div>
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Protein Target</div>
+          <div class="glass-card p-6 rounded-2xl">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Protein Target</div>
             <div id="clientKpiProtein" class="text-2xl font-extrabold text-slate-900 mt-2">140g</div>
           </div>
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Sessions Done (This Year)</div>
+          <div class="glass-card p-6 rounded-2xl">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sessions Done (This Year)</div>
             <div id="clientKpiSessionsYear" class="text-2xl font-extrabold text-emerald-600 mt-2">0</div>
           </div>
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">First Session Recorded</div>
+          <div class="glass-card p-6 rounded-2xl">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">First Session Recorded</div>
             <div id="clientKpiFirstSession" class="text-sm font-extrabold text-slate-800 mt-3 truncate">N/A</div>
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 space-y-6">
+        <!-- 3. WORKOUT HISTORY & PROGRESSION TABLE WITH COLUMN FILTERING -->
+        <div class="glass-card rounded-2xl p-6 space-y-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h2 class="font-bold text-slate-900 text-base">Exercise History & Max Weight Progression</h2>
-              <p class="text-xs text-slate-500">Filter and search your historical performance across all logged exercises.</p>
+              <p class="text-xs text-slate-500 mt-0.5">Filter and search your historical performance across all logged exercises.</p>
             </div>
             
-            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-              <input type="text" id="clientExerciseSearch" oninput="renderClientProgressTable()" placeholder="Search exercise name..." class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium w-full sm:w-48 outline-none focus:ring-2 focus:ring-emerald-500">
-              <select id="clientMuscleFilter" onchange="renderClientProgressTable()" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+            <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+              <input type="text" id="clientExerciseSearch" oninput="renderClientProgressTable()" placeholder="Search exercise name..." class="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium w-full sm:w-56 outline-none focus:ring-2 focus:ring-emerald-500">
+              <select id="clientMuscleFilter" onchange="renderClientProgressTable()" class="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
                 <option value="">All Muscle Groups</option>
                 <option value="Quads & Legs">Quads & Legs</option>
                 <option value="Chest & Pushing">Chest & Pushing</option>
@@ -320,13 +329,13 @@
 
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead class="bg-slate-50 text-slate-500 uppercase font-semibold">
+              <thead class="bg-slate-50 text-slate-500 uppercase font-bold tracking-wider">
                 <tr>
-                  <th class="p-3">Exercise Name</th>
-                  <th class="p-3">Muscle Group</th>
-                  <th class="p-3">Total Sessions</th>
-                  <th class="p-3">Latest Weight / Resistance</th>
-                  <th class="p-3">Max Recorded Weight</th>
+                  <th class="p-3.5">Exercise Name</th>
+                  <th class="p-3.5">Muscle Group</th>
+                  <th class="p-3.5">Total Sessions</th>
+                  <th class="p-3.5">Latest Weight / Resistance</th>
+                  <th class="p-3.5">Max Recorded Weight</th>
                 </tr>
               </thead>
               <tbody id="clientProgressTableBody" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
@@ -340,86 +349,86 @@
 
   <!-- MODALS -->
   <div id="clientModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-100">
       <h3 class="font-bold text-slate-900 text-lg">Add / Edit Client Profile</h3>
-      <form id="clientForm" onsubmit="saveClientProfile(event)" class="space-y-3">
+      <form id="clientForm" onsubmit="saveClientProfile(event)" class="space-y-3.5">
         <input type="hidden" id="modalClientId">
         <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Client Full Name</label>
-          <input type="text" id="modalClientName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Client Full Name</label>
+          <input type="text" id="modalClientName" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Daily Calories (kcal)</label>
-            <input type="number" id="modalClientCalories" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Daily Calories (kcal)</label>
+            <input type="number" id="modalClientCalories" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Protein Target (g)</label>
-            <input type="number" id="modalClientProtein" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Protein Target (g)</label>
+            <input type="number" id="modalClientProtein" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500">
           </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Diet Notes / Prescriptions</label>
-          <textarea id="modalClientDiet" rows="2" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Diet Notes / Prescriptions</label>
+          <textarea id="modalClientDiet" rows="2" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
         </div>
         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
-          <button type="button" onclick="closeClientModal()" class="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl cursor-pointer">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-emerald-600 text-white text-xs font-semibold rounded-xl cursor-pointer">Save Client</button>
+          <button type="button" onclick="closeClientModal()" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-xs font-bold rounded-xl cursor-pointer">Cancel</button>
+          <button type="submit" class="px-4 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm">Save Client</button>
         </div>
       </form>
     </div>
   </div>
 
   <div id="scheduleModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-100">
       <h3 class="font-bold text-slate-900 text-lg">Schedule New Session or Slot</h3>
-      <form id="scheduleForm" onsubmit="saveScheduleItem(event)" class="space-y-3">
+      <form id="scheduleForm" onsubmit="saveScheduleItem(event)" class="space-y-3.5">
         <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Client</label>
-          <select id="schedClientSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500"></select>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Client</label>
+          <select id="schedClientSelect" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500"></select>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Session Title</label>
-          <input type="text" id="schedTitle" placeholder="e.g. Lower Body Hypertrophy" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Session Title</label>
+          <input type="text" id="schedTitle" placeholder="e.g. Lower Body Hypertrophy" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Date</label>
-            <input type="date" id="schedDate" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Date</label>
+            <input type="date" id="schedDate" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Time</label>
-            <input type="time" id="schedTime" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Time</label>
+            <input type="time" id="schedTime" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500">
           </div>
         </div>
         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
-          <button type="button" onclick="closeScheduleModal()" class="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl cursor-pointer">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-emerald-600 text-white text-xs font-semibold rounded-xl cursor-pointer">Schedule</button>
+          <button type="button" onclick="closeScheduleModal()" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-xs font-bold rounded-xl cursor-pointer">Cancel</button>
+          <button type="submit" class="px-4 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm">Schedule</button>
         </div>
       </form>
     </div>
   </div>
 
   <div id="clientRequestModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-100">
       <h3 id="clientRequestModalTitle" class="font-bold text-slate-900 text-lg">Request Reschedule</h3>
-      <form id="clientRequestForm" onsubmit="submitClientRequest(event)" class="space-y-3">
+      <form id="clientRequestForm" onsubmit="submitClientRequest(event)" class="space-y-3.5">
         <input type="hidden" id="reqSessionId">
         <input type="hidden" id="reqType">
         <div id="newDateTimeContainer">
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Proposed New Date & Time</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Proposed New Date & Time</label>
           <div class="grid grid-cols-2 gap-3">
-            <input type="date" id="reqNewDate" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none">
-            <input type="time" id="reqNewTime" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none">
+            <input type="date" id="reqNewDate" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none">
+            <input type="time" id="reqNewTime" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none">
           </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Reason / Note to Trainer</label>
-          <textarea id="reqNote" rows="2" placeholder="Running late / travel conflict..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none" required></textarea>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Reason / Note to Trainer</label>
+          <textarea id="reqNote" rows="2" placeholder="Running late / travel conflict..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none" required></textarea>
         </div>
         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
-          <button type="button" onclick="closeClientRequestModal()" class="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl cursor-pointer">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-emerald-600 text-white text-xs font-semibold rounded-xl cursor-pointer">Submit Request</button>
+          <button type="button" onclick="closeClientRequestModal()" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-xs font-bold rounded-xl cursor-pointer">Cancel</button>
+          <button type="submit" class="px-4 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm">Submit Request</button>
         </div>
       </form>
     </div>
@@ -460,7 +469,6 @@
       updateSyncBadge();
       renderAll();
       
-      // Always guarantee at least 1 exercise row starting at #1 on load
       const container = document.getElementById('loggerExercisesContainer');
       if (container && container.children.length === 0) {
         addExerciseRow();
@@ -480,11 +488,11 @@
       const btnClient = document.getElementById('roleBtnClient');
       
       if (role === 'trainer') {
-        btnTrainer.className = "px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-xs cursor-pointer flex items-center space-x-1.5";
-        btnClient.className = "px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-200 cursor-pointer flex items-center space-x-1.5";
+        btnTrainer.className = "px-5 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow-xs cursor-pointer flex items-center space-x-2";
+        btnClient.className = "px-5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 cursor-pointer flex items-center space-x-2";
       } else {
-        btnClient.className = "px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-xs cursor-pointer flex items-center space-x-1.5";
-        btnTrainer.className = "px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-200 cursor-pointer flex items-center space-x-1.5";
+        btnClient.className = "px-5 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow-xs cursor-pointer flex items-center space-x-2";
+        btnTrainer.className = "px-5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 cursor-pointer flex items-center space-x-2";
         populateClientSelector();
       }
       renderAll();
@@ -530,23 +538,23 @@
       const index = container.children.length + 1;
       
       const div = document.createElement('div');
-      div.className = "exercise-card bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 relative";
+      div.className = "exercise-card bg-white p-5 rounded-2xl border border-slate-200 space-y-3.5 shadow-xs relative";
       div.innerHTML = `
-        <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
-          <span class="ex-number font-bold text-xs text-emerald-700 uppercase tracking-wider">Exercise #${index}</span>
-          <button type="button" onclick="removeExerciseRow(this)" class="text-rose-500 hover:text-rose-700 text-xs font-semibold cursor-pointer flex items-center space-x-1">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
+          <span class="ex-number font-extrabold text-xs text-emerald-700 uppercase tracking-wider">Exercise #${index}</span>
+          <button type="button" onclick="removeExerciseRow(this)" class="text-rose-500 hover:text-rose-700 text-xs font-bold cursor-pointer flex items-center space-x-1">
             <i class="fa-solid fa-trash"></i><span>Remove</span>
           </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div>
-            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Exercise Name</label>
-            <input type="text" placeholder="e.g. Goblet Squats / Bench Press" class="ex-name w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500" required>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Exercise Name</label>
+            <input type="text" placeholder="e.g. Goblet Squats / Bench Press" class="ex-name w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500" required>
           </div>
           <div>
-            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Muscle Group</label>
-            <select class="ex-muscle w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Muscle Group</label>
+            <select class="ex-muscle w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
               <option value="Quads & Legs">Quads & Legs</option>
               <option value="Chest & Pushing">Chest & Pushing</option>
               <option value="Back & Lats">Back & Lats</option>
@@ -557,24 +565,24 @@
         </div>
 
         <!-- Structured Weight, Reps, Sets Inputs to prevent manual data entry errors -->
-        <div class="grid grid-cols-3 gap-3 bg-white p-3 rounded-xl border border-slate-200">
+        <div class="grid grid-cols-3 gap-3.5 bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/80">
           <div>
-            <label class="block text-[10px] font-bold text-slate-500 uppercase">Weight / Resistance</label>
-            <input type="text" placeholder="e.g. 20kg / 30lbs" class="ex-weight w-full mt-1 px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium outline-none focus:ring-1 focus:ring-emerald-500" required>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase">Weight / Resistance</label>
+            <input type="text" placeholder="e.g. 20kg / 30lbs" class="ex-weight w-full mt-1.5 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500" required>
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-slate-500 uppercase">Reps per Set</label>
-            <input type="text" placeholder="e.g. 12, 12, 10" class="ex-reps w-full mt-1 px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium outline-none focus:ring-1 focus:ring-emerald-500" required>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase">Reps per Set</label>
+            <input type="text" placeholder="e.g. 12, 12, 10" class="ex-reps w-full mt-1.5 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500" required>
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-slate-500 uppercase">Number of Sets</label>
-            <input type="text" placeholder="e.g. 3 sets" class="ex-sets-count w-full mt-1 px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium outline-none focus:ring-1 focus:ring-emerald-500" required>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase">Number of Sets</label>
+            <input type="text" placeholder="e.g. 3 sets" class="ex-sets-count w-full mt-1.5 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500" required>
           </div>
         </div>
 
         <div>
-          <label class="block text-[11px] font-semibold text-slate-600 mb-1">Superset Paired Exercise (Optional)</label>
-          <input type="text" placeholder="e.g. Romanian DLs SB20kgx15" class="ex-superset w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Superset Paired Exercise (Optional)</label>
+          <input type="text" placeholder="e.g. Romanian DLs SB20kgx15" class="ex-superset w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500">
         </div>
       `;
       container.appendChild(div);
@@ -682,9 +690,9 @@
               <h3 class="font-bold text-slate-900 text-base">${c.name}</h3>
               <p class="text-xs text-slate-500 mt-0.5">${c.dietNotes || 'No specific diet notes'}</p>
             </div>
-            <button onclick="editClient('${c.id}')" class="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-100 cursor-pointer">Edit</button>
+            <button onclick="editClient('${c.id}')" class="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-100 cursor-pointer">Edit</button>
           </div>
-          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200/60 text-xs">
+          <div class="grid grid-cols-2 gap-2 pt-2.5 border-t border-slate-200/60 text-xs">
             <div><span class="text-slate-400">Calories:</span> <strong class="text-slate-800">${c.calories} kcal</strong></div>
             <div><span class="text-slate-400">Protein:</span> <strong class="text-slate-800">${c.protein}g</strong></div>
           </div>
@@ -704,11 +712,11 @@
 
       tbody.innerHTML = filtered.map(w => `
         <tr class="hover:bg-slate-50/80">
-          <td class="p-3 whitespace-nowrap">${w.date}</td>
-          <td class="p-3 font-bold">${w.clientName}</td>
-          <td class="p-3 font-semibold text-slate-900">${w.title}</td>
-          <td class="p-3 text-slate-600">${(w.exercises || []).map(e => e.name + ' (' + e.sets + ')').join(', ')}</td>
-          <td class="p-3 text-slate-500">${w.notes || '-'}</td>
+          <td class="p-3.5 whitespace-nowrap">${w.date}</td>
+          <td class="p-3.5 font-bold">${w.clientName}</td>
+          <td class="p-3.5 font-semibold text-slate-900">${w.title}</td>
+          <td class="p-3.5 text-slate-600">${(w.exercises || []).map(e => e.name + ' (' + e.sets + ')').join(', ')}</td>
+          <td class="p-3.5 text-slate-500">${w.notes || '-'}</td>
         </tr>
       `).join('');
     }
@@ -722,13 +730,13 @@
         reqContainer.innerHTML = pending.map(p => `
           <div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <span class="text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">Action Required: ${p.requestType} Request</span>
+              <span class="text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded">Action Required: ${p.requestType} Request</span>
               <div class="font-bold text-slate-900 text-sm mt-1">${p.clientName} - ${p.title}</div>
               <p class="text-xs text-slate-600 mt-0.5">Proposed Slot: ${p.date} @ ${p.time} | Reason: "${p.requestNote}"</p>
             </div>
             <div class="flex items-center space-x-2">
-              <button onclick="approveRequest('${p.id}', true)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl cursor-pointer">Approve</button>
-              <button onclick="approveRequest('${p.id}', false)" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-xl cursor-pointer">Reject</button>
+              <button onclick="approveRequest('${p.id}', true)" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl cursor-pointer">Approve</button>
+              <button onclick="approveRequest('${p.id}', false)" class="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl cursor-pointer">Reject</button>
             </div>
           </div>
         `).join('');
@@ -738,12 +746,12 @@
 
       tbody.innerHTML = appState.schedule.map(s => `
         <tr class="hover:bg-slate-50/80">
-          <td class="p-3 whitespace-nowrap">${s.date}</td>
-          <td class="p-3 whitespace-nowrap font-semibold">${s.time}</td>
-          <td class="p-3 font-bold">${s.clientName}</td>
-          <td class="p-3 text-slate-900">${s.title}</td>
-          <td class="p-3"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold ${s.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${s.status}</span></td>
-          <td class="p-3 text-right">
+          <td class="p-3.5 whitespace-nowrap">${s.date}</td>
+          <td class="p-3.5 whitespace-nowrap font-semibold">${s.time}</td>
+          <td class="p-3.5 font-bold">${s.clientName}</td>
+          <td class="p-3.5 text-slate-900">${s.title}</td>
+          <td class="p-3.5"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold ${s.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${s.status}</span></td>
+          <td class="p-3.5 text-right">
             <button onclick="deleteScheduleItem('${s.id}')" class="text-rose-500 hover:text-rose-700 text-xs cursor-pointer"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
@@ -789,14 +797,14 @@
         titleEl.innerText = nextSched.title;
         timeEl.innerText = `Scheduled for ${nextSched.date} at ${nextSched.time}`;
         actionsEl.innerHTML = `
-          <button onclick="openClientRequestModal('${nextSched.id}', 'Reschedule')" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl cursor-pointer border border-slate-200">Reschedule</button>
-          <button onclick="openClientRequestModal('${nextSched.id}', 'Cancel')" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold rounded-xl cursor-pointer border border-rose-200">Cancel</button>
+          <button onclick="openClientRequestModal('${nextSched.id}', 'Reschedule')" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl cursor-pointer border border-slate-200">Reschedule</button>
+          <button onclick="openClientRequestModal('${nextSched.id}', 'Cancel')" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold rounded-xl cursor-pointer border border-rose-200">Cancel</button>
         `;
       } else {
         titleEl.innerText = 'No upcoming session scheduled';
         timeEl.innerText = 'Contact your trainer or request a new booking slot.';
         actionsEl.innerHTML = `
-          <button onclick="openClientRequestModal('', 'New Booking')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl cursor-pointer">Request Session</button>
+          <button onclick="openClientRequestModal('', 'New Booking')" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm">Request Session</button>
         `;
       }
 
@@ -848,11 +856,11 @@
 
       tbody.innerHTML = rows.map(r => `
         <tr class="hover:bg-slate-50/80">
-          <td class="p-3 font-bold text-slate-900">${r.name}</td>
-          <td class="p-3"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">${r.muscleGroup}</span></td>
-          <td class="p-3">${r.count} sessions</td>
-          <td class="p-3 font-semibold text-emerald-600">${r.latestWeight}</td>
-          <td class="p-3 font-bold text-slate-800">${r.maxWeight}</td>
+          <td class="p-3.5 font-bold text-slate-900">${r.name}</td>
+          <td class="p-3.5"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">${r.muscleGroup}</span></td>
+          <td class="p-3.5">${r.count} sessions</td>
+          <td class="p-3.5 font-semibold text-emerald-600">${r.latestWeight}</td>
+          <td class="p-3.5 font-bold text-slate-800">${r.maxWeight}</td>
         </tr>
       `).join('');
     }
@@ -985,12 +993,12 @@
       const stat = document.getElementById('statSyncStatus');
 
       if (appState.webhookUrl) {
-        dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
         text.innerText = "Connected to Sheets";
         if (stat) stat.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span><span>Cloud Connected</span>`;
       } else {
-        dot.className = "w-2 h-2 rounded-full bg-amber-500";
-        text.innerText = "Configure Sync";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
+        text.innerText = "Configure Sheets Sync";
         if (stat) stat.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span>Local Mode</span>`;
       }
     }
