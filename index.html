@@ -47,7 +47,7 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 h-full font-sans antialiased flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+<body class="bg-slate-50 text-slate-800 h-full font-sans antialiased flex flex-col justify-between selection:bg-brand-500 selection:text-white">
 
     <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
@@ -68,7 +68,7 @@
                 <!-- Data Source Indicator -->
                 <button onclick="openSyncModal()" id="sync-status-badge" class="flex items-center gap-1.5 text-xs bg-slate-50 hover:bg-slate-100 text-slate-700 px-3 py-2 rounded-xl border border-slate-200 transition font-medium">
                     <span id="sync-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    <span id="sync-text">Sheets Synced</span>
+                    <span id="sync-text">Sheets Connected</span>
                     <i class="fa-solid fa-cloud-arrow-up text-slate-400 ml-0.5"></i>
                 </button>
 
@@ -92,7 +92,7 @@
             
             <!-- Hero Banner -->
             <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 to-brand-900 text-white p-6 sm:p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
-                <div class="absolute inset-0 opacity-25 mix-blend-overlay bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop');"></div>
+                <div class="absolute inset-0 opacity-20 mix-blend-overlay bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop');"></div>
                 <div class="relative z-10 space-y-2 max-w-xl">
                     <span class="bg-brand-500/30 text-brand-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Coach Command Center</span>
                     <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Coach Rajal & Ramneek to Peak Performance</h2>
@@ -345,49 +345,73 @@
                         <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2.5">
                             <div class="flex items-center gap-2.5 text-brand-700 font-bold text-base">
                                 <span class="bg-brand-100 text-brand-700 w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black">2</span>
-                                Add the Apps Script Code
+                                Add the Apps Script Code (Fixed for CORS & Parameters)
                             </div>
-                            <p class="text-xs text-slate-600">In your Google Sheet, click on <strong class="text-slate-900">Extensions > Apps Script</strong>. Paste the following script:</p>
+                            <p class="text-xs text-slate-600">In your Google Sheet, click on <strong class="text-slate-900">Extensions > Apps Script</strong>. Clear any existing code and paste the following updated script:</p>
                             <div class="relative bg-slate-900 border border-slate-800 rounded-2xl p-4 font-mono text-xs text-emerald-300 overflow-x-auto shadow-inner">
                                 <pre><code>function doGet(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var action = e.parameter.action;
-  
-  if (action === 'getData') {
-    var clientsData = ss.getSheetByName('Clients').getDataRange().getValues();
-    var workoutsData = ss.getSheetByName('Workouts').getDataRange().getValues();
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var action = e && e.parameter ? e.parameter.action : 'getData';
     
-    var clients = parseSheetData(clientsData);
-    var workouts = parseSheetData(workoutsData);
-    
-    return ContentService.createTextOutput(JSON.stringify({status: 'success', clients: clients, workouts: workouts}))
-      .setMimeType(ContentService.MimeType.JSON);
+    if (action === 'getData') {
+      var clientSheet = ss.getSheetByName('Clients');
+      var workoutSheet = ss.getSheetByName('Workouts');
+      
+      var clients = [];
+      if (clientSheet && clientSheet.getLastRow() > 1) {
+        var cData = clientSheet.getDataRange().getValues();
+        clients = parseSheetData(cData);
+      }
+      
+      var workouts = [];
+      if (workoutSheet && workoutSheet.getLastRow() > 1) {
+        var wData = workoutSheet.getDataRange().getValues();
+        workouts = parseSheetData(wData);
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({status: 'success', clients: clients, workouts: workouts}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    return ContentService.createTextOutput(JSON.stringify({status: 'error', message: 'Invalid action'})).setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({status: 'error', message: err.toString()})).setMimeType(ContentService.MimeType.JSON);
   }
-  return ContentService.createTextOutput(JSON.stringify({status: 'error', message: 'Invalid action'})).setMimeType(ContentService.MimeType.JSON);
 }
 
 function doPost(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var data = JSON.parse(e.postData.contents);
-  var action = data.action;
-  
-  if (action === 'saveData') {
-    var cSheet = ss.getSheetByName('Clients');
-    cSheet.clear();
-    cSheet.appendRow(['id', 'name', 'weight', 'bodyFat', 'calories', 'protein', 'dietNotes']);
-    data.clients.forEach(function(c) {
-      cSheet.appendRow([c.id, c.name, c.weight, c.bodyFat, c.calories, c.protein, c.dietNotes]);
-    });
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var postData = JSON.parse(e.postData.contents);
+    var action = postData.action;
     
-    var wSheet = ss.getSheetByName('Workouts');
-    wSheet.clear();
-    wSheet.appendRow(['id', 'clientId', 'clientName', 'title', 'date', 'exercisesJson', 'notes']);
-    data.workouts.forEach(function(w) {
-      wSheet.appendRow([w.id, w.clientId, w.clientName, w.title, w.date, JSON.stringify(w.exercises), w.notes]);
-    });
-    
-    return ContentService.createTextOutput(JSON.stringify({status: 'success'}))
-      .setMimeType(ContentService.MimeType.JSON);
+    if (action === 'saveData') {
+      var cSheet = ss.getSheetByName('Clients');
+      if (!cSheet) { cSheet = ss.insertSheet('Clients'); }
+      cSheet.clear();
+      cSheet.appendRow(['id', 'name', 'weight', 'bodyFat', 'calories', 'protein', 'dietNotes']);
+      if (postData.clients) {
+        postData.clients.forEach(function(c) {
+          cSheet.appendRow([c.id || '', c.name || '', c.weight || 0, c.bodyFat || 0, c.calories || 0, c.protein || 0, c.dietNotes || '']);
+        });
+      }
+      
+      var wSheet = ss.getSheetByName('Workouts');
+      if (!wSheet) { wSheet = ss.insertSheet('Workouts'); }
+      wSheet.clear();
+      wSheet.appendRow(['id', 'clientId', 'clientName', 'title', 'date', 'exercisesJson', 'notes']);
+      if (postData.workouts) {
+        postData.workouts.forEach(function(w) {
+          wSheet.appendRow([w.id || '', w.clientId || '', w.clientName || '', w.title || '', w.date || '', JSON.stringify(w.exercises || []), w.notes || '']);
+        });
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({status: 'success'}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    return ContentService.createTextOutput(JSON.stringify({status: 'error', message: 'Invalid POST action'})).setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({status: 'error', message: err.toString()})).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
@@ -448,7 +472,7 @@ function parseSheetData(rows) {
                     <i class="fa-solid fa-chart-line"></i> Dashboard & History
                 </button>
                 <button onclick="switchClientTab('exercises')" id="ctab-exercises" class="client-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap">
-                    <i class="fa-solid fa-dumbbell"></i> Exercise & Muscle Group Progress
+                    <i class="fa-solid fa-dumbbell"></i> Muscle Group & Exercise Progress
                 </button>
             </div>
 
@@ -1752,11 +1776,11 @@ function parseSheetData(rows) {
                 state.clients.push({
                     id: clientId,
                     name: c.name,
-                    weight: c.weight,
-                    bodyFat: c.bodyFat,
-                    calories: c.calories,
-                    protein: c.protein,
-                    dietNotes: c.dietNotes
+                    weight: c.weight || (idx === 0 ? 64.5 : 71.2),
+                    bodyFat: c.bodyFat || (idx === 0 ? 18.2 : 16.5),
+                    calories: c.calories || (idx === 0 ? 2200 : 2500),
+                    protein: c.protein || (idx === 0 ? 145 : 170),
+                    dietNotes: c.dietNotes || 'High protein, structured progressive overload.'
                 });
 
                 c.sessions.forEach((s, sIdx) => {
@@ -1839,16 +1863,25 @@ function parseSheetData(rows) {
             }
         }
 
-        // Google Sheets Sync
-        function openSyncModal() { document.getElementById('sync-modal').classList.remove('hidden'); }
-        function closeSyncModal() { document.getElementById('sync-modal').classList.add('hidden'); }
-        function saveSheetsUrl() {
+        function openSyncModal() {
+            document.getElementById('sync-modal').classList.remove('hidden');
+        }
+
+        function closeSyncModal() {
+            document.getElementById('sync-modal').classList.add('hidden');
+        }
+
+        async function saveSheetsUrl() {
             const url = document.getElementById('sheets-url-input').value.trim();
             state.sheetsUrl = url;
             localStorage.setItem('protrainer_sheets_url', url);
             closeSyncModal();
-            if (url) syncWithGoogleSheets();
-            else updateSyncBadge('local', 'Local Mode');
+            if (url) {
+                await pushToGoogleSheets();
+                syncWithGoogleSheets();
+            } else {
+                updateSyncBadge('local', 'Local Mode');
+            }
         }
 
         function updateSyncBadge(status, text) {
@@ -2177,7 +2210,7 @@ function parseSheetData(rows) {
             if (name.includes('shoulder') || name.includes('overhead') || name.includes('military') || name.includes('raise') || name.includes('delt') || name.includes('facepull')) return 'Shoulders';
             if (name.includes('curl') || name.includes('tricep') || name.includes('extension') || name.includes('skull')) return 'Arms';
             if (name.includes('plank') || name.includes('crunch') || name.includes('core') || name.includes('rotation') || name.includes('slam') || name.includes('burpee') || name.includes('climber') || name.includes('calf')) return 'Core';
-            return 'Quads'; // Default fallback
+            return 'Quads';
         }
 
         function renderMuscleGroupProgression() {
@@ -2189,7 +2222,6 @@ function parseSheetData(rows) {
             const container = document.getElementById('muscle-groups-container');
             container.innerHTML = '';
 
-            // Map exercises by group
             const groups = {
                 'Quads': {},
                 'Glutes/Hamstrings': {},
@@ -2229,7 +2261,6 @@ function parseSheetData(rows) {
                 let exercisesHtml = '';
                 exNames.forEach(exName => {
                     const stats = exercisesInGroup[exName];
-                    // sort history by date
                     stats.history.sort((a,b) => new Date(a.date) - new Date(b.date));
                     
                     let historyBadges = '';
@@ -2318,7 +2349,6 @@ function parseSheetData(rows) {
             document.getElementById('extra-date-to').value = todayStr;
         }
 
-        // Initialize default exercise block on load
         addExerciseBlock('Goblet Squats', [{weight: '25kg', reps: '15'}]);
     </script>
 </body>
