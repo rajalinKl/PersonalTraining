@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ProTrainer Elite - Coaching & Client Portal</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
@@ -19,8 +18,6 @@
   <!-- TOP HEADER BAR -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-      
-      <!-- Brand -->
       <div class="flex items-center space-x-3">
         <div class="w-11 h-11 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-emerald-600/20">
           <i class="fa-solid fa-dumbbell text-lg"></i>
@@ -34,15 +31,12 @@
         </div>
       </div>
 
-      <!-- Sync Status & Role Switcher -->
       <div class="flex items-center space-x-4">
-        <!-- Sync Status Indicator -->
         <button onclick="openSyncModal()" id="syncStatusBadge" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg transition-colors cursor-pointer border border-slate-200">
           <span id="syncDot" class="w-2 h-2 rounded-full bg-amber-500"></span>
           <span id="syncText">Configure Sync</span>
         </button>
 
-        <!-- Role Toggle -->
         <div class="bg-slate-100 p-1 rounded-xl flex space-x-1 border border-slate-200">
           <button onclick="switchRole('trainer')" id="roleBtnTrainer" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center space-x-1.5">
             <i class="fa-solid fa-user-tie"></i>
@@ -63,7 +57,6 @@
     <!-- ==================== TRAINER VIEW ==================== -->
     <div id="trainerView" class="space-y-6">
       
-      <!-- Trainer Navigation Tabs -->
       <div class="flex flex-wrap gap-2.5 bg-white p-2 rounded-2xl border border-slate-200 shadow-xs">
         <button onclick="switchTrainerTab('overview')" id="ttab_overview" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer active">Master Overview</button>
         <button onclick="switchTrainerTab('clients')" id="ttab_clients" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Client Management</button>
@@ -82,7 +75,7 @@
           </div>
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
             <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Workouts Logged</div>
-            <div id="statTotalWorkouts" class="text-3xl font-extrabold text-emerald-600 mt-2">89</div>
+            <div id="statTotalWorkouts" class="text-3xl font-extrabold text-emerald-600 mt-2">0</div>
           </div>
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
             <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Sync Status</div>
@@ -102,12 +95,9 @@
           </div>
         </div>
 
-        <!-- Active Client Roster Preview -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
           <h2 class="font-bold text-slate-900 text-base mb-4">Active Client Roster & Latest Schedule</h2>
-          <div id="trainerClientRosterList" class="space-y-3">
-            <!-- Populated dynamically -->
-          </div>
+          <div id="trainerClientRosterList" class="space-y-3"></div>
         </div>
       </div>
 
@@ -120,57 +110,53 @@
               <i class="fa-solid fa-plus mr-1.5"></i> Add Client
             </button>
           </div>
-          <div id="clientManagementList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Populated dynamically -->
-          </div>
+          <div id="clientManagementList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
       </div>
 
-      <!-- Tab 3: Live Session Logger -->
+      <!-- Tab 3: Live Session Logger (Redesigned Structured Inputs) -->
       <div id="tcontent_logger" class="trainer-tab-content space-y-6 hidden">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 max-w-3xl mx-auto">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 max-w-4xl mx-auto">
           <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
             <div>
               <h2 class="font-bold text-slate-900 text-lg">Gym Floor Live Session Logger</h2>
-              <p class="text-xs text-slate-500">Log multi-set exercises, supersets, and weights in real time.</p>
+              <p class="text-xs text-slate-500">Structured logging to eliminate data-entry errors and standardize spreadsheet inputs.</p>
             </div>
-            <span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-lg">Active Session</span>
+            <span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-lg">Gym Floor Mode</span>
           </div>
 
-          <form id="liveLoggerForm" onsubmit="saveLiveWorkout(event)" class="space-y-5">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <form id="liveLoggerForm" onsubmit="saveLiveWorkout(event)" class="space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Select Client</label>
-                <select id="logClientSelect" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
-                  <!-- Populated -->
-                </select>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Select Trainee</label>
+                <select id="logClientSelect" required class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none"></select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Session Title</label>
-                <input type="text" id="logTitle" placeholder="e.g. Upper Body Hypertrophy" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Session Title / Phase</label>
+                <input type="text" id="logTitle" placeholder="e.g. P1W1D1 Session" required class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Date</label>
-                <input type="date" id="logDate" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Session Date</label>
+                <input type="date" id="logDate" required class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
               </div>
             </div>
 
-            <!-- Dynamic Exercises Builder -->
-            <div class="space-y-3 pt-2">
+            <!-- Structured Exercises Builder Container -->
+            <div class="space-y-4">
               <div class="flex justify-between items-center">
-                <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Exercises Performed</label>
-                <button type="button" onclick="addExerciseRow()" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 cursor-pointer">
+                <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Exercises Logged</label>
+                <button type="button" onclick="addExerciseRow()" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-xl cursor-pointer transition-colors border border-emerald-200">
                   <i class="fa-solid fa-plus mr-1"></i> Add Exercise
                 </button>
               </div>
-              <div id="loggerExercisesContainer" class="space-y-3">
-                <!-- Rows injected here -->
+              <div id="loggerExercisesContainer" class="space-y-4">
+                <!-- Dynamically injected rows starting from Exercise #1 -->
               </div>
             </div>
 
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Coach Notes & Observations</label>
-              <textarea id="logNotes" rows="2" placeholder="Great energy on bench press, increased DB weight..." class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+            <div class="pt-2">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Coach Notes / Energy Level</label>
+              <textarea id="logNotes" rows="2" placeholder="e.g., Great energy, mobility drills completed, hit new PR on squats..." class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
             </div>
 
             <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
@@ -205,9 +191,7 @@
                   <th class="p-3">Notes</th>
                 </tr>
               </thead>
-              <tbody id="trainerWorkoutsTableBody" class="divide-y divide-slate-100 text-slate-700 font-medium">
-                <!-- Populated -->
-              </tbody>
+              <tbody id="trainerWorkoutsTableBody" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
             </table>
           </div>
         </div>
@@ -226,12 +210,8 @@
             </button>
           </div>
 
-          <!-- Reschedule Requests Alert Box -->
-          <div id="pendingRequestsContainer" class="mb-6 space-y-3">
-            <!-- Populated if pending requests exist -->
-          </div>
+          <div id="pendingRequestsContainer" class="mb-6 space-y-3"></div>
 
-          <!-- All Scheduled Sessions -->
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-50 text-slate-500 uppercase font-semibold">
@@ -244,9 +224,7 @@
                   <th class="p-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody id="trainerScheduleTableBody" class="divide-y divide-slate-100 text-slate-700 font-medium">
-                <!-- Populated -->
-              </tbody>
+              <tbody id="trainerScheduleTableBody" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
             </table>
           </div>
         </div>
@@ -282,24 +260,17 @@
 
     <!-- ==================== CLIENT VIEW ==================== -->
     <div id="clientView" class="space-y-6 hidden">
-      
-      <!-- Client Selector Bar -->
       <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row justify-between items-center gap-4">
         <div class="flex items-center space-x-3 w-full sm:w-auto">
           <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Viewing As:</span>
-          <select id="clientPortalSelector" onchange="switchActiveClientPortal(this.value)" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
-            <!-- Populated -->
-          </select>
+          <select id="clientPortalSelector" onchange="switchActiveClientPortal(this.value)" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"></select>
         </div>
         <div class="text-xs font-medium text-slate-500">
           Personalized Training & Nutrition Portal
         </div>
       </div>
 
-      <!-- MAIN SUMMARY PAGE (Scheduler / Next Session at Top, followed by Workout History) -->
       <div class="space-y-6">
-
-        <!-- 1. SCHEDULER & NEXT SESSION WIDGET (Top of Page) -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
@@ -307,13 +278,10 @@
               <h2 id="clientNextSessionTitle" class="text-lg font-extrabold text-slate-900 mt-2">No upcoming session scheduled</h2>
               <p id="clientNextSessionTime" class="text-xs text-slate-500 mt-0.5">Please check your schedule or request a session.</p>
             </div>
-            <div id="clientNextSessionActions" class="flex items-center space-x-2">
-              <!-- Rendered dynamically -->
-            </div>
+            <div id="clientNextSessionActions" class="flex items-center space-x-2"></div>
           </div>
         </div>
 
-        <!-- 2. HIGH-LEVEL NUTRITION & SESSION KPIS -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
             <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Daily Calorie Target</div>
@@ -333,7 +301,6 @@
           </div>
         </div>
 
-        <!-- 3. WORKOUT HISTORY & PROGRESSION TABLE WITH COLUMN FILTERING -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 space-y-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
@@ -341,7 +308,6 @@
               <p class="text-xs text-slate-500">Filter and search your historical performance across all logged exercises.</p>
             </div>
             
-            <!-- Column Filters -->
             <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               <input type="text" id="clientExerciseSearch" oninput="renderClientProgressTable()" placeholder="Search exercise name..." class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium w-full sm:w-48 outline-none focus:ring-2 focus:ring-emerald-500">
               <select id="clientMuscleFilter" onchange="renderClientProgressTable()" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
@@ -366,22 +332,16 @@
                   <th class="p-3">Max Recorded Weight</th>
                 </tr>
               </thead>
-              <tbody id="clientProgressTableBody" class="divide-y divide-slate-100 text-slate-700 font-medium">
-                <!-- Populated dynamically -->
-              </tbody>
+              <tbody id="clientProgressTableBody" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
             </table>
           </div>
         </div>
-
       </div>
-
     </div>
 
   </main>
 
   <!-- MODALS -->
-
-  <!-- Client Add/Edit Modal -->
   <div id="clientModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4">
       <h3 class="font-bold text-slate-900 text-lg">Add / Edit Client Profile</h3>
@@ -413,16 +373,13 @@
     </div>
   </div>
 
-  <!-- Schedule Session Modal -->
   <div id="scheduleModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4">
       <h3 class="font-bold text-slate-900 text-lg">Schedule New Session or Slot</h3>
       <form id="scheduleForm" onsubmit="saveScheduleItem(event)" class="space-y-3">
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Client</label>
-          <select id="schedClientSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500">
-            <!-- Populated -->
-          </select>
+          <select id="schedClientSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500"></select>
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Session Title</label>
@@ -446,7 +403,6 @@
     </div>
   </div>
 
-  <!-- Reschedule / Cancel Request Modal (for Client) -->
   <div id="clientRequestModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4">
       <h3 id="clientRequestModalTitle" class="font-bold text-slate-900 text-lg">Request Reschedule</h3>
@@ -474,7 +430,6 @@
 
   <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
-    // --- STATE MANAGEMENT ---
     let appState = {
       role: 'trainer',
       activeTrainerTab: 'overview',
@@ -494,24 +449,22 @@
       ]
     };
 
-    // Initialize Mock Workouts if empty
     function initDefaultData() {
       if (appState.workouts.length === 0) {
         appState.workouts = [
-          { id: 'w_1', clientId: 'c_1', clientName: 'Rajal', title: 'Sun Session & Supersets', date: '2026-09-06', exercises: [{name:'Warm up - Mobility drills', sets:'10 mins'}, {name:'Rear delt fly', sets:'DB6lbsx15/15', muscleGroup:'Shoulders'}, {name:'Reverse lunges', sets:'5kgx12 7.5kgx12/12', muscleGroup:'Quads & Legs'}], notes:'Great energy' },
-          { id: 'w_2', clientId: 'c_1', clientName: 'Rajal', title: 'C1P1W1D1 Session', date: '2025-12-10', exercises: [{name:'Goblet squats', sets:'10lbsx15', muscleGroup:'Quads & Legs'}, {name:'Incline push ups', sets:'BW x15', muscleGroup:'Chest & Pushing'}], notes:'Phase C1' }
+          { id: 'w_1', clientId: 'c_1', clientName: 'Rajal', title: 'Sun Session & Supersets', date: '2026-09-06', exercises: [{name:'Warm up - Mobility drills', sets:'10 mins'}, {name:'Rear delt fly', sets:'DB6lbsx15/15', muscleGroup:'Shoulders'}, {name:'Reverse lunges', sets:'5kgx12 7.5kgx12/12', muscleGroup:'Quads & Legs'}], notes:'Great energy' }
         ];
       }
     }
 
-    // --- INITIALIZATION ---
     window.addEventListener('DOMContentLoaded', () => {
       initDefaultData();
       document.getElementById('syncWebhookUrlInput').value = appState.webhookUrl;
       updateSyncBadge();
       renderAll();
+      // Start with 1 clean exercise row numbered #1
+      addExerciseRow();
       
-      // If Webhook URL exists, try to pull
       if (appState.webhookUrl) {
         syncDataFromCloud();
       }
@@ -561,23 +514,143 @@
     }
 
     function populateDropdowns() {
-      // Logger Client Select
       const logSel = document.getElementById('logClientSelect');
       const schedSel = document.getElementById('schedClientSelect');
       const clientPortalSel = document.getElementById('clientPortalSelector');
       
-      if (logSel) {
-        logSel.innerHTML = appState.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-      }
-      if (schedSel) {
-        schedSel.innerHTML = appState.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-      }
-      if (clientPortalSel) {
-        clientPortalSel.innerHTML = appState.clients.map(c => `<option value="${c.id}" ${c.id === appState.activeClientEmail ? 'selected' : ''}>${c.name}</option>`).join('');
-      }
+      if (logSel) logSel.innerHTML = appState.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      if (schedSel) schedSel.innerHTML = appState.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      if (clientPortalSel) clientPortalSel.innerHTML = appState.clients.map(c => `<option value="${c.id}" ${c.id === appState.activeClientEmail ? 'selected' : ''}>${c.name}</option>`).join('');
     }
 
-    // --- TRAINER VIEWS ---
+    // --- STRUCTURED LIVE LOGGER WITH SEPARATE W/R/S & CORRECT INDEXING ---
+    function addExerciseRow() {
+      const container = document.getElementById('loggerExercisesContainer');
+      const index = container.children.length + 1;
+      
+      const div = document.createElement('div');
+      div.className = "exercise-card bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 relative";
+      div.innerHTML = `
+        <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
+          <span class="ex-number font-bold text-xs text-emerald-700 uppercase tracking-wider">Exercise #${index}</span>
+          <button type="button" onclick="removeExerciseRow(this)" class="text-rose-500 hover:text-rose-700 text-xs font-semibold cursor-pointer flex items-center space-x-1">
+            <i class="fa-solid fa-trash"></i><span>Remove</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Exercise Name</label>
+            <input type="text" placeholder="e.g. Goblet Squats / Bench Press" class="ex-name w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500" required>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Muscle Group</label>
+            <select class="ex-muscle w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+              <option value="Quads & Legs">Quads & Legs</option>
+              <option value="Chest & Pushing">Chest & Pushing</option>
+              <option value="Back & Lats">Back & Lats</option>
+              <option value="Shoulders">Shoulders</option>
+              <option value="Core & Mobility">Core & Mobility</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Structured Weight, Reps, Sets Inputs to prevent data entry errors -->
+        <div class="grid grid-cols-3 gap-3 bg-white p-3 rounded-xl border border-slate-200">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-500 uppercase">Weight / Resistance</label>
+            <input type="text" placeholder="e.g. 20kg / 30lbs" class="ex-weight w-full mt-1 px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium outline-none focus:ring-1 focus:ring-emerald-500" required>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-500 uppercase">Reps per Set</label>
+            <input type="text" placeholder="e.g. 12, 12, 10" class="ex-reps w-full mt-1 px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium outline-none focus:ring-1 focus:ring-emerald-500" required>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-500 uppercase">Number of Sets</label>
+            <input type="text" placeholder="e.g. 3 sets" class="ex-sets-count w-full mt-1 px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium outline-none focus:ring-1 focus:ring-emerald-500" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1">Superset Paired Exercise (Optional)</label>
+          <input type="text" placeholder="e.g. Romanian DLs SB20kgx15" class="ex-superset w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500">
+        </div>
+      `;
+      container.appendChild(div);
+    }
+
+    function removeExerciseRow(btn) {
+      const card = btn.closest('.exercise-card');
+      card.remove();
+      reindexExercises();
+    }
+
+    function reindexExercises() {
+      const container = document.getElementById('loggerExercisesContainer');
+      const cards = container.querySelectorAll('.exercise-card');
+      cards.forEach((card, idx) => {
+        const numLabel = card.querySelector('.ex-number');
+        if (numLabel) {
+          numLabel.innerText = `Exercise #${idx + 1}`;
+        }
+      });
+    }
+
+    function saveLiveWorkout(e) {
+      e.preventDefault();
+      const clientId = document.getElementById('logClientSelect').value;
+      const client = appState.clients.find(c => c.id === clientId);
+      const title = document.getElementById('logTitle').value;
+      const date = document.getElementById('logDate').value;
+      const notes = document.getElementById('logNotes').value;
+      
+      const cards = document.querySelectorAll('#loggerExercisesContainer .exercise-card');
+      if (cards.length === 0) {
+        alert('Please add at least one exercise.');
+        return;
+      }
+
+      const exercises = [];
+      cards.forEach(card => {
+        const name = card.querySelector('.ex-name').value;
+        const muscleGroup = card.querySelector('.ex-muscle').value;
+        const weight = card.querySelector('.ex-weight').value;
+        const reps = card.querySelector('.ex-reps').value;
+        const setCount = card.querySelector('.ex-sets-count').value;
+        const superset = card.querySelector('.ex-superset').value;
+
+        // Structured formatting for clean logging and spreadsheet sync
+        const formattedSets = `${weight} | Reps: ${reps} | Sets: ${setCount}${superset ? ' (SS: ' + superset + ')' : ''}`;
+
+        exercises.push({
+          name: name,
+          sets: formattedSets,
+          muscleGroup: muscleGroup
+        });
+      });
+
+      const newWorkout = {
+        id: 'w_' + Date.now(),
+        clientId: clientId,
+        clientName: client ? client.name : 'Unknown',
+        title: title,
+        date: date,
+        exercises: exercises,
+        notes: notes
+      };
+
+      appState.workouts.unshift(newWorkout);
+      alert('Workout successfully saved and formatted for spreadsheet sync!');
+      
+      // Reset form and re-initialize with exactly 1 exercise numbered #1
+      document.getElementById('liveLoggerForm').reset();
+      document.getElementById('loggerExercisesContainer').innerHTML = '';
+      addExerciseRow();
+      
+      syncDataToCloud();
+      renderAll();
+    }
+
     function renderTrainerOverview() {
       document.getElementById('statActiveClients').innerText = appState.clients.length;
       document.getElementById('statTotalWorkouts').innerText = appState.workouts.length;
@@ -619,63 +692,6 @@
       `).join('');
     }
 
-    // Live Logger Exercise Row Builder
-    function addExerciseRow() {
-      const container = document.getElementById('loggerExercisesContainer');
-      const div = document.createElement('div');
-      div.className = "flex items-center space-x-2";
-      div.innerHTML = `
-        <input type="text" placeholder="Exercise Name" class="ex-name flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none" required>
-        <input type="text" placeholder="Sets/Reps e.g. 15lbsx12" class="ex-sets flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none" required>
-        <select class="ex-muscle px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none">
-          <option value="Quads & Legs">Quads & Legs</option>
-          <option value="Chest & Pushing">Chest & Pushing</option>
-          <option value="Back & Lats">Back & Lats</option>
-          <option value="Shoulders">Shoulders</option>
-          <option value="Core & Mobility">Core & Mobility</option>
-        </select>
-        <button type="button" onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-700 px-2 py-1 cursor-pointer"><i class="fa-solid fa-trash text-xs"></i></button>
-      `;
-      container.appendChild(div);
-    }
-
-    function saveLiveWorkout(e) {
-      e.preventDefault();
-      const clientId = document.getElementById('logClientSelect').value;
-      const client = appState.clients.find(c => c.id === clientId);
-      const title = document.getElementById('logTitle').value;
-      const date = document.getElementById('logDate').value;
-      const notes = document.getElementById('logNotes').value;
-      
-      const rows = document.querySelectorAll('#loggerExercisesContainer > div');
-      const exercises = [];
-      rows.forEach(r => {
-        exercises.push({
-          name: r.querySelector('.ex-name').value,
-          sets: r.querySelector('.ex-sets').value,
-          muscleGroup: r.querySelector('.ex-muscle').value
-        });
-      });
-
-      const newWorkout = {
-        id: 'w_' + Date.now(),
-        clientId: clientId,
-        clientName: client ? client.name : 'Unknown',
-        title: title,
-        date: date,
-        exercises: exercises,
-        notes: notes
-      };
-
-      appState.workouts.unshift(newWorkout);
-      alert('Workout logged and saved successfully!');
-      document.getElementById('liveLoggerForm').reset();
-      document.getElementById('loggerExercisesContainer').innerHTML = '';
-      addExerciseRow();
-      syncDataToCloud();
-      renderAll();
-    }
-
     function renderWorkoutsTable() {
       const query = (document.getElementById('workoutSearchInput')?.value || '').toLowerCase();
       const tbody = document.getElementById('trainerWorkoutsTableBody');
@@ -697,7 +713,6 @@
       `).join('');
     }
 
-    // Schedule Management
     function renderScheduleTable() {
       const tbody = document.getElementById('trainerScheduleTableBody');
       const reqContainer = document.getElementById('pendingRequestsContainer');
@@ -756,7 +771,6 @@
       renderAll();
     }
 
-    // --- CLIENT PORTAL VIEWS ---
     function switchActiveClientPortal(clientId) {
       appState.activeClientEmail = clientId;
       renderClientPortal();
@@ -766,7 +780,6 @@
       const client = appState.clients.find(c => c.id === appState.activeClientEmail) || appState.clients[0];
       if (!client) return;
 
-      // 1. Next Session & Scheduler Widget
       const nextSched = appState.schedule.find(s => s.clientId === client.id && s.status === 'Confirmed');
       const titleEl = document.getElementById('clientNextSessionTitle');
       const timeEl = document.getElementById('clientNextSessionTime');
@@ -787,11 +800,9 @@
         `;
       }
 
-      // 2. KPIs
       document.getElementById('clientKpiCalories').innerText = client.calories + ' kcal';
       document.getElementById('clientKpiProtein').innerText = client.protein + ' g';
 
-      // Calculate sessions done this year (2026) & first session date
       const clientWorkouts = appState.workouts.filter(w => w.clientId === client.id);
       const thisYearWorkouts = clientWorkouts.filter(w => w.date && w.date.startsWith('2026'));
       document.getElementById('clientKpiSessionsYear').innerText = thisYearWorkouts.length;
@@ -803,7 +814,6 @@
         document.getElementById('clientKpiFirstSession').innerText = 'N/A';
       }
 
-      // 3. Exercise Progression Table
       renderClientProgressTable();
     }
 
@@ -815,7 +825,6 @@
       const muscleFilter = document.getElementById('clientMuscleFilter')?.value || '';
       const tbody = document.getElementById('clientProgressTableBody');
 
-      // Aggregate exercises
       const exerciseMap = {};
       appState.workouts.filter(w => w.clientId === client.id).forEach(w => {
         (w.exercises || []).forEach(ex => {
@@ -824,17 +833,13 @@
             exerciseMap[name] = { name: name, muscleGroup: ex.muscleGroup || 'General', count: 0, latestWeight: ex.sets, maxWeight: ex.sets };
           }
           exerciseMap[name].count += 1;
-          exerciseMap[name].latestWeight = ex.sets; // latest by chronological order if sorted
+          exerciseMap[name].latestWeight = ex.sets;
         });
       });
 
       let rows = Object.values(exerciseMap);
-      if (search) {
-        rows = rows.filter(r => r.name.toLowerCase().includes(search));
-      }
-      if (muscleFilter) {
-        rows = rows.filter(r => r.muscleGroup === muscleFilter);
-      }
+      if (search) rows = rows.filter(r => r.name.toLowerCase().includes(search));
+      if (muscleFilter) rows = rows.filter(r => r.muscleGroup === muscleFilter);
 
       if (rows.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">No exercise records found matching your filter.</td></tr>`;
@@ -852,7 +857,6 @@
       `).join('');
     }
 
-    // --- MODALS & FORM HANDLERS ---
     function openClientModal(id = '') {
       document.getElementById('modalClientId').value = id;
       if (id) {
@@ -888,9 +892,7 @@
       renderAll();
     }
 
-    function openScheduleModal() {
-      document.getElementById('scheduleModal').classList.remove('hidden');
-    }
+    function openScheduleModal() { document.getElementById('scheduleModal').classList.remove('hidden'); }
     function closeScheduleModal() { document.getElementById('scheduleModal').classList.add('hidden'); }
 
     function saveScheduleItem(e) {
@@ -962,7 +964,6 @@
       alert('Your request has been sent to your trainer for approval.');
     }
 
-    // --- GOOGLE SHEETS SYNC LOGIC ---
     function openSyncModal() {
       switchTrainerTab('database');
       if (appState.role !== 'trainer') switchRole('trainer');
@@ -996,7 +997,6 @@
 
     async function syncDataToCloud() {
       if (!appState.webhookUrl) return;
-      
       const tables = ['Clients', 'Workouts', 'Activities', 'InBodyScans', 'Nutrition', 'Schedule'];
       for (let table of tables) {
         let data = [];
