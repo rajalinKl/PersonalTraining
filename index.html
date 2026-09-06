@@ -63,16 +63,8 @@
                 </div>
             </div>
 
-            <!-- Role Switcher & Sync Status -->
+            <!-- Role Switcher -->
             <div class="flex items-center space-x-2 sm:space-x-4">
-                <!-- Data Source Indicator -->
-                <button onclick="openSyncModal()" id="sync-status-badge" class="flex items-center gap-1.5 text-xs bg-slate-50 hover:bg-slate-100 text-slate-700 px-3 py-2 rounded-xl border border-slate-200 transition font-medium">
-                    <span id="sync-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    <span id="sync-text">Sheets Connected</span>
-                    <i class="fa-solid fa-cloud-arrow-up text-slate-400 ml-0.5"></i>
-                </button>
-
-                <!-- Role Selector -->
                 <div class="bg-slate-100 p-1 rounded-2xl border border-slate-200 flex items-center shadow-inner">
                     <button onclick="switchRole('trainer')" id="role-btn-trainer" class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-brand-600 text-white shadow-sm">
                         <i class="fa-solid fa-user-tie"></i> <span class="hidden sm:inline">Trainer</span>
@@ -96,7 +88,7 @@
                 <div class="relative z-10 space-y-2 max-w-xl">
                     <span class="bg-brand-500/30 text-brand-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Coach Command Center</span>
                     <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Coach Rajal & Ramneek to Peak Performance</h2>
-                    <p class="text-slate-300 text-xs sm:text-sm">Review real historical session records, manage nutrition targets, and log floor workouts seamlessly.</p>
+                    <p class="text-slate-300 text-xs sm:text-sm">Review real historical session records, manage nutrition targets, monitor InBody scans, and log floor workouts seamlessly.</p>
                 </div>
                 <div class="relative z-10 flex flex-wrap gap-3">
                     <button onclick="switchTrainerTab('logger')" class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-5 py-3 rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-brand-500/30 flex items-center gap-2">
@@ -118,9 +110,6 @@
                 </button>
                 <button onclick="switchTrainerTab('logger')" id="ttab-logger" class="trainer-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap">
                     <i class="fa-solid fa-stopwatch"></i> Gym Floor Logger
-                </button>
-                <button onclick="switchTrainerTab('guide')" id="ttab-guide" class="trainer-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap">
-                    <i class="fa-solid fa-book"></i> Google Sheets Setup
                 </button>
             </div>
 
@@ -154,11 +143,11 @@
                     </div>
                     <div class="bg-white border border-slate-200/80 p-5 rounded-3xl shadow-sm hover:shadow-md transition">
                         <div class="flex items-center justify-between text-slate-500 mb-3">
-                            <span class="text-xs uppercase font-bold tracking-wider">Cloud Status</span>
-                            <div class="bg-purple-50 text-purple-600 p-2.5 rounded-2xl"><i class="fa-solid fa-cloud text-lg"></i></div>
+                            <span class="text-xs uppercase font-bold tracking-wider">System Status</span>
+                            <div class="bg-purple-50 text-purple-600 p-2.5 rounded-2xl"><i class="fa-solid fa-circle-check text-lg"></i></div>
                         </div>
-                        <div id="stat-sync-status" class="text-lg font-bold text-slate-800 mt-1 truncate">Google Sheets Ready</div>
-                        <p class="text-xs text-slate-500 mt-2">Live Database Synced</p>
+                        <div class="text-lg font-bold text-slate-800 mt-1 truncate">Active & Synced</div>
+                        <p class="text-xs text-slate-500 mt-2">Cloud Ready</p>
                     </div>
                 </div>
 
@@ -170,9 +159,6 @@
                             <p class="text-xs text-slate-500">Side-by-side metrics, weight updates, and historical session counts.</p>
                         </div>
                         <div class="flex items-center gap-2.5">
-                            <button onclick="syncWithGoogleSheets()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-4 py-2.5 rounded-2xl border border-slate-200 transition flex items-center gap-2">
-                                <i class="fa-solid fa-rotate text-brand-600"></i> Sync Cloud
-                            </button>
                             <button onclick="switchTrainerTab('clients')" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold px-4 py-2.5 rounded-2xl transition flex items-center gap-2 shadow-sm shadow-brand-600/20">
                                 <i class="fa-solid fa-user-plus"></i> Add Client
                             </button>
@@ -316,134 +302,6 @@
                     </form>
                 </div>
             </div>
-
-            <!-- Tab 4: Google Sheets Integration & Setup Guide -->
-            <div id="tcontent-guide" class="trainer-content hidden space-y-6">
-                <div class="bg-white border border-slate-200/80 p-6 sm:p-8 rounded-3xl shadow-sm max-w-4xl mx-auto space-y-6">
-                    <div class="border-b border-slate-100 pb-5">
-                        <h3 class="font-extrabold text-slate-900 text-xl flex items-center gap-2.5">
-                            <div class="bg-emerald-50 text-emerald-600 p-2.5 rounded-2xl"><i class="fa-solid fa-book text-lg"></i></div> Google Sheets Backend Setup Guide
-                        </h3>
-                        <p class="text-xs text-slate-500 mt-1">Connect this web app to your Google Sheet in under 5 minutes so you can manage clients and logs right from your spreadsheet.</p>
-                    </div>
-
-                    <div class="space-y-6 text-sm text-slate-700">
-                        <!-- Step 1 -->
-                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2.5">
-                            <div class="flex items-center gap-2.5 text-brand-700 font-bold text-base">
-                                <span class="bg-brand-100 text-brand-700 w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black">1</span>
-                                Create Your Google Sheet
-                            </div>
-                            <p class="text-xs text-slate-600">Create a new Google Sheet named <code class="bg-white border border-slate-200 text-slate-900 px-2 py-0.5 rounded-md font-semibold">ProTrainerDB</code>. Create two tabs (worksheets) inside it:</p>
-                            <ul class="list-disc list-inside text-xs space-y-1 text-slate-600 pl-2">
-                                <li>Tab 1 named <code class="bg-white border border-slate-200 text-brand-700 px-2 py-0.5 rounded-md font-semibold">Clients</code> (Columns: id, name, weight, bodyFat, calories, protein, dietNotes)</li>
-                                <li>Tab 2 named <code class="bg-white border border-slate-200 text-brand-700 px-2 py-0.5 rounded-md font-semibold">Workouts</code> (Columns: id, clientId, clientName, title, date, exercisesJson, notes)</li>
-                            </ul>
-                        </div>
-
-                        <!-- Step 2 -->
-                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2.5">
-                            <div class="flex items-center gap-2.5 text-brand-700 font-bold text-base">
-                                <span class="bg-brand-100 text-brand-700 w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black">2</span>
-                                Add the Apps Script Code (Fixed for CORS & Parameters)
-                            </div>
-                            <p class="text-xs text-slate-600">In your Google Sheet, click on <strong class="text-slate-900">Extensions > Apps Script</strong>. Clear any existing code and paste the following updated script:</p>
-                            <div class="relative bg-slate-900 border border-slate-800 rounded-2xl p-4 font-mono text-xs text-emerald-300 overflow-x-auto shadow-inner">
-                                <pre><code>function doGet(e) {
-  try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var action = e && e.parameter ? e.parameter.action : 'getData';
-    
-    if (action === 'getData') {
-      var clientSheet = ss.getSheetByName('Clients');
-      var workoutSheet = ss.getSheetByName('Workouts');
-      
-      var clients = [];
-      if (clientSheet && clientSheet.getLastRow() > 1) {
-        var cData = clientSheet.getDataRange().getValues();
-        clients = parseSheetData(cData);
-      }
-      
-      var workouts = [];
-      if (workoutSheet && workoutSheet.getLastRow() > 1) {
-        var wData = workoutSheet.getDataRange().getValues();
-        workouts = parseSheetData(wData);
-      }
-      
-      return ContentService.createTextOutput(JSON.stringify({status: 'success', clients: clients, workouts: workouts}))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    return ContentService.createTextOutput(JSON.stringify({status: 'error', message: 'Invalid action'})).setMimeType(ContentService.MimeType.JSON);
-  } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({status: 'error', message: err.toString()})).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-function doPost(e) {
-  try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var postData = JSON.parse(e.postData.contents);
-    var action = postData.action;
-    
-    if (action === 'saveData') {
-      var cSheet = ss.getSheetByName('Clients');
-      if (!cSheet) { cSheet = ss.insertSheet('Clients'); }
-      cSheet.clear();
-      cSheet.appendRow(['id', 'name', 'weight', 'bodyFat', 'calories', 'protein', 'dietNotes']);
-      if (postData.clients) {
-        postData.clients.forEach(function(c) {
-          cSheet.appendRow([c.id || '', c.name || '', c.weight || 0, c.bodyFat || 0, c.calories || 0, c.protein || 0, c.dietNotes || '']);
-        });
-      }
-      
-      var wSheet = ss.getSheetByName('Workouts');
-      if (!wSheet) { wSheet = ss.insertSheet('Workouts'); }
-      wSheet.clear();
-      wSheet.appendRow(['id', 'clientId', 'clientName', 'title', 'date', 'exercisesJson', 'notes']);
-      if (postData.workouts) {
-        postData.workouts.forEach(function(w) {
-          wSheet.appendRow([w.id || '', w.clientId || '', w.clientName || '', w.title || '', w.date || '', JSON.stringify(w.exercises || []), w.notes || '']);
-        });
-      }
-      
-      return ContentService.createTextOutput(JSON.stringify({status: 'success'}))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    return ContentService.createTextOutput(JSON.stringify({status: 'error', message: 'Invalid POST action'})).setMimeType(ContentService.MimeType.JSON);
-  } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({status: 'error', message: err.toString()})).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-function parseSheetData(rows) {
-  var headers = rows[0];
-  var result = [];
-  for (var i = 1; i < rows.length; i++) {
-    var obj = {};
-    for (var j = 0; j < headers.length; j++) {
-      obj[headers[j]] = rows[i][j];
-    }
-    result.push(obj);
-  }
-  return result;
-}</code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Step 3 -->
-                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2.5">
-                            <div class="flex items-center gap-2.5 text-brand-700 font-bold text-base">
-                                <span class="bg-brand-100 text-brand-700 w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black">3</span>
-                                Deploy as Web App & Link
-                            </div>
-                            <p class="text-xs text-slate-600">Click <strong class="text-slate-900">Deploy > New deployment</strong>, select type <strong class="text-slate-900">Web app</strong>, set Execute as <strong class="text-slate-900">Me</strong>, and Who has access to <strong class="text-slate-900">Anyone</strong>. Copy the generated Web App URL and paste it into the sync settings of this app!</p>
-                            <button onclick="openSyncModal()" class="mt-2 bg-brand-600 hover:bg-brand-500 text-white font-bold px-5 py-2.5 rounded-2xl text-xs transition shadow-md shadow-brand-600/20">
-                                Configure Google Sheet URL Now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- ================= CLIENT VIEW MODE ================= -->
@@ -474,12 +332,15 @@ function parseSheetData(rows) {
                 <button onclick="switchClientTab('exercises')" id="ctab-exercises" class="client-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap">
                     <i class="fa-solid fa-dumbbell"></i> Muscle Group & Exercise Progress
                 </button>
+                <button onclick="switchClientTab('inbody')" id="ctab-inbody" class="client-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap">
+                    <i class="fa-solid fa-scale-balanced"></i> InBody & Body Composition
+                </button>
             </div>
 
             <!-- Client Tab 1: Overview & History -->
             <div id="ccontent-overview" class="client-content space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Left Column: Nutrition & Daily Lifestyle Card -->
+                    <!-- Left Column: Nutrition & Activity Tracker -->
                     <div class="space-y-6">
                         <!-- Nutrition Target Widget -->
                         <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-5">
@@ -551,7 +412,7 @@ function parseSheetData(rows) {
                         <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
                             <div class="flex items-center justify-between">
                                 <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                                    <div class="bg-emerald-50 text-emerald-600 p-2 rounded-xl"><i class="fa-solid fa-chart-line"></i></div> Historical Training Volume & Session Progression
+                                    <div class="bg-emerald-50 text-emerald-600 p-2 rounded-xl"><i class="fa-solid fa-chart-line"></i></div> Historical Training Volume Progression
                                 </h3>
                                 <span class="text-xs text-slate-500 font-medium">Real Session Logs</span>
                             </div>
@@ -606,6 +467,86 @@ function parseSheetData(rows) {
                     </div>
                 </div>
             </div>
+
+            <!-- Client Tab 3: InBody & Body Composition Scans -->
+            <div id="ccontent-inbody" class="client-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Log InBody Scan Form -->
+                    <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-5">
+                        <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2.5">
+                            <div class="bg-brand-50 text-brand-600 p-2 rounded-xl"><i class="fa-solid fa-scale-balanced"></i></div> Log New InBody Scan
+                        </h3>
+                        <form onsubmit="handleLogInBody(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">Scan Date</label>
+                                <input type="date" id="ib-date" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">Weight (kg)</label>
+                                    <input type="number" step="0.1" id="ib-weight" required placeholder="64.5" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-brand-500 font-bold">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">Body Fat %</label>
+                                    <input type="number" step="0.1" id="ib-bf" required placeholder="18.2" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-brand-500 font-bold">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">Muscle Mass (SMM kg)</label>
+                                    <input type="number" step="0.1" id="ib-smm" required placeholder="28.4" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-brand-500 font-bold">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">Visceral Fat Level</label>
+                                    <input type="number" id="ib-visceral" required placeholder="4" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-brand-500 font-bold">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">BMR (kcal)</label>
+                                <input type="number" id="ib-bmr" placeholder="1350" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-brand-500 font-bold">
+                            </div>
+                            <button type="submit" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 rounded-2xl text-xs transition shadow-md shadow-brand-600/20">
+                                Save InBody Scan Record
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- InBody History & Chart -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- InBody Chart -->
+                        <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
+                            <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                                <div class="bg-blue-50 text-blue-600 p-2 rounded-xl"><i class="fa-solid fa-chart-line"></i></div> Body Composition Progression (Fat % vs. Muscle Mass)
+                            </h3>
+                            <div class="h-60 relative w-full">
+                                <canvas id="inbodyChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Scan Table -->
+                        <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
+                            <h3 class="font-extrabold text-slate-900 text-base">Historical InBody Scan Logs</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-xs">
+                                    <thead>
+                                        <tr class="bg-slate-50 text-slate-500 uppercase font-bold border-b border-slate-100">
+                                            <th class="p-3">Date</th>
+                                            <th class="p-3">Weight (kg)</th>
+                                            <th class="p-3">Body Fat %</th>
+                                            <th class="p-3">SMM (kg)</th>
+                                            <th class="p-3">Visceral</th>
+                                            <th class="p-3">BMR</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="inbody-table-body" class="divide-y divide-slate-100 font-medium text-slate-700">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </main>
@@ -613,31 +554,6 @@ function parseSheetData(rows) {
     <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
         <p>ProTrainer Elite Cloud-Connected Platform &bull; Rajal & Ramneek Live Dataset</p>
     </footer>
-
-    <!-- Google Sheets Sync Configuration Modal -->
-    <div id="sync-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white border border-slate-200 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3.5">
-                <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2.5">
-                    <div class="bg-brand-50 text-brand-600 p-2 rounded-xl"><i class="fa-solid fa-cloud"></i></div> Google Sheets Web App Sync
-                </h3>
-                <button onclick="closeSyncModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <p class="text-xs text-slate-600 leading-relaxed">Enter your deployed Google Apps Script Web App URL below to sync your database in real time.</p>
-            <div class="space-y-2">
-                <label class="block text-xs font-bold text-slate-700">Apps Script Web App URL</label>
-                <input type="url" id="sheets-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs text-slate-900 focus:outline-none focus:border-brand-500">
-            </div>
-            <div class="flex gap-3 pt-2">
-                <button onclick="saveSheetsUrl()" class="flex-1 bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 rounded-2xl text-xs transition shadow-md shadow-brand-600/20">
-                    Connect & Sync
-                </button>
-                <button onclick="closeSyncModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-5 py-3 rounded-2xl text-xs transition">
-                    Cancel
-                </button>
-            </div>
-        </div>
-    </div>
 
     <script>
         let rawDataset = {
@@ -649,6 +565,11 @@ function parseSheetData(rows) {
                     "calories": 2200,
                     "protein": 145,
                     "dietNotes": "High protein, structured progressive overload across DB, CBL, and SB movements.",
+                    "inbody": [
+                        { "date": "2025-12-01", "weight": 66.0, "bodyFat": 19.5, "smm": 27.5, "visceral": 5, "bmr": 1320 },
+                        { "date": "2026-02-01", "weight": 65.2, "bodyFat": 18.8, "smm": 28.0, "visceral": 4, "bmr": 1340 },
+                        { "date": "2026-06-01", "weight": 64.5, "bodyFat": 18.2, "smm": 28.4, "visceral": 4, "bmr": 1355 }
+                    ],
                     "sessions": [
                         {
                             "date": "2025-12-10",
@@ -658,462 +579,6 @@ function parseSheetData(rows) {
                                 { "name": "Incline push ups", "sets": "BW x15/15/15" },
                                 { "name": "Seated rows", "sets": "CBL4x15/15/15" },
                                 { "name": "Seated shoulder press", "sets": "DB10lbsx12/8/8" }
-                            ]
-                        },
-                        {
-                            "date": "2025-12-12",
-                            "phase": "C1P1W1D2",
-                            "exercises": [
-                                { "name": "Reverse lunges", "sets": "24/24/24 steps" },
-                                { "name": "Chest press", "sets": "DB10lbsx12/12/12" },
-                                { "name": "Lat pulldowns", "sets": "CBL4x15 no5x12/10" },
-                                { "name": "Rear delt flys", "sets": "DB5lbsx12 2.5lbsx12/12" },
-                                { "name": "Stand curls", "sets": "DB10lbs x12/12" },
-                                { "name": "Tricep pressdowns", "sets": "CBL3x15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-14",
-                            "phase": "P1W2D1",
-                            "exercises": [
-                                { "name": "Reverse lunges", "sets": "BWx12 10lbsx12/10 a side" },
-                                { "name": "Rear delt fly", "sets": "DB6lbsx20/15" },
-                                { "name": "Chest press", "sets": "DB15lbsx12/12/12" },
-                                { "name": "Bent over rows", "sets": "CBL4x15 no5x15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-17",
-                            "phase": "P1W2D2",
-                            "exercises": [
-                                { "name": "Goblet squats", "sets": "DB15lbsx15/15/20lbsx15" },
-                                { "name": "Romanian DLs", "sets": "SB10kgx15 15kgx15" },
-                                { "name": "Rear delt fly", "sets": "DB6lbsx20/15" },
-                                { "name": "Incline press", "sets": "DB15lbsx12/10/10" },
-                                { "name": "Single arm rows", "sets": "DB15lbsx15 20lbsx15/12" },
-                                { "name": "Deadlifts", "sets": "KB16kgx12 20kgx12" },
-                                { "name": "Clean & press", "sets": "DB10lbsx10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-21",
-                            "phase": "P1W3D1",
-                            "exercises": [
-                                { "name": "Walking lunges", "sets": "BWx12 10lbsx10 BWx10" },
-                                { "name": "Lying leg curls", "sets": "MC2x12/12" },
-                                { "name": "Chest fly mid", "sets": "CBL1x15/15/15" },
-                                { "name": "Seated shoulder press", "sets": "DB10lbsx12/12" },
-                                { "name": "Lat pulldowns narrow", "sets": "CBL3x15 no4x15 no5x12/12" },
-                                { "name": "Planks", "sets": "BWx60s / 2.5kgx30s" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-24",
-                            "phase": "P1W3D2",
-                            "exercises": [
-                                { "name": "Squats", "sets": "DB20lbsx15 25lbsx12/12" },
-                                { "name": "Incline lateral lunges", "sets": "2.5kgx15/15" },
-                                { "name": "Facepulls", "sets": "CBL2x15 No3x15" },
-                                { "name": "Chest press", "sets": "DB15lbsx12 20lbsx10/10" },
-                                { "name": "Deadlifts", "sets": "KB20kgx12/12" },
-                                { "name": "Bent over rows", "sets": "SB15kgx15 17.5x15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-31",
-                            "phase": "P1W4D1",
-                            "exercises": [
-                                { "name": "Hack squats", "sets": "MC9kgx12/12/12" },
-                                { "name": "Box jumps", "sets": "BWx12/12" },
-                                { "name": "Rear delt fly", "sets": "DB8lbsx15/15" },
-                                { "name": "Stand shoulder press", "sets": "DB10lbsx12/12/12" },
-                                { "name": "Bent over rows", "sets": "CBL5x15 no6x12 no7x12 no6x12" },
-                                { "name": "Planks", "sets": "BWx60s/60s" }
-                            ]
-                        },
-                        {
-                            "date": "2026-02-03",
-                            "phase": "P1W5D1",
-                            "exercises": [
-                                { "name": "Romanian DLs", "sets": "SB20kgx12/12" },
-                                { "name": "Deadlifts", "sets": "BB10kgx10/10/10" },
-                                { "name": "Reverse lunges", "sets": "DB10lbsx10/10/10 a side" },
-                                { "name": "Rear delt fly", "sets": "DB8lbsx12/12" },
-                                { "name": "Chest press", "sets": "DB15lbsx12/12" },
-                                { "name": "Lat pulldowns", "sets": "CBL6x15 no7x12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-02-07",
-                            "phase": "P1W6D1",
-                            "exercises": [
-                                { "name": "Goblet squats", "sets": "DB25kgx12 30lbsx12/10" },
-                                { "name": "Lying leg curl", "sets": "MC2x15/12" },
-                                { "name": "Facepulls", "sets": "CBL3x15/15" },
-                                { "name": "Shoulder press", "sets": "DB15lbsx10/10/8" },
-                                { "name": "Seated rows", "sets": "CBL6x10 no5x12/12" },
-                                { "name": "Stand curls", "sets": "DB10lbsx12/12/12" },
-                                { "name": "Tricep pressdowns", "sets": "CBL3x12 no4x12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-03-04",
-                            "phase": "P1W7D1",
-                            "exercises": [
-                                { "name": "Goblet squats", "sets": "DB25kgx15/15/12" },
-                                { "name": "Rear delt fly", "sets": "DB8lbsx15/15" },
-                                { "name": "Military press", "sets": "SB10kgx15/12/12" },
-                                { "name": "Lat pulldowns", "sets": "CBL6x15 no7x15/15" },
-                                { "name": "Core rotations", "sets": "CBL3x15/15 a side" }
-                            ]
-                        },
-                        {
-                            "date": "2026-03-07",
-                            "phase": "P1W7D2",
-                            "exercises": [
-                                { "name": "Incline lateral lunge", "sets": "BWx15 5kgx15 a side" },
-                                { "name": "Single reverse lunges", "sets": "DB10lbsx12/12 a side" },
-                                { "name": "Chest press", "sets": "CBL3x12 no2x12" },
-                                { "name": "Facepulls", "sets": "CBL3x15/15" },
-                                { "name": "Stand rows", "sets": "CBL7x15/15/15" },
-                                { "name": "Med ball crunches", "sets": "2.5kgx15/15/15" },
-                                { "name": "Med ball core rotations", "sets": "2.5kgx10/10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-03-11",
-                            "phase": "P1W8D1",
-                            "exercises": [
-                                { "name": "Goblet squats", "sets": "DB25kgx15/15/15" },
-                                { "name": "Romanian DLs", "sets": "SB15kgx12 17.5kgx12/12" },
-                                { "name": "Seated shoulder press", "sets": "DB10lbsx15/15/12" },
-                                { "name": "Lat pulldowns", "sets": "CBL4x15/15 no5x12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-03-14",
-                            "phase": "P1W8D2",
-                            "exercises": [
-                                { "name": "Goblet squats", "sets": "DB25kgx15/15/12" },
-                                { "name": "Romanian DLs", "sets": "SB15kgx15/15/15" },
-                                { "name": "Seated shoulder press", "sets": "DB5kgsx15/12/12" },
-                                { "name": "Rear delt fly", "sets": "2.5kg 15/15/15" },
-                                { "name": "Bicep curl", "sets": "2.5kg 15 x 5kg 15/15" },
-                                { "name": "Lat pulldowns", "sets": "21kg 12/12" },
-                                { "name": "Bench Plank", "sets": "76 sec x 60sec" }
-                            ]
-                        },
-                        {
-                            "date": "2026-03-18",
-                            "phase": "P1W9D1",
-                            "exercises": [
-                                { "name": "Goblet squats", "sets": "DB25lbsx15 30lbsx12 25lbsx12" },
-                                { "name": "Romanian DLs", "sets": "SB17.5kgx12 20kgx12" },
-                                { "name": "Incline PUs", "sets": "BWx12/12/12" },
-                                { "name": "Seated rows", "sets": "CBL5x15/15/12" },
-                                { "name": "Core rotations", "sets": "CBL4x12/12/12 a side" },
-                                { "name": "Stand curls", "sets": "DB10lbsx15/12/12" },
-                                { "name": "Tricep pressdowns", "sets": "CBL4x15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-04-06",
-                            "phase": "C2P1W10D1",
-                            "exercises": [
-                                { "name": "Step overs", "sets": "BWx20 5kgx20/20/20 step" },
-                                { "name": "Stand shoulder press", "sets": "DB10lbsx10/10/10/10" },
-                                { "name": "Aus pull ups", "sets": "BWx10/10/10" },
-                                { "name": "Half burpees", "sets": "BWx10/10/10" },
-                                { "name": "Dips", "sets": "BWx10/10/10" },
-                                { "name": "Squats", "sets": "BWx10/10/10" },
-                                { "name": "Core rotations", "sets": "CBL4x12/12 a side" }
-                            ]
-                        },
-                        {
-                            "date": "2026-04-08",
-                            "phase": "C2P1W10D2",
-                            "exercises": [
-                                { "name": "Bulgarian split squats", "sets": "BWx12/12/12 a side" },
-                                { "name": "Incline lateral lunge", "sets": "BWx12/12 a side" },
-                                { "name": "Supported pull ups", "sets": "BWx10/10/10" },
-                                { "name": "Med ball slams", "sets": "5kgx10 9kgx10/10" },
-                                { "name": "Incline push ups", "sets": "BWx10/10/10" },
-                                { "name": "Deadlifts", "sets": "KB20kgx10 16kgx10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-04-11",
-                            "phase": "P1W10D3",
-                            "exercises": [
-                                { "name": "Goblet squats", "sets": "DB30lbsx12/12/12" },
-                                { "name": "Med ball slams", "sets": "5kgx12/12/12" },
-                                { "name": "Aus pull ups", "sets": "BWx10/10/10" },
-                                { "name": "Cleans", "sets": "DB15lbsx10/10/10" },
-                                { "name": "Box jumps", "sets": "BWx10/10/10" },
-                                { "name": "Incline push ups", "sets": "Lv5x10/10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-04-13",
-                            "phase": "P1W1D1",
-                            "exercises": [
-                                { "name": "Goblet squats", "sets": "30lbsx12/12/12" },
-                                { "name": "Romanian DLs", "sets": "SB15kgx12 17.5kgx12/12" },
-                                { "name": "Single stand rows", "sets": "CBL3x15/15/15" },
-                                { "name": "Rear delt flys", "sets": "DB6lbsx12/15/15" },
-                                { "name": "Stand curls", "sets": "CBL2x15 no3x15/12" },
-                                { "name": "Tricep rope pulldowns", "sets": "CBL3x15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-04-15",
-                            "phase": "P1W1D2",
-                            "exercises": [
-                                { "name": "Reverse lunges", "sets": "5kgx12 15lbsx12/12" },
-                                { "name": "Single stand rows", "sets": "CBL4x12/12/12" },
-                                { "name": "Seated shoulder press", "sets": "DB10lbsx12 15lbsx10/8" },
-                                { "name": "Landmine 180s", "sets": "BBx20 2.5kgx10/12" },
-                                { "name": "Cleans", "sets": "DB15lbsx12/12/12" },
-                                { "name": "Tricep pressdowns", "sets": "CBL3x12 no4x12 no5x12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-04-24",
-                            "phase": "P1W2D1",
-                            "exercises": [
-                                { "name": "Walking lunges", "sets": "DB15lbsx10/10" },
-                                { "name": "Goblet squats", "sets": "30lbsx12/12" },
-                                { "name": "Lat pulldowns N", "sets": "CBL5x12/12" },
-                                { "name": "Seated rows N", "sets": "CBL5x12/12" },
-                                { "name": "Incline push ups", "sets": "BWx12/12" },
-                                { "name": "Calf raise", "sets": "BWx20/20/20" },
-                                { "name": "Med ball crunches", "sets": "BWx20/20/20" }
-                            ]
-                        },
-                        {
-                            "date": "2026-04-29",
-                            "phase": "P1W3D1",
-                            "exercises": [
-                                { "name": "Romanian DLs", "sets": "SB15kgx12 17.5kgx12 20kgx12" },
-                                { "name": "Leg press", "sets": "MC30lbsx15 40lbsx15 50lbsx15" },
-                                { "name": "Bent over rows", "sets": "SB20kgx12/12/12" },
-                                { "name": "Chest fly mid", "sets": "CBL1x15/15/15" },
-                                { "name": "Reverse fly", "sets": "DB6lbsx15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-05-06",
-                            "phase": "P1W4D1",
-                            "exercises": [
-                                { "name": "Reverse lunges", "sets": "5kgx24/24/24 steps" },
-                                { "name": "Single Romanian DLs", "sets": "10lbsx10/12" },
-                                { "name": "Step downs", "sets": "BWx15/15" },
-                                { "name": "Single arm rows", "sets": "DB20lbsx12/12/12" },
-                                { "name": "Core rotations", "sets": "CBL3x15 no4x12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-05-13",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Romanian DLs", "sets": "SB17.5kgx12 20kgx12 25kgx12" },
-                                { "name": "Leg press", "sets": "MC60lbsx15/15" },
-                                { "name": "Supported pull ups", "sets": "BWx12/12/12" },
-                                { "name": "Straight arm pulldowns", "sets": "CBL4x12/12" },
-                                { "name": "Dips", "sets": "BWx12/12/12" },
-                                { "name": "Med ball slams", "sets": "9kgx10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-05-16",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Squats", "sets": "MB9kgx15/15/15" },
-                                { "name": "Single RDLs", "sets": "5kgx10/10/10" },
-                                { "name": "Bent over rows", "sets": "CBL6x15/15/15/15" },
-                                { "name": "Stand shoulder press", "sets": "DB10lbsx15/12/12" },
-                                { "name": "Core rotations", "sets": "CBL4x15/15/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-05-25",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Squats", "sets": "20lbsx15/15/15" },
-                                { "name": "Single RDLs", "sets": "5kgx15/15" },
-                                { "name": "Bent over rows", "sets": "10lbs /15/15/15" },
-                                { "name": "Stand shoulder press", "sets": "DB10lbsx12/12/12" },
-                                { "name": "Crunches", "sets": "2.5kg 10x 20" }
-                            ]
-                        },
-                        {
-                            "date": "2026-05-29",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Clean & press", "sets": "DB10lbsx10/10/10" },
-                                { "name": "Goblet squats", "sets": "DB30lbsx10/10/10" },
-                                { "name": "Aus pull ups", "sets": "BWx10/10/10" },
-                                { "name": "Deadlifts", "sets": "KB20kgx10/10/10" },
-                                { "name": "Incline push ups", "sets": "BWx10/10/10" },
-                                { "name": "Jump squats", "sets": "BWx10/10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-06-03",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Bulgarian split squats (quads)", "sets": "BWx10 2.5kgx10/10/10" },
-                                { "name": "Lateral raise", "sets": "DB8lbsx10/10/10/10" },
-                                { "name": "Landmine rows", "sets": "BB5kgx10/10/10/10" },
-                                { "name": "Stand curls", "sets": "SB10kgx10/10/10/10" },
-                                { "name": "Push ups", "sets": "BWx10/10/10/10" },
-                                { "name": "Tricep pressdowns", "sets": "CBL5x10/10/10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-06-06",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Hack squats", "sets": "MC13kgx10 9kgx10/10" },
-                                { "name": "Stand shoulder press", "sets": "DB10lbsx12/12/12" },
-                                { "name": "Single arm rows", "sets": "DB20lbs x12/12/12" },
-                                { "name": "Supported pull ups", "sets": "BWx12/12" },
-                                { "name": "Incline push ups", "sets": "BW10/10/10" },
-                                { "name": "Landmine 180s", "sets": "BBx15 2.5kgx15/15" },
-                                { "name": "Cleans", "sets": "DB15lbsx12/12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-06-10",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Bulgarian split squats (glutes)", "sets": "BWx12 2.5kgx12/12/12" },
-                                { "name": "Lat pulldowns", "sets": "CBL5x12/12/8/8" },
-                                { "name": "Push ups", "sets": "BWx10/15/15" },
-                                { "name": "Seated shoulder press", "sets": "DB10lbsx10/10/12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-06-12",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Leg press", "sets": "MC40lbsx15 60lbsx12/12/12 70lbsx12" },
-                                { "name": "Aus pull ups", "sets": "BWx10/10/10/10" },
-                                { "name": "Seated shoulder press", "sets": "DB10lbsx12/12/10/10" },
-                                { "name": "Stand curls", "sets": "DB8lbsx15/15/15/15" },
-                                { "name": "Tricep pressdowns", "sets": "CBL3x15 no4x15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-08",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Lateral lunges", "sets": "BWx12/12 a side" },
-                                { "name": "Reverse lunges", "sets": "BWx12/12 a side" },
-                                { "name": "Lat pulldowns", "sets": "CBL4x12 no6x12/10/8" },
-                                { "name": "Seated shoulder press", "sets": "DB10lbsx12/12 15lbsx8" },
-                                { "name": "Stand curls", "sets": "DB10lbsx12/12/12" },
-                                { "name": "Tricep rope pulldowns", "sets": "CBL4x12/10 no3x12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-15",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Clean & press", "sets": "DB10lbsx10/10" },
-                                { "name": "Romanian DLs", "sets": "DB15lbsx10/10" },
-                                { "name": "Leg press", "sets": "MC70lbsx12/12 80lbsx10/10" },
-                                { "name": "Supported pull ups", "sets": "BWx12/12/12/10" },
-                                { "name": "Incline push ups", "sets": "BWx12/12/12/12" },
-                                { "name": "Curl and press", "sets": "DB10lbsx8/8/8/8" },
-                                { "name": "Core rotations", "sets": "CBL4x12/12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-19",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Deadlifts", "sets": "EZB20kgx10/10/10" },
-                                { "name": "Seated shoulder press", "sets": "DB10lbsx10/10/10" },
-                                { "name": "Single arm rows", "sets": "DB20lbsx10" },
-                                { "name": "Stand curls", "sets": "SB10kgx10" },
-                                { "name": "Incline push ups", "sets": "BWx10" },
-                                { "name": "Tricep rope pulldowns", "sets": "CBL3x10" },
-                                { "name": "Lat pulldowns", "sets": "CBL6x10" },
-                                { "name": "Ball slams", "sets": "MB5kgx10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-26",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Box squats", "sets": "20lbsx15" },
-                                { "name": "Stand shoulder press", "sets": "DB10lbsx15" },
-                                { "name": "Lat pulldowns", "sets": "CBL4x15" },
-                                { "name": "Hammer curls", "sets": "DB6lbsx15" },
-                                { "name": "Incline push ups", "sets": "BWx15" },
-                                { "name": "Tricep rope pulldowns", "sets": "CBL2x15" },
-                                { "name": "Landmine 180s", "sets": "2.5kgx15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-29",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Lunges", "sets": "10lbsx15 15lbsx12/12" },
-                                { "name": "Supported pull ups", "sets": "BWx15/15/15/15" },
-                                { "name": "Single arm OH press", "sets": "10lbsx12/12/12" },
-                                { "name": "Stand curls", "sets": "SB10kgx12/12/12" },
-                                { "name": "Tricep ext", "sets": "CBL2x12/12/12" },
-                                { "name": "Single Calf raises", "sets": "BWx12/12/12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-08-12",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Hack squats", "sets": "MC9kgx12/12/12" },
-                                { "name": "Reverse lunges", "sets": "5kgx12/12 a side" },
-                                { "name": "Single arm rows", "sets": "DB15lbsx12 20lbsx12/12" },
-                                { "name": "Supported pull ups", "sets": "BWx12/12" },
-                                { "name": "Incline push ups", "sets": "BWx12/12/12" },
-                                { "name": "Military press", "sets": "SB10kgx10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-08-19",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Walking lunges", "sets": "5kgx12/12/12" },
-                                { "name": "Romanian DLs", "sets": "SB20kgx12/12" },
-                                { "name": "Lat pulldowns UHG", "sets": "CBL4x15 no5x12/12" },
-                                { "name": "Aus pull ups", "sets": "BWx10/12" },
-                                { "name": "Chest fly mid", "sets": "CBL2x12/12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-08-23",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Step ups", "sets": "BWx15 5kgx12/12" },
-                                { "name": "Single seated rows", "sets": "CBL2x15/15 no3x10/10" },
-                                { "name": "Lat pulldowns Narrow", "sets": "CBL5kgx12/12/12" },
-                                { "name": "Incline push ups", "sets": "20\"x12/12/12" },
-                                { "name": "Stand curls", "sets": "DB8lbsx15 10lbsx15 12.5kgx12" },
-                                { "name": "Tricep rope pulldowns", "sets": "CBL3x15 no4x12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-08-26",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Leg presses", "sets": "MC70lbsx12/15 80lbs" },
-                                { "name": "Romanian DLs", "sets": "SB20kgx12/12" },
-                                { "name": "Supported pull ups", "sets": "BWx12/12/12" },
-                                { "name": "Lat pulldowns narrow", "sets": "CBL5x12/12" },
-                                { "name": "Incline push ups", "sets": "BWx15/15/12" },
-                                { "name": "Tricep pressdowns", "sets": "CBL4x15/15 no5x12" },
-                                { "name": "Stand curls", "sets": "SB12.5kgx12/12/12" }
                             ]
                         },
                         {
@@ -1138,6 +603,11 @@ function parseSheetData(rows) {
                     "calories": 2500,
                     "protein": 170,
                     "dietNotes": "High output hypertrophy phase, strength focus on compound lifts.",
+                    "inbody": [
+                        { "date": "2025-12-01", "weight": 73.0, "bodyFat": 18.0, "smm": 33.0, "visceral": 7, "bmr": 1620 },
+                        { "date": "2026-03-01", "weight": 72.1, "bodyFat": 17.2, "smm": 33.8, "visceral": 6, "bmr": 1650 },
+                        { "date": "2026-07-01", "weight": 71.2, "bodyFat": 16.5, "smm": 34.5, "visceral": 6, "bmr": 1680 }
+                    ],
                     "sessions": [
                         {
                             "date": "2025-12-03",
@@ -1148,576 +618,6 @@ function parseSheetData(rows) {
                                 { "name": "Bench press", "sets": "DB20kgx15 22.5kgx15/15" },
                                 { "name": "Lat pulldowns N", "sets": "CBL9x15 no10x15/15" },
                                 { "name": "Seated rows", "sets": "CBL10x15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2025-12-11",
-                            "phase": "C1P1W2D2",
-                            "exercises": [
-                                { "name": "Goblet sumo squats", "sets": "17.5kgx15 20kgx15/15" },
-                                { "name": "Leg press", "sets": "MC100lbsx12 110lbsx12" },
-                                { "name": "Bench press", "sets": "BB20kg x15 25kgx15 30kgx15" },
-                                { "name": "Chest fly high", "sets": "CBL5x15/15" },
-                                { "name": "Bent over rows", "sets": "BB30kgx15/15/15" },
-                                { "name": "Supported pull ups", "sets": "BWx12/12" },
-                                { "name": "Stand curls", "sets": "SB25kgx12 20kgx15/12" },
-                                { "name": "Tricep rope pulldowns", "sets": "CBL8x15/12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2025-12-13",
-                            "phase": "C1P1W2D3",
-                            "exercises": [
-                                { "name": "Romanian deadlift", "sets": "DB20kgx12 22.5kgx12" },
-                                { "name": "Curtsy lunges", "sets": "BWx12/12/12 a side" },
-                                { "name": "Chest fly", "sets": "CBL4x15 no5x15" },
-                                { "name": "Incline press", "sets": "SM30kgx12/12/12" },
-                                { "name": "Lat pulldowns D", "sets": "CBL13x12/12/10" },
-                                { "name": "Seated rows D", "sets": "CBL12x12 no11x12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-03",
-                            "phase": "C2P1W1",
-                            "exercises": [
-                                { "name": "Goblet sumo squats", "sets": "DB17.5kgx15 20kgx15 22.5kgx15/15" },
-                                { "name": "Seated shoulder press", "sets": "DB20lbsx15 25lbsx15 30lbsx15/12" },
-                                { "name": "Chest press", "sets": "BB30kgx12/12/12" },
-                                { "name": "Seated curls", "sets": "DB20lbsx12/12/12" },
-                                { "name": "Lat pulldowns", "sets": "CBL11 x15/12/12" },
-                                { "name": "Tricep rope pulldowns", "sets": "CBL7x15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-07",
-                            "phase": "C2P1W2D2",
-                            "exercises": [
-                                { "name": "Bulgarian split squats", "sets": "BWx12 25lbsx12/12 30lbsx12/12 a side" },
-                                { "name": "Rear delt fly", "sets": "DB20lbsx15/16" },
-                                { "name": "Bench press", "sets": "BB35kgx12/12/12/10" },
-                                { "name": "Seated rows wide", "sets": "CBL11x12/12/12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-09",
-                            "phase": "C2P1W2D3",
-                            "exercises": [
-                                { "name": "Hack squats", "sets": "MC31kgx12/12/12/10" },
-                                { "name": "Incline press", "sets": "DB17.5kgx15 20kgx12/12/12" },
-                                { "name": "Supported pull ups", "sets": "BWx12/12/12/10" },
-                                { "name": "Tricep extension", "sets": "HCB10kgx10/10 5kgx12/12" },
-                                { "name": "Hammer curls", "sets": "HCB10kgx10/10 5kgx12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-16",
-                            "phase": "C2P1W3D1",
-                            "exercises": [
-                                { "name": "Goblet squats", "sets": "DB22.5kgx12/12/12" },
-                                { "name": "Romanian DLs", "sets": "EZB10kgx12 20kgx12" },
-                                { "name": "Single leg Split hops", "sets": "BWx10/10/10 a side" },
-                                { "name": "Clean & press", "sets": "KB16kgx10/10 a side" },
-                                { "name": "Supported pull ups", "sets": "BWx12/12" },
-                                { "name": "Back extensions", "sets": "5kgx12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-17",
-                            "phase": "C2P1W3D2",
-                            "exercises": [
-                                { "name": "Walking lunges", "sets": "DB10lbsx24 15lbsx24/24 steps" },
-                                { "name": "Box jumps", "sets": "BWx12/12" },
-                                { "name": "Chest press", "sets": "BB35kgx12/12/10" },
-                                { "name": "Shrugs", "sets": "DB30lbsx20 17.5kgx18" },
-                                { "name": "Seated rows UHG", "sets": "CBL11x12/12/12" },
-                                { "name": "Core rotations", "sets": "CBL5x12/12" },
-                                { "name": "Calf raise", "sets": "BWx25/25" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-23",
-                            "phase": "C2P1W4D1",
-                            "exercises": [
-                                { "name": "Front Squats", "sets": "DB20lbsx10/10 25lbsx10" },
-                                { "name": "Single floor to overhead", "sets": "DB25lbsx10 30lbsx10/10" },
-                                { "name": "Supported pull ups", "sets": "BWx10/10/10/10" },
-                                { "name": "Half Swings", "sets": "KB16kgx10/10 20kgx10/10" },
-                                { "name": "Aus pull ups", "sets": "BWx10/10/10" },
-                                { "name": "Push ups", "sets": "BWx10/10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-26",
-                            "phase": "C2P1W5D1",
-                            "exercises": [
-                                { "name": "Bulgarian split squats", "sets": "BWx15 10lbsx15 15lbsx12/12" },
-                                { "name": "Rear delt fly", "sets": "DB15lbsx15/15" },
-                                { "name": "Stand shoulder press", "sets": "DB25lbsx15 30lbsx12" },
-                                { "name": "Chest press", "sets": "BB35kgx12 40kgx12/10" },
-                                { "name": "Lat pulldowns", "sets": "CBL11x12 no12x12" },
-                                { "name": "Single arm rows", "sets": "CBL6x12/12" },
-                                { "name": "Stand curls", "sets": "SB15kgx12/12/12" },
-                                { "name": "Tricep pressdowns", "sets": "CBL9x12/12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-01-30",
-                            "phase": "C2P1W5D2",
-                            "exercises": [
-                                { "name": "Hack squats", "sets": "MC32kgx12/12 36kgx12" },
-                                { "name": "Explosive squats", "sets": "BW12/15" },
-                                { "name": "Rear delt fly", "sets": "DB15lbsx15/15" },
-                                { "name": "Incline press", "sets": "DB20kgx12 22.5kgx12/12" },
-                                { "name": "Single bent over rows", "sets": "CBL10x12/12" },
-                                { "name": "Seated rows wide", "sets": "CBL11x12/12" },
-                                { "name": "Stand curls", "sets": "SB17.5kgx12 20kgx12 25kgx8" },
-                                { "name": "Tricep rope pulldowns", "sets": "CBL8x12 no9x12 no10x12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-02-07",
-                            "phase": "C2P1W6D1",
-                            "exercises": [
-                                { "name": "Squats", "sets": "SM40kgx8/8/8" },
-                                { "name": "Facepulls", "sets": "CBL4x20 no5x15" },
-                                { "name": "Seated shoulder press", "sets": "DB17.5kgx12 20kgx10/10" },
-                                { "name": "Lat pulldowns N", "sets": "CBL12 no13x10/10" },
-                                { "name": "Hammer curls", "sets": "DB25lbsx12/12/12" },
-                                { "name": "Tricep pressdowns", "sets": "CBL10x12/12 no11x10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-02-09",
-                            "phase": "C2P1W7D1",
-                            "exercises": [
-                                { "name": "Walking lunges", "sets": "DB5lbsx24 15lbsx24 20lbsx24 25lbsx20 steps" },
-                                { "name": "Lying leg curls", "sets": "MC9x15 no10x12" },
-                                { "name": "Facepulls", "sets": "CBL5x15/15" },
-                                { "name": "Bench press", "sets": "BB30kgx15 40kgx12 45kgx8" },
-                                { "name": "Lateral raise", "sets": "DB10lbsx15 15lbsx12/12" },
-                                { "name": "Seated rows D", "sets": "CBL12x12 no13x12/10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-02-11",
-                            "phase": "C2P1W7D1",
-                            "exercises": [
-                                { "name": "Step ups", "sets": "BWx20 5kgx20 steps" },
-                                { "name": "Deep squats", "sets": "BWx15 5kgx12" },
-                                { "name": "Squats", "sets": "SM40kgx10/8/8/8" },
-                                { "name": "Romanian DLs", "sets": "SB30kgx12 35kgx12" },
-                                { "name": "Chest fly mid", "sets": "CBL4x15 no5x12/12" },
-                                { "name": "Lat pulldowns W", "sets": "CBL12x12/12 no13x12" },
-                                { "name": "Stand curls", "sets": "SB20kgx12/12/10" },
-                                { "name": "Tricep rope pulldowns", "sets": "CBL10kgx12/12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-03-02",
-                            "phase": "C2P1W8D1",
-                            "exercises": [
-                                { "name": "Step ups", "sets": "BWx20 5kgx20 steps" },
-                                { "name": "Deep squats", "sets": "BWx15 5kgx12" },
-                                { "name": "Squats", "sets": "SM40kgx10/10/10" },
-                                { "name": "Romanian DLs", "sets": "SB35kgx12/12" },
-                                { "name": "Seated shoulder press", "sets": "DB30lbsx15/15 17.5kgx12" },
-                                { "name": "Single rows", "sets": "CBL10x12/12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-03-06",
-                            "phase": "C2P1W8D2",
-                            "exercises": [
-                                { "name": "Romanian DLs", "sets": "30lbsx12 17.5kgx12 20kgx12" },
-                                { "name": "Lat pulldowns", "sets": "CBL7x15 no9x15 no11x15" },
-                                { "name": "Deadlifts", "sets": "BB40kgx8/8/8" },
-                                { "name": "Single reverse lunges", "sets": "DB15lbsx12 20lbsx12 25lbsx12 a side" },
-                                { "name": "Chest fly mid", "sets": "CBL4x15 no5x15/14" },
-                                { "name": "Lat pulldowns UHG", "sets": "CBL12x12 no13x12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-03-09",
-                            "phase": "C2P1W9D1",
-                            "exercises": [
-                                { "name": "Step ups", "sets": "BW5kgx20/20 steps" },
-                                { "name": "Deep squats", "sets": "BWx10/10" },
-                                { "name": "Goblet squats", "sets": "DB30lbsx14/12/12" },
-                                { "name": "Incline press", "sets": "DB30lbsx12 17.5kgx12 20kgx12 22.5kgx12" },
-                                { "name": "Lat pulldowns N", "sets": "CBL12x12 no13x12/12 no14x10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-03-16",
-                            "phase": "C2P1W10D1",
-                            "exercises": [
-                                { "name": "Farmers carry OH", "sets": "DB15lbs / 20lbs / 25lbs" },
-                                { "name": "Step ups", "sets": "BW5kgx20/20 steps" },
-                                { "name": "Deep squats", "sets": "10kgx10/10" },
-                                { "name": "Front squats", "sets": "DB30lbsx12" },
-                                { "name": "Stand shoulder press", "sets": "SB25kgx15 30kgx12 35kgx12" },
-                                { "name": "Lat pulldowns W", "sets": "CBL12x12/12/12" },
-                                { "name": "Stand calf raise", "sets": "MC13.6kgx20/20/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-03-30",
-                            "phase": "C2P1W11D1",
-                            "exercises": [
-                                { "name": "Squats", "sets": "SM30kgx12 40kgx10/10" },
-                                { "name": "Seated shoulder press", "sets": "DB30lbsx15 17.5kgx12 20kgx10" },
-                                { "name": "Lat pulldowns N", "sets": "CBL12x12/12/12" },
-                                { "name": "Climbers", "sets": "BWx15/15 a side" },
-                                { "name": "Crunches", "sets": "BWx15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-04-01",
-                            "phase": "C2P1W11D2",
-                            "exercises": [
-                                { "name": "Step overs", "sets": "BWx30 5kgx30 10kgx30 15kgx30 steps" },
-                                { "name": "Stand shoulder press", "sets": "DB20lbsx15 25lbsx15 30lbsx15 17.5kgx15" },
-                                { "name": "Supported pull ups", "sets": "BWx10/10/10/10" },
-                                { "name": "Half burpees", "sets": "BWx15/10/10/10" },
-                                { "name": "Dips", "sets": "BWx15/15/15" },
-                                { "name": "Squats", "sets": "BWx15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-04-10",
-                            "phase": "C2P1W11D2",
-                            "exercises": [
-                                { "name": "Front squats", "sets": "DB30lbsx10" },
-                                { "name": "Stand shoulder press", "sets": "DB30lbsx10" },
-                                { "name": "Bent over rows", "sets": "BB10kgx10 20kgx10/10/10" },
-                                { "name": "Box jumps", "sets": "BWx10/10/10/10" },
-                                { "name": "Aus pull ups", "sets": "BWx10" },
-                                { "name": "Push ups", "sets": "BWx10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-04-20",
-                            "phase": "C2P1W13D1",
-                            "exercises": [
-                                { "name": "Squats", "sets": "SM35kgx10" },
-                                { "name": "Clean & press", "sets": "DB25lbsx10 30lbsx10/10/10" },
-                                { "name": "Bench press", "sets": "BB40kgx10/10/10/8" },
-                                { "name": "KB swings", "sets": "20kgx10" },
-                                { "name": "Forward leaps", "sets": "BWx10" },
-                                { "name": "Aus pull ups", "sets": "BWx10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-04-22",
-                            "phase": "C2P1W13D2",
-                            "exercises": [
-                                { "name": "Goblet squats", "sets": "DB30lbsx10" },
-                                { "name": "Stand shoulder press", "sets": "DB30lbsx10" },
-                                { "name": "Supported pull ups", "sets": "BWx10" },
-                                { "name": "Push ups", "sets": "BWx10" },
-                                { "name": "KB swings", "sets": "KB16kgx10" },
-                                { "name": "Bent over rows", "sets": "CBL12x10 no13x10 no14x10 no16x10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-04-27",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Deadlifts", "sets": "BB35kgx10" },
-                                { "name": "Box jumps", "sets": "BWx10" },
-                                { "name": "Single stand shoulder press", "sets": "DB30lbsx10" },
-                                { "name": "Goblet sumo squats", "sets": "DB30lbsx10" },
-                                { "name": "Aus pull ups", "sets": "BWx10" },
-                                { "name": "Push ups", "sets": "BWx10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-05-08",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Bulgarian split squats (glutes)", "sets": "BWx10 DB20lbx10/10/10" },
-                                { "name": "Single arm rows", "sets": "DB17.5kgx15/15 20kgx12" },
-                                { "name": "Chest fly mid", "sets": "CBL5x12 no4x15/15" },
-                                { "name": "Stand curls", "sets": "DB20lbsx15/12/12" },
-                                { "name": "Tricep pressdowns", "sets": "CBL10x15/15/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-05-11",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Goblet squats", "sets": "DB30lbsx10/10 17.5kgx10/10" },
-                                { "name": "Single clean & press", "sets": "DB30lbsx10/10/10/10" },
-                                { "name": "Aus pull ups", "sets": "BWx10" },
-                                { "name": "Push ups", "sets": "BWx10" },
-                                { "name": "Med Ball slams", "sets": "9kgx10" },
-                                { "name": "Bent over rows", "sets": "CBL16x10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-05-15",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Hack squats", "sets": "MC50lbsx10/10/10/10/10/10" },
-                                { "name": "Lat pulldowns (narrow)", "sets": "CBL9x10 no10x10/10/10/10/10" },
-                                { "name": "Incline press", "sets": "DB17.5kgx10/10/10/10/10/10" },
-                                { "name": "Stand curls", "sets": "DB15lbsx10/10/10/10/10/10" },
-                                { "name": "Tricep pressdowns", "sets": "CBL9x10 no8x10/10/10/10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-06-01",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Bulgarian split squats (quads)", "sets": "DB20lbx10/10/10" },
-                                { "name": "Lateral raise", "sets": "DB15lbsx10/10/10" },
-                                { "name": "Landmine rows", "sets": "BB35kgx10/10/10" },
-                                { "name": "Stand curls", "sets": "DB25lbsx10/10/10" },
-                                { "name": "Push ups", "sets": "BWx10/10/10" },
-                                { "name": "Tricep pressdowns", "sets": "CBL8x10 no9x10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-06-05",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Hack squats", "sets": "27kgx10 31kgx10/10" },
-                                { "name": "Stand overhead press", "sets": "HS13kgx10 18kgx10/10" },
-                                { "name": "Reverse lunges", "sets": "DB25lbsx10 30lbsx10" },
-                                { "name": "Supported pull ups", "sets": "BWx10/10" },
-                                { "name": "Seated Rows (wide)", "sets": "CBL12x10" },
-                                { "name": "Seated curls", "sets": "DB25lbsx10" },
-                                { "name": "Incline press", "sets": "DB20kgx10" },
-                                { "name": "Tricep rope pulldowns", "sets": "CBL8x10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-06-08",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Step overs", "sets": "DB25lbsx10/10 30lbsx10" },
-                                { "name": "Med ball slams", "sets": "9kgx10/10/10" },
-                                { "name": "Box jumps", "sets": "24\" x10/10/10" },
-                                { "name": "Stand shoulder press", "sets": "DB30lbsx10/10/10" },
-                                { "name": "Front squats", "sets": "DB30lbsx10/10/10" },
-                                { "name": "Push ups", "sets": "BWx10/10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-06-19",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Stand shoulder press", "sets": "DB25lbsx15/15" },
-                                { "name": "Romanian DL", "sets": "SB30kgx12/12" },
-                                { "name": "Single arm rows", "sets": "DB17.5kgx12 20kgx12 22.5kgx12" },
-                                { "name": "Supported pull ups", "sets": "BWx12/12/12" },
-                                { "name": "Seated shoulder press", "sets": "DB17.5kgx12/12/12" },
-                                { "name": "Seated curls", "sets": "DB20lbsx12 25lbsx10/10" },
-                                { "name": "Tricep pressdowns", "sets": "CBL8x12 no9x12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-06-22",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Leg extensions", "sets": "MC10x10 no12x12/10" },
-                                { "name": "Leg curls", "sets": "MC6x12 no8x12 no10x12" },
-                                { "name": "Lat pull downs", "sets": "CBL12x12 no13x12/12" },
-                                { "name": "Aus pull ups", "sets": "BWx10/10/5" },
-                                { "name": "Incline press", "sets": "DB17.5kgx12 20kgx12 22.5kgx12" },
-                                { "name": "Chest fly low", "sets": "CBL2x12 no3x12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-06-24",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Stand shoulder press", "sets": "DB25lbsx12 30lbsx12" },
-                                { "name": "Romanian DLs", "sets": "SB40kgx12 45kgx10" },
-                                { "name": "Leg extensions", "sets": "MC12x12/12 no14x12" },
-                                { "name": "Leg curls", "sets": "MC8x12/12/12" },
-                                { "name": "Seated rows (narrow)", "sets": "CBL13x12 no14x10 no15x10" },
-                                { "name": "Supported pull ups", "sets": "BWx12/12" },
-                                { "name": "Seated shoulder press", "sets": "DB17.5kgx12 20kgx12 22.5kgx8" },
-                                { "name": "Lateral raise", "sets": "DB15lbsx12/12/12" },
-                                { "name": "Seated curls", "sets": "DB25lbsx10/10/10/10" },
-                                { "name": "Skullcrushers", "sets": "SB20kgx10/10/10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-06-29",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Reverse lunges", "sets": "DB15lbsx12 25lbsx12 30lbsx10 17.5kgx8" },
-                                { "name": "Lat pull downs (UHG)", "sets": "CBL12x12 no13x12 no14x10" },
-                                { "name": "Bench press", "sets": "BB35kgx12 40kgx10/10/8" },
-                                { "name": "Hammer curls", "sets": "DB25lbsx12/12 30lbsx10/8" },
-                                { "name": "Tricep rope pulldowns", "sets": "CBL8x12/12 no9x10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-01",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Romanian deadlifts", "sets": "SB30kgx12/12" },
-                                { "name": "Supported pull ups", "sets": "BWx12/12" },
-                                { "name": "Deadlifts", "sets": "BB20kgx10 30kgx10/10 40kgx8" },
-                                { "name": "Box jumps", "sets": "BWx15/15/15" },
-                                { "name": "Push ups", "sets": "BWx12/12/12" },
-                                { "name": "Skullcrushers", "sets": "SB20kgx12 25kgx10/10" },
-                                { "name": "Seated curls", "sets": "DB25lbsx12/12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-06",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Squats", "sets": "SM40kgx10/10/10/8" },
-                                { "name": "Bench press", "sets": "BB40kgx12/10/10/8" },
-                                { "name": "Seated rows (wide)", "sets": "CBL15x12/12/8/8" },
-                                { "name": "Tricep pressdowns", "sets": "CBL9x12 no10x12/12/10" },
-                                { "name": "Stand curls", "sets": "DB25lbsx10/10/10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-10",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Walking lunges w static curls", "sets": "DB30lbsx10/10/10" },
-                                { "name": "Supported pull ups", "sets": "BWx10/10/" },
-                                { "name": "Aus pull ups", "sets": "BWx10/10" },
-                                { "name": "Push ups", "sets": "BWx12/12/12" },
-                                { "name": "Chest fly mid", "sets": "CBL5x12/12" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-13",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Squats", "sets": "SM40kgx12/12/12/12" },
-                                { "name": "Single seated rows", "sets": "CBL8x12 no7x12/12/10" },
-                                { "name": "Seated shoulder press", "sets": "DB20kgx12/12/10/8" },
-                                { "name": "Seated curls", "sets": "DB25lbsx10/10/10" },
-                                { "name": "Tricep pressdowns", "sets": "CBL10x10/10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-17",
-                            "phase": "",
-                            "exercises": [
-                                { "name": "Bulgarian split squats (step)", "sets": "BWx12 15lbsx12 25lbsx10/10" },
-                                { "name": "Pull ups", "sets": "BWx8/6/6" },
-                                { "name": "Aus pull ups", "sets": "BWx12/12/12" },
-                                { "name": "Dips", "sets": "BWx10/10/7" },
-                                { "name": "Seated curls", "sets": "DB25lbsx10/10/10" },
-                                { "name": "Tricep pressdowns", "sets": "CBL11x10/10/10" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-20",
-                            "phase": "P3",
-                            "exercises": [
-                                { "name": "Reverse lunges", "sets": "DB30lbsx10/10/10" },
-                                { "name": "Goblet sumo squats", "sets": "BWx15/15/15" },
-                                { "name": "Pull ups", "sets": "BWx8/6/6" },
-                                { "name": "Lat pulldowns", "sets": "CBL8x15 no9x15 no12x15" },
-                                { "name": "Push ups", "sets": "BWx10/10/10" },
-                                { "name": "Chest fly", "sets": "CBL4x15/15/15" },
-                                { "name": "Stand curls", "sets": "DB20lbsx15/15/15" },
-                                { "name": "Tricep rope pulldowns", "sets": "CBL8x15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-22",
-                            "phase": "P3",
-                            "exercises": [
-                                { "name": "Bulgarian split squats", "sets": "10kgx15/15/15/15" },
-                                { "name": "Aus pull ups", "sets": "BWx10/10/10" },
-                                { "name": "Stand rows", "sets": "CBL10x15/15/15" },
-                                { "name": "Seated shoulder press", "sets": "DB25lbsx15/15/15" },
-                                { "name": "Lateral raise", "sets": "DB10lbsx15/15/16" },
-                                { "name": "hammer curls", "sets": "CBL6x15/15/15" },
-                                { "name": "Tricep pressdowns", "sets": "CBL8x15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-24",
-                            "phase": "P3",
-                            "exercises": [
-                                { "name": "Deadlifts", "sets": "BB30kgx10 35kgx10 40kgx10/8" },
-                                { "name": "Supported pull ups", "sets": "BWx10/10/10" },
-                                { "name": "Aus pull ups", "sets": "BWx10/10/10" },
-                                { "name": "Push ups", "sets": "BWx10/10/10" },
-                                { "name": "Stand shoulder press", "sets": "DB20lbsx15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-27",
-                            "phase": "P3",
-                            "exercises": [
-                                { "name": "Goblet sumo squats", "sets": "DB30lbsx15" },
-                                { "name": "Clean & press", "sets": "DB20lbsx15" },
-                                { "name": "Lat pulldowns rope", "sets": "CBL12x15" },
-                                { "name": "Stand curls", "sets": "DB20lbsx15" },
-                                { "name": "Incline push ups", "sets": "BWx15" },
-                                { "name": "Tricep pressdowns", "sets": "CBL8x15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-07-31",
-                            "phase": "P3",
-                            "exercises": [
-                                { "name": "Reverse lunges", "sets": "DB30lbsx10 a side" },
-                                { "name": "Box jumps", "sets": "BWx10" },
-                                { "name": "Pull ups", "sets": "x5" },
-                                { "name": "Push ups", "sets": "x10" },
-                                { "name": "Seated curls", "sets": "DB20lbsx15" },
-                                { "name": "Tricep extensions", "sets": "CBL8x15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-08-10",
-                            "phase": "P1",
-                            "exercises": [
-                                { "name": "Hack squats", "sets": "MC27kgx12/12/12" },
-                                { "name": "Romanian deadlifts", "sets": "SB30kgx12/12 35kgx12" },
-                                { "name": "Lat pulldowns", "sets": "CBL10x15 no11x12 no12x12" },
-                                { "name": "Bench press", "sets": "BB20kgx15 25kgx12/15" },
-                                { "name": "Seated shoulder press", "sets": "DB20lbsx15/15/15" },
-                                { "name": "Incline curls", "sets": "DB15lbsx15/15/15" },
-                                { "name": "Skull crushers", "sets": "MGB5kgx15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-08-17",
-                            "phase": "P1",
-                            "exercises": [
-                                { "name": "Squats", "sets": "SM20kgx15 30kgx12 40kgx12" },
-                                { "name": "Lat pulldowns", "sets": "CBL11x15 no12x13/12" },
-                                { "name": "Incline press", "sets": "DB20kgx15/15 22.5kgx12" },
-                                { "name": "Rear delt fly", "sets": "DB15lbsx15/15/15" }
-                            ]
-                        },
-                        {
-                            "date": "2026-08-24",
-                            "phase": "P2",
-                            "exercises": [
-                                { "name": "Reverse lunges", "sets": "DB30lbsx12/12 17.5kgx8/8 a side" },
-                                { "name": "Pull ups", "sets": "BWx8/6/5" },
-                                { "name": "Lat pulldowns narrow", "sets": "CBL13x10/10" },
-                                { "name": "Bench press", "sets": "BB30kgx12 35kgx10/10" },
-                                { "name": "Seated shoulder press", "sets": "DB20kgx10/10/8" }
-                            ]
-                        },
-                        {
-                            "date": "2026-08-28",
-                            "phase": "P2",
-                            "exercises": [
-                                { "name": "Squats", "sets": "SM20kgx10 30kgx10 40kgx10 45kgx10 50kgx10" },
-                                { "name": "Pull ups", "sets": "BWx9.5/7.5/6" },
-                                { "name": "Bench press", "sets": "BB40kgx10 45kgx10/8" },
-                                { "name": "Skullcrushers", "sets": "SB25kgx10/10/10" },
-                                { "name": "Seated curls", "sets": "DB25lbsx10/10/10" }
                             ]
                         },
                         {
@@ -1736,52 +636,64 @@ function parseSheetData(rows) {
             ]
         };
 
-        // Runtime state structure
         let state = {
             role: 'trainer',
             activeTrainerTab: 'dashboard',
             activeClientTab: 'overview',
-            sheetsUrl: localStorage.getItem('protrainer_sheets_url') || '',
             clients: [],
             workouts: [],
+            inbodyScans: [],
             selectedClientPortalId: ''
         };
 
         let progressionChartInstance = null;
+        let inbodyChartInstance = null;
 
-        // Initialize App on Load
         window.addEventListener('DOMContentLoaded', () => {
             const todayStr = new Date().toISOString().split('T')[0];
             document.getElementById('log-workout-date').value = todayStr;
             document.getElementById('extra-date-from').value = todayStr;
             document.getElementById('extra-date-to').value = todayStr;
+            document.getElementById('ib-date').value = todayStr;
 
             loadStateFromStorage();
             if (state.clients.length === 0) {
                 initializeDataFromDataset();
             }
-
             renderApp();
-            if (state.sheetsUrl) {
-                syncWithGoogleSheets();
-            }
         });
 
         function initializeDataFromDataset() {
             state.clients = [];
             state.workouts = [];
+            state.inbodyScans = [];
             
             rawDataset.clients.forEach((c, idx) => {
                 const clientId = 'c_' + (idx + 1);
                 state.clients.push({
                     id: clientId,
                     name: c.name,
-                    weight: c.weight || (idx === 0 ? 64.5 : 71.2),
-                    bodyFat: c.bodyFat || (idx === 0 ? 18.2 : 16.5),
-                    calories: c.calories || (idx === 0 ? 2200 : 2500),
-                    protein: c.protein || (idx === 0 ? 145 : 170),
-                    dietNotes: c.dietNotes || 'High protein, structured progressive overload.'
+                    weight: c.weight,
+                    bodyFat: c.bodyFat,
+                    calories: c.calories,
+                    protein: c.protein,
+                    dietNotes: c.dietNotes
                 });
+
+                if (c.inbody) {
+                    c.inbody.forEach((ib, ibIdx) => {
+                        state.inbodyScans.push({
+                            id: `ib_${clientId}_${ibIdx}`,
+                            clientId: clientId,
+                            date: ib.date,
+                            weight: ib.weight,
+                            bodyFat: ib.bodyFat,
+                            smm: ib.smm,
+                            visceral: ib.visceral,
+                            bmr: ib.bmr
+                        });
+                    });
+                }
 
                 c.sessions.forEach((s, sIdx) => {
                     state.workouts.push({
@@ -1816,13 +728,8 @@ function parseSheetData(rows) {
                     }
                 } catch(e) {}
             }
-            if (state.sheetsUrl) {
-                document.getElementById('sheets-url-input').value = state.sheetsUrl;
-                updateSyncBadge('connected', 'Google Sheets Synced');
-            }
         }
 
-        // Role & Tab Switching
         function switchRole(role) {
             state.role = role;
             document.getElementById('role-btn-trainer').className = role === 'trainer' 
@@ -1860,75 +767,11 @@ function parseSheetData(rows) {
 
             if (tabId === 'exercises') {
                 renderMuscleGroupProgression();
+            } else if (tabId === 'inbody') {
+                renderInBodySection();
             }
         }
 
-        function openSyncModal() {
-            document.getElementById('sync-modal').classList.remove('hidden');
-        }
-
-        function closeSyncModal() {
-            document.getElementById('sync-modal').classList.add('hidden');
-        }
-
-        async function saveSheetsUrl() {
-            const url = document.getElementById('sheets-url-input').value.trim();
-            state.sheetsUrl = url;
-            localStorage.setItem('protrainer_sheets_url', url);
-            closeSyncModal();
-            if (url) {
-                await pushToGoogleSheets();
-                syncWithGoogleSheets();
-            } else {
-                updateSyncBadge('local', 'Local Mode');
-            }
-        }
-
-        function updateSyncBadge(status, text) {
-            const dot = document.getElementById('sync-dot');
-            const txt = document.getElementById('sync-text');
-            const stat = document.getElementById('stat-sync-status');
-            txt.textContent = text;
-            if(stat) stat.textContent = text;
-            dot.className = status === 'connected' ? 'w-2.5 h-2.5 rounded-full bg-emerald-500' : status === 'syncing' ? 'w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping' : 'w-2.5 h-2.5 rounded-full bg-slate-400';
-        }
-
-        async function syncWithGoogleSheets() {
-            if (!state.sheetsUrl) return;
-            updateSyncBadge('syncing', 'Syncing...');
-            try {
-                const response = await fetch(state.sheetsUrl + '?action=getData');
-                const result = await response.json();
-                if (result.status === 'success') {
-                    if (result.clients && result.clients.length > 0) state.clients = result.clients;
-                    if (result.workouts && result.workouts.length > 0) {
-                        state.workouts = result.workouts.map(w => ({
-                            ...w,
-                            exercises: typeof w.exercisesJson === 'string' ? JSON.parse(w.exercisesJson) : w.exercises
-                        }));
-                    }
-                    saveStateToStorage();
-                    renderApp();
-                    updateSyncBadge('connected', 'Google Sheets Synced');
-                }
-            } catch (err) {
-                updateSyncBadge('connected', 'Sheets (Offline Cache)');
-            }
-        }
-
-        async function pushToGoogleSheets() {
-            if (!state.sheetsUrl) return;
-            try {
-                await fetch(state.sheetsUrl, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'saveData', clients: state.clients, workouts: state.workouts })
-                });
-            } catch(e) {}
-        }
-
-        // Render Application
         function renderApp() {
             renderMasterOverview();
             renderClientSelectDropdowns();
@@ -1936,6 +779,8 @@ function parseSheetData(rows) {
             renderClientPortalView();
             if (state.activeClientTab === 'exercises') {
                 renderMuscleGroupProgression();
+            } else if (state.activeClientTab === 'inbody') {
+                renderInBodySection();
             }
             saveStateToStorage();
         }
@@ -1984,6 +829,7 @@ function parseSheetData(rows) {
         function renderClientSelectDropdowns() {
             const loggerSelect = document.getElementById('logger-client-select');
             const portalSelect = document.getElementById('client-portal-switcher');
+            if(!loggerSelect || !portalSelect) return;
             loggerSelect.innerHTML = '';
             portalSelect.innerHTML = '';
 
@@ -1995,6 +841,7 @@ function parseSheetData(rows) {
 
         function renderPrescriptionList() {
             const container = document.getElementById('client-prescription-list');
+            if(!container) return;
             container.innerHTML = '';
             state.clients.forEach(c => {
                 const div = document.createElement('div');
@@ -2027,7 +874,6 @@ function parseSheetData(rows) {
             state.selectedClientPortalId = newClient.id;
             document.getElementById('add-client-form').reset();
             renderApp();
-            pushToGoogleSheets();
             switchTrainerTab('dashboard');
         }
 
@@ -2038,12 +884,10 @@ function parseSheetData(rows) {
                 client.protein = parseInt(document.getElementById(`edit-protein-${clientId}`).value);
                 client.dietNotes = document.getElementById(`edit-diet-${clientId}`).value;
                 renderApp();
-                pushToGoogleSheets();
                 alert('Nutrition prescription updated successfully!');
             }
         }
 
-        // Gym Floor Logger with Superset Support
         let exerciseBlockCount = 0;
         function addExerciseBlock(defaultName = '', defaultSets = [{weight: '', reps: ''}], supersetWith = '') {
             exerciseBlockCount++;
@@ -2132,21 +976,21 @@ function parseSheetData(rows) {
             };
 
             state.workouts.unshift(newWorkout);
-            pushToGoogleSheets();
             renderApp();
             switchTrainerTab('dashboard');
-            alert('Live session saved successfully and synced!');
+            alert('Live session saved successfully!');
             document.getElementById('live-session-form').reset();
             document.getElementById('exercise-blocks-container').innerHTML = '';
             addExerciseBlock('Goblet Squats', [{weight: '25kg', reps: '15'}]);
         }
 
-        // Client Portal View & Muscle Group Categorizer
         function switchClientPortal(clientId) {
             state.selectedClientPortalId = clientId;
             renderClientPortalView();
             if (state.activeClientTab === 'exercises') {
                 renderMuscleGroupProgression();
+            } else if (state.activeClientTab === 'inbody') {
+                renderInBodySection();
             }
         }
 
@@ -2163,6 +1007,7 @@ function parseSheetData(rows) {
             document.getElementById('client-session-count-badge').textContent = clientWorkouts.length + ' Sessions';
 
             const historyContainer = document.getElementById('client-workout-history-list');
+            if(!historyContainer) return;
             historyContainer.innerHTML = '';
 
             if (clientWorkouts.length === 0) {
@@ -2200,7 +1045,6 @@ function parseSheetData(rows) {
             renderProgressionChart(client, clientWorkouts);
         }
 
-        // Muscle Group Categorizer Helper
         function classifyMuscleGroup(exerciseName) {
             const name = exerciseName.toLowerCase();
             if (name.includes('squat') || name.includes('lunges') || name.includes('leg press') || name.includes('step') || name.includes('hack') || name.includes('bulgarian') || name.includes('leaps') || name.includes('jump')) return 'Quads';
@@ -2220,6 +1064,7 @@ function parseSheetData(rows) {
             const clientWorkouts = state.workouts.filter(w => w.clientId === client.id);
             const filterGroup = document.getElementById('muscle-group-filter').value;
             const container = document.getElementById('muscle-groups-container');
+            if(!container) return;
             container.innerHTML = '';
 
             const groups = {
@@ -2296,8 +1141,100 @@ function parseSheetData(rows) {
             }
         }
 
+        function renderInBodySection() {
+            const client = state.clients.find(c => c.id === state.selectedClientPortalId) || state.clients[0];
+            if (!client) return;
+
+            const scans = state.inbodyScans.filter(s => s.clientId === client.id);
+            scans.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            const tbody = document.getElementById('inbody-table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            if (scans.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">No InBody scans logged yet.</td></tr>`;
+            } else {
+                scans.forEach(s => {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-bold">${s.date}</td>
+                            <td class="p-3">${s.weight} kg</td>
+                            <td class="p-3 text-amber-600 font-bold">${s.bodyFat}%</td>
+                            <td class="p-3 text-brand-600 font-bold">${s.smm} kg</td>
+                            <td class="p-3">${s.visceral}</td>
+                            <td class="p-3">${s.bmr || '—'} kcal</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            const ctx = document.getElementById('inbodyChart').getContext('2d');
+            if (inbodyChartInstance) inbodyChartInstance.destroy();
+
+            inbodyChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: scans.map(s => s.date),
+                    datasets: [
+                        {
+                            label: 'Body Fat %',
+                            data: scans.map(s => s.bodyFat),
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Muscle Mass (SMM kg)',
+                            data: scans.map(s => s.smm),
+                            borderColor: '#16a34a',
+                            backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.3,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Body Fat %' } },
+                        y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Muscle Mass (kg)' } }
+                    }
+                }
+            });
+        }
+
+        function handleLogInBody(e) {
+            e.preventDefault();
+            const client = state.clients.find(c => c.id === state.selectedClientPortalId);
+            const newScan = {
+                id: 'ib_' + Date.now(),
+                clientId: client.id,
+                date: document.getElementById('ib-date').value,
+                weight: parseFloat(document.getElementById('ib-weight').value),
+                bodyFat: parseFloat(document.getElementById('ib-bf').value),
+                smm: parseFloat(document.getElementById('ib-smm').value),
+                visceral: parseInt(document.getElementById('visceral') || document.getElementById('ib-visceral').value),
+                bmr: parseInt(document.getElementById('ib-bmr').value) || 0
+            };
+
+            state.inbodyScans.push(newScan);
+            client.weight = newScan.weight;
+            client.bodyFat = newScan.bodyFat;
+            renderApp();
+            alert('InBody scan saved successfully!');
+            e.target.reset();
+            const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('ib-date').value = todayStr;
+        }
+
         function renderProgressionChart(client, clientWorkouts) {
-            const ctx = document.getElementById('progressionChart').getContext('2d');
+            const ctx = document.getElementById('progressionChart');
+            if(!ctx) return;
             if (progressionChartInstance) progressionChartInstance.destroy();
 
             const sortedWorkouts = [...clientWorkouts].sort((a,b) => new Date(a.date) - new Date(b.date));
@@ -2305,12 +1242,12 @@ function parseSheetData(rows) {
             const labels = chartWorkouts.map(w => w.date);
             const dataCounts = chartWorkouts.map((w, idx) => (idx + 1) * 3 + Math.floor(Math.random() * 5));
 
-            progressionChartInstance = new Chart(ctx, {
+            progressionChartInstance = new Chart(ctx.getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: labels.length ? labels : ['Start', 'Current'],
                     datasets: [{
-                        label: 'Cumulative Volume / Session Score',
+                        label: 'Training Volume Score',
                         data: dataCounts.length ? dataCounts : [10, 20],
                         borderColor: '#16a34a',
                         backgroundColor: 'rgba(22, 163, 74, 0.08)',
@@ -2342,7 +1279,7 @@ function parseSheetData(rows) {
             const steps = document.getElementById('extra-steps').value;
             const duration = document.getElementById('extra-duration').value || '30';
             
-            alert(`Activity logged successfully!\n\nActivity: ${name}\nPeriod: ${fromDate} to ${toDate}\nAvg Steps: ${steps}\nDuration: ${duration} mins\n\nYour trainer can now view your weekly consistency.`);
+            alert(`Activity logged successfully!\n\nActivity: ${name}\nPeriod: ${fromDate} to ${toDate}\nAvg Steps: ${steps}\nDuration: ${duration} mins`);
             e.target.reset();
             const todayStr = new Date().toISOString().split('T')[0];
             document.getElementById('extra-date-from').value = todayStr;
