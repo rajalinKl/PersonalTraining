@@ -90,7 +90,7 @@
         <!-- ================= TRAINER MODE VIEW ================= -->
         <div id="view-trainer" class="space-y-6">
             
-            <!-- Hero Banner with Fitness Photo Integration -->
+            <!-- Hero Banner -->
             <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 to-brand-900 text-white p-6 sm:p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="absolute inset-0 opacity-25 mix-blend-overlay bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop');"></div>
                 <div class="relative z-10 space-y-2 max-w-xl">
@@ -256,7 +256,7 @@
                 </div>
             </div>
 
-            <!-- Tab 3: Gym Floor Live Session Logger -->
+            <!-- Tab 3: Gym Floor Live Session Logger with Superset Support -->
             <div id="tcontent-logger" class="trainer-content hidden space-y-6">
                 <div class="bg-white border border-slate-200/80 p-6 sm:p-8 rounded-3xl shadow-sm max-w-3xl mx-auto space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
@@ -264,9 +264,8 @@
                             <h3 class="font-extrabold text-slate-900 text-xl flex items-center gap-2.5">
                                 <div class="bg-brand-50 text-brand-600 p-2.5 rounded-2xl"><i class="fa-solid fa-stopwatch text-lg"></i></div> Live Session Logger
                             </h3>
-                            <p class="text-xs text-slate-500 mt-1">Optimized for rapid gym-floor set & weight entry.</p>
+                            <p class="text-xs text-slate-500 mt-1">Optimized for rapid gym-floor set & weight entry with superset groupings.</p>
                         </div>
-                        <!-- Client selector for logging -->
                         <div class="w-full sm:w-64">
                             <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Logging For Client</label>
                             <select id="logger-client-select" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 font-bold">
@@ -290,11 +289,16 @@
 
                         <!-- Dynamic Exercise Sets Container -->
                         <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Exercises & Sets</h4>
-                                <button type="button" onclick="addExerciseBlock()" class="text-xs bg-slate-100 hover:bg-slate-200 text-brand-700 font-bold px-3.5 py-2 rounded-xl border border-slate-200 transition flex items-center gap-1.5">
-                                    <i class="fa-solid fa-plus"></i> Add Exercise
-                                </button>
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Exercises & Supersets</h4>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="addExerciseBlock()" class="text-xs bg-slate-100 hover:bg-slate-200 text-brand-700 font-bold px-3.5 py-2 rounded-xl border border-slate-200 transition flex items-center gap-1.5">
+                                        <i class="fa-solid fa-plus"></i> Add Exercise
+                                    </button>
+                                    <button type="button" onclick="addSupersetBlock()" class="text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold px-3.5 py-2 rounded-xl border border-purple-200 transition flex items-center gap-1.5">
+                                        <i class="fa-solid fa-link"></i> + Superset Block
+                                    </button>
+                                </div>
                             </div>
                             <div id="exercise-blocks-container" class="space-y-4">
                                 <!-- Default block -->
@@ -420,7 +424,7 @@ function parseSheetData(rows) {
 
         <!-- ================= CLIENT VIEW MODE ================= -->
         <div id="view-client" class="hidden space-y-6">
-            <!-- Client selector dropdown for testing client mode easily -->
+            <!-- Client selector dropdown -->
             <div class="bg-white border border-slate-200/80 p-5 rounded-3xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-3.5">
                     <div class="bg-brand-50 text-brand-600 p-3.5 rounded-2xl shadow-sm">
@@ -438,90 +442,143 @@ function parseSheetData(rows) {
                 </div>
             </div>
 
-            <!-- Client Dashboard Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Left Column: Nutrition & Daily Lifestyle Card -->
-                <div class="space-y-6">
-                    <!-- Nutrition Target Widget -->
-                    <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-5">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-3.5">
+            <!-- Client Dashboard Sub-navigation Tabs -->
+            <div class="flex overflow-x-auto space-x-2 pb-2 border-b border-slate-200">
+                <button onclick="switchClientTab('overview')" id="ctab-overview" class="client-tab px-4.5 py-2.5 rounded-2xl text-sm font-bold bg-brand-600 text-white flex items-center gap-2.5 whitespace-nowrap shadow-sm shadow-brand-600/20">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard & History
+                </button>
+                <button onclick="switchClientTab('exercises')" id="ctab-exercises" class="client-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap">
+                    <i class="fa-solid fa-dumbbell"></i> Exercise & Muscle Group Progress
+                </button>
+            </div>
+
+            <!-- Client Tab 1: Overview & History -->
+            <div id="ccontent-overview" class="client-content space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left Column: Nutrition & Daily Lifestyle Card -->
+                    <div class="space-y-6">
+                        <!-- Nutrition Target Widget -->
+                        <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-5">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-3.5">
+                                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                                    <div class="bg-brand-50 text-brand-600 p-2 rounded-xl"><i class="fa-solid fa-bullseye"></i></div> Prescribed Nutrition
+                                </h3>
+                                <span class="text-xs bg-brand-50 text-brand-700 px-3 py-1 rounded-full font-bold">Active Plan</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 text-center">
+                                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+                                    <div class="text-xs text-slate-500 font-bold mb-1">Daily Calories</div>
+                                    <div id="client-portal-cals" class="text-2xl font-extrabold text-amber-600">0 kcal</div>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+                                    <div class="text-xs text-slate-500 font-bold mb-1">Protein Target</div>
+                                    <div id="client-portal-protein" class="text-2xl font-extrabold text-brand-600">0 g</div>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="block text-xs font-bold text-slate-600">Dietary Notes & Guidelines</label>
+                                <div id="client-portal-dietnotes" class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-xs text-slate-700 italic min-h-[70px] leading-relaxed">
+                                    High protein, structured progressive overload.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Outside Activity & Steps Logger with Date Range -->
+                        <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
                             <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                                <div class="bg-brand-50 text-brand-600 p-2 rounded-xl"><i class="fa-solid fa-bullseye"></i></div> Prescribed Nutrition
+                                <div class="bg-blue-50 text-blue-600 p-2 rounded-xl"><i class="fa-solid fa-person-running"></i></div> Extra Activity & Steps
                             </h3>
-                            <span class="text-xs bg-brand-50 text-brand-700 px-3 py-1 rounded-full font-bold">Active Plan</span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 text-center">
-                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                                <div class="text-xs text-slate-500 font-bold mb-1">Daily Calories</div>
-                                <div id="client-portal-cals" class="text-2xl font-extrabold text-amber-600">0 kcal</div>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                                <div class="text-xs text-slate-500 font-bold mb-1">Protein Target</div>
-                                <div id="client-portal-protein" class="text-2xl font-extrabold text-brand-600">0 g</div>
-                            </div>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-bold text-slate-600">Dietary Notes & Guidelines</label>
-                            <div id="client-portal-dietnotes" class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-xs text-slate-700 italic min-h-[70px] leading-relaxed">
-                                High protein, structured progressive overload.
-                            </div>
+                            <p class="text-xs text-slate-500">Log extra sports, runs, or weekly step averages with a custom date range.</p>
+                            <form onsubmit="handleLogExtraActivity(event)" class="space-y-3.5">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">Activity Type</label>
+                                    <input type="text" id="extra-activity-name" required placeholder="e.g. 5km Jog & Outdoor Sports" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-500">
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 mb-1">From Date</label>
+                                        <input type="date" id="extra-date-from" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-brand-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 mb-1">To Date</label>
+                                        <input type="date" id="extra-date-to" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-brand-500">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 mb-1">Avg Daily Steps</label>
+                                        <input type="number" id="extra-steps" required placeholder="8500" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 mb-1">Duration (Mins)</label>
+                                        <input type="number" id="extra-duration" placeholder="45" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-500">
+                                    </div>
+                                </div>
+                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-2xl text-xs transition shadow-md shadow-blue-600/20">
+                                    Submit Activity Log
+                                </button>
+                            </form>
                         </div>
                     </div>
 
-                    <!-- Outside Activity & Steps Logger -->
-                    <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
-                        <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                            <div class="bg-blue-50 text-blue-600 p-2 rounded-xl"><i class="fa-solid fa-person-running"></i></div> Extra Activity & Steps
-                        </h3>
-                        <p class="text-xs text-slate-500">Log extra sports, runs, or weekly step averages outside trainer sessions.</p>
-                        <form onsubmit="handleLogExtraActivity(event)" class="space-y-3.5">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-600 mb-1">Activity Type</label>
-                                <input type="text" id="extra-activity-name" required placeholder="e.g. 5km Jog & Outdoor Sports" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-500">
+                    <!-- Right Column: Progression Charts & Historical Logs -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Analytics Chart Card -->
+                        <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                                    <div class="bg-emerald-50 text-emerald-600 p-2 rounded-xl"><i class="fa-solid fa-chart-line"></i></div> Historical Training Volume & Session Progression
+                                </h3>
+                                <span class="text-xs text-slate-500 font-medium">Real Session Logs</span>
                             </div>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-1">Avg Daily Steps</label>
-                                    <input type="number" id="extra-steps" required placeholder="8500" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-500">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-1">Duration (Mins)</label>
-                                    <input type="number" id="extra-duration" placeholder="45" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-500">
-                                </div>
+                            <div class="h-64 relative w-full">
+                                <canvas id="progressionChart"></canvas>
                             </div>
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-2xl text-xs transition shadow-md shadow-blue-600/20">
-                                Submit Activity Log
-                            </button>
-                        </form>
+                        </div>
+
+                        <!-- Historical Workout Logs -->
+                        <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                                    <div class="bg-purple-50 text-purple-600 p-2 rounded-xl"><i class="fa-solid fa-dumbbell"></i></div> Full Real Workout History
+                                </h3>
+                                <span id="client-session-count-badge" class="text-xs bg-slate-100 text-slate-700 px-3 py-1 rounded-xl font-bold">0 Sessions</span>
+                            </div>
+                            <div id="client-workout-history-list" class="space-y-3.5 max-h-[500px] overflow-y-auto pr-1">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Right Column: Progression Charts & Historical Logs -->
-                <div class="lg:col-span-2 space-y-6">
-                    <!-- Analytics Chart Card -->
-                    <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                                <div class="bg-emerald-50 text-emerald-600 p-2 rounded-xl"><i class="fa-solid fa-chart-line"></i></div> Historical Training Volume & Session Progression
+            <!-- Client Tab 2: Exercise & Muscle Group Progress -->
+            <div id="ccontent-exercises" class="client-content hidden space-y-6">
+                <div class="bg-white border border-slate-200/80 p-6 sm:p-8 rounded-3xl shadow-sm space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                        <div>
+                            <h3 class="font-extrabold text-slate-900 text-xl flex items-center gap-2.5">
+                                <div class="bg-emerald-50 text-emerald-600 p-2.5 rounded-2xl"><i class="fa-solid fa-dumbbell text-lg"></i></div> Muscle Group & Exercise Progression
                             </h3>
-                            <span class="text-xs text-slate-500 font-medium">Real Session Logs</span>
+                            <p class="text-xs text-slate-500 mt-1">Exercises grouped by targeted muscle groups with weight lifted & session frequencies over time.</p>
                         </div>
-                        <div class="h-64 relative w-full">
-                            <canvas id="progressionChart"></canvas>
+                        <div class="w-full sm:w-64">
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Filter Muscle Group</label>
+                            <select id="muscle-group-filter" onchange="renderMuscleGroupProgression()" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 font-bold">
+                                <option value="all">All Muscle Groups</option>
+                                <option value="Quads">Quads & Knees</option>
+                                <option value="Glutes/Hamstrings">Glutes & Hamstrings</option>
+                                <option value="Back">Back & Lats</option>
+                                <option value="Chest">Chest & Pushing</option>
+                                <option value="Shoulders">Shoulders & Delts</option>
+                                <option value="Arms">Arms (Biceps/Triceps)</option>
+                                <option value="Core">Core & Planks</option>
+                            </select>
                         </div>
                     </div>
 
-                    <!-- Historical Workout Logs -->
-                    <div class="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                                <div class="bg-purple-50 text-purple-600 p-2 rounded-xl"><i class="fa-solid fa-dumbbell"></i></div> Full Real Workout History
-                            </h3>
-                            <span id="client-session-count-badge" class="text-xs bg-slate-100 text-slate-700 px-3 py-1 rounded-xl font-bold">0 Sessions</span>
-                        </div>
-                        <div id="client-workout-history-list" class="space-y-3.5 max-h-[500px] overflow-y-auto pr-1">
-                            <!-- Populated dynamically -->
-                        </div>
+                    <div id="muscle-groups-container" class="space-y-6">
+                        <!-- Populated dynamically -->
                     </div>
                 </div>
             </div>
@@ -1033,6 +1090,19 @@ function parseSheetData(rows) {
                                 { "name": "Incline push ups", "sets": "BWx15/15/12" },
                                 { "name": "Tricep pressdowns", "sets": "CBL4x15/15 no5x12" },
                                 { "name": "Stand curls", "sets": "SB12.5kgx12/12/12" }
+                            ]
+                        },
+                        {
+                            "date": "2026-09-06",
+                            "phase": "Sun Session",
+                            "exercises": [
+                                { "name": "Warm up - Mobility drills", "sets": "10 mins" },
+                                { "name": "Rear delt fly", "sets": "DB6lbsx15/15" },
+                                { "name": "Romanian DLs", "sets": "SB20kgx15/15" },
+                                { "name": "Reverse lunges", "sets": "5kgx12 7.5kgx12/12", "supersetWith": "Military press DB10lbsx12/12/12" },
+                                { "name": "Cleans", "sets": "DB15lbsx12/12/12", "supersetWith": "Supported pull ups BWx12/12/12" },
+                                { "name": "Incline push ups", "sets": "BWx12/12/12", "supersetWith": "Ball slams MB5kgx12/12/12" },
+                                { "name": "Stand calf raise", "sets": "BWx30/30", "supersetWith": "Planks BWx60s/55s" }
                             ]
                         }
                     ]
@@ -1642,10 +1712,11 @@ function parseSheetData(rows) {
             ]
         };
 
-        // Flatten into the runtime state structure
+        // Runtime state structure
         let state = {
             role: 'trainer',
             activeTrainerTab: 'dashboard',
+            activeClientTab: 'overview',
             sheetsUrl: localStorage.getItem('protrainer_sheets_url') || '',
             clients: [],
             workouts: [],
@@ -1656,16 +1727,17 @@ function parseSheetData(rows) {
 
         // Initialize App on Load
         window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('log-workout-date').valueAsDate = new Date();
+            const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('log-workout-date').value = todayStr;
+            document.getElementById('extra-date-from').value = todayStr;
+            document.getElementById('extra-date-to').value = todayStr;
+
             loadStateFromStorage();
-            
-            // If local storage didn't have clients, initialize from rawDataset
             if (state.clients.length === 0) {
                 initializeDataFromDataset();
             }
 
             renderApp();
-            
             if (state.sheetsUrl) {
                 syncWithGoogleSheets();
             }
@@ -1726,7 +1798,7 @@ function parseSheetData(rows) {
             }
         }
 
-        // Role Management
+        // Role & Tab Switching
         function switchRole(role) {
             state.role = role;
             document.getElementById('role-btn-trainer').className = role === 'trainer' 
@@ -1752,23 +1824,31 @@ function parseSheetData(rows) {
             document.getElementById(`tcontent-${tabId}`).classList.remove('hidden');
         }
 
-        // Google Sheets Sync Functions
-        function openSyncModal() {
-            document.getElementById('sync-modal').classList.remove('hidden');
+        function switchClientTab(tabId) {
+            state.activeClientTab = tabId;
+            document.querySelectorAll('.client-tab').forEach(btn => {
+                btn.className = 'client-tab px-4.5 py-2.5 rounded-2xl text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 flex items-center gap-2.5 whitespace-nowrap';
+            });
+            document.querySelectorAll('.client-content').forEach(content => content.classList.add('hidden'));
+
+            document.getElementById(`ctab-${tabId}`).className = 'client-tab px-4.5 py-2.5 rounded-2xl text-sm font-bold bg-brand-600 text-white flex items-center gap-2.5 whitespace-nowrap shadow-sm shadow-brand-600/20';
+            document.getElementById(`ccontent-${tabId}`).classList.remove('hidden');
+
+            if (tabId === 'exercises') {
+                renderMuscleGroupProgression();
+            }
         }
-        function closeSyncModal() {
-            document.getElementById('sync-modal').classList.add('hidden');
-        }
+
+        // Google Sheets Sync
+        function openSyncModal() { document.getElementById('sync-modal').classList.remove('hidden'); }
+        function closeSyncModal() { document.getElementById('sync-modal').classList.add('hidden'); }
         function saveSheetsUrl() {
             const url = document.getElementById('sheets-url-input').value.trim();
             state.sheetsUrl = url;
             localStorage.setItem('protrainer_sheets_url', url);
             closeSyncModal();
-            if (url) {
-                syncWithGoogleSheets();
-            } else {
-                updateSyncBadge('local', 'Local Mode');
-            }
+            if (url) syncWithGoogleSheets();
+            else updateSyncBadge('local', 'Local Mode');
         }
 
         function updateSyncBadge(status, text) {
@@ -1777,14 +1857,7 @@ function parseSheetData(rows) {
             const stat = document.getElementById('stat-sync-status');
             txt.textContent = text;
             if(stat) stat.textContent = text;
-
-            if (status === 'connected') {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500';
-            } else if (status === 'syncing') {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping';
-            } else {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-slate-400';
-            }
+            dot.className = status === 'connected' ? 'w-2.5 h-2.5 rounded-full bg-emerald-500' : status === 'syncing' ? 'w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping' : 'w-2.5 h-2.5 rounded-full bg-slate-400';
         }
 
         async function syncWithGoogleSheets() {
@@ -1806,7 +1879,6 @@ function parseSheetData(rows) {
                     updateSyncBadge('connected', 'Google Sheets Synced');
                 }
             } catch (err) {
-                console.error('Google Sheets sync error:', err);
                 updateSyncBadge('connected', 'Sheets (Offline Cache)');
             }
         }
@@ -1818,39 +1890,33 @@ function parseSheetData(rows) {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'saveData',
-                        clients: state.clients,
-                        workouts: state.workouts
-                    })
+                    body: JSON.stringify({ action: 'saveData', clients: state.clients, workouts: state.workouts })
                 });
-            } catch(e) {
-                console.error('Push error:', e);
-            }
+            } catch(e) {}
         }
 
-        // Render Application UI
+        // Render Application
         function renderApp() {
             renderMasterOverview();
             renderClientSelectDropdowns();
             renderPrescriptionList();
             renderClientPortalView();
+            if (state.activeClientTab === 'exercises') {
+                renderMuscleGroupProgression();
+            }
             saveStateToStorage();
         }
 
-        // Master Overview & Client Table
         function renderMasterOverview() {
             document.getElementById('stat-total-clients').textContent = state.clients.length;
             document.getElementById('stat-total-sessions').textContent = state.workouts.length;
-            
             const avgCals = state.clients.length ? Math.round(state.clients.reduce((acc, c) => acc + Number(c.calories), 0) / state.clients.length) : 0;
             document.getElementById('stat-avg-cals').textContent = avgCals.toLocaleString();
 
             const tbody = document.getElementById('master-client-table-body');
             tbody.innerHTML = '';
-
             if (state.clients.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">No clients registered yet. Add one in Client Management.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">No clients registered yet.</td></tr>`;
                 return;
             }
 
@@ -1863,16 +1929,12 @@ function parseSheetData(rows) {
                         <div class="w-9 h-9 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center font-extrabold text-xs shadow-sm">${c.name.charAt(0)}</div>
                         ${c.name}
                     </td>
-                    <td class="p-4.5">
-                        <span class="bg-emerald-50 text-emerald-700 text-xs px-3 py-1 rounded-full font-bold">Active Prep</span>
-                    </td>
+                    <td class="p-4.5"><span class="bg-emerald-50 text-emerald-700 text-xs px-3 py-1 rounded-full font-bold">Active Prep</span></td>
                     <td class="p-4.5 font-bold text-slate-900">${c.weight} kg <span class="text-xs text-slate-400 font-normal">(${c.bodyFat || '—'}% BF)</span></td>
                     <td class="p-4.5"><span class="text-amber-600 font-extrabold">${c.calories}</span> kcal | <span class="text-brand-600 font-extrabold">${c.protein}</span>g P</td>
                     <td class="p-4.5"><span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-xl text-xs font-bold">${clientWorkouts.length} sessions</span></td>
                     <td class="p-4.5">
-                        <button onclick="loginAsClient('${c.id}')" class="text-xs bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white px-3.5 py-2 rounded-xl transition font-bold shadow-sm">
-                            View Portal
-                        </button>
+                        <button onclick="loginAsClient('${c.id}')" class="text-xs bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white px-3.5 py-2 rounded-xl transition font-bold shadow-sm">View Portal</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1886,11 +1948,9 @@ function parseSheetData(rows) {
             renderClientPortalView();
         }
 
-        // Dropdowns & Prescriptions
         function renderClientSelectDropdowns() {
             const loggerSelect = document.getElementById('logger-client-select');
             const portalSelect = document.getElementById('client-portal-switcher');
-            
             loggerSelect.innerHTML = '';
             portalSelect.innerHTML = '';
 
@@ -1903,34 +1963,17 @@ function parseSheetData(rows) {
         function renderPrescriptionList() {
             const container = document.getElementById('client-prescription-list');
             container.innerHTML = '';
-
             state.clients.forEach(c => {
                 const div = document.createElement('div');
                 div.className = 'bg-slate-50 border border-slate-200/80 p-5 rounded-2xl space-y-3.5 shadow-sm';
                 div.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <h4 class="font-extrabold text-slate-900 text-sm">${c.name}</h4>
-                        <span class="text-xs text-slate-400 font-medium">ID: ${c.id}</span>
-                    </div>
+                    <div class="flex items-center justify-between"><h4 class="font-extrabold text-slate-900 text-sm">${c.name}</h4><span class="text-xs text-slate-400 font-medium">ID: ${c.id}</span></div>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 mb-1">Calories (kcal)</label>
-                            <input type="number" id="edit-cals-${c.id}" value="${c.calories}" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-bold focus:outline-none focus:border-brand-500">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 mb-1">Protein (g)</label>
-                            <input type="number" id="edit-protein-${c.id}" value="${c.protein}" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-bold focus:outline-none focus:border-brand-500">
-                        </div>
-                        <div class="col-span-2 sm:col-span-1 flex items-end">
-                            <button onclick="updateClientNutrition('${c.id}')" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-2 px-3 rounded-xl text-xs transition shadow-sm">
-                                Update
-                            </button>
-                        </div>
+                        <div><label class="block text-[11px] font-bold text-slate-500 mb-1">Calories (kcal)</label><input type="number" id="edit-cals-${c.id}" value="${c.calories}" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-bold focus:outline-none focus:border-brand-500"></div>
+                        <div><label class="block text-[11px] font-bold text-slate-500 mb-1">Protein (g)</label><input type="number" id="edit-protein-${c.id}" value="${c.protein}" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-bold focus:outline-none focus:border-brand-500"></div>
+                        <div class="col-span-2 sm:col-span-1 flex items-end"><button onclick="updateClientNutrition('${c.id}')" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-2 px-3 rounded-xl text-xs transition shadow-sm">Update</button></div>
                     </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-500 mb-1">Diet Guidelines</label>
-                        <textarea id="edit-diet-${c.id}" rows="2" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-500">${c.dietNotes || ''}</textarea>
-                    </div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 mb-1">Diet Guidelines</label><textarea id="edit-diet-${c.id}" rows="2" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-500">${c.dietNotes || ''}</textarea></div>
                 `;
                 container.appendChild(div);
             });
@@ -1967,13 +2010,12 @@ function parseSheetData(rows) {
             }
         }
 
-        // Live Session Gym Floor Logger
+        // Gym Floor Logger with Superset Support
         let exerciseBlockCount = 0;
-        function addExerciseBlock(defaultName = '', defaultSets = [{weight: 0, reps: 0}]) {
+        function addExerciseBlock(defaultName = '', defaultSets = [{weight: '', reps: ''}], supersetWith = '') {
             exerciseBlockCount++;
             const blockId = 'ex_block_' + exerciseBlockCount;
             const container = document.getElementById('exercise-blocks-container');
-            
             const div = document.createElement('div');
             div.id = blockId;
             div.className = 'bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3';
@@ -1983,7 +2025,7 @@ function parseSheetData(rows) {
                 setsHtml += `
                     <div class="flex items-center gap-2 set-row">
                         <span class="text-xs font-bold text-slate-500 w-12">Set ${sIdx + 1}</span>
-                        <input type="text" placeholder="Sets string (e.g. 10lbsx15)" value="${set.weight ? set.weight + 'x' + set.reps : ''}" class="set-string w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-bold focus:outline-none focus:border-brand-500">
+                        <input type="text" placeholder="Sets string (e.g. 25kgx12)" value="${set.weight ? set.weight + 'x' + set.reps : ''}" class="set-string w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-bold focus:outline-none focus:border-brand-500">
                         <button type="button" onclick="this.closest('.set-row').remove()" class="text-slate-400 hover:text-red-500 px-2"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
@@ -1994,26 +2036,28 @@ function parseSheetData(rows) {
                     <input type="text" placeholder="Exercise Name (e.g. Goblet Squats)" value="${defaultName}" class="exercise-name-input flex-1 bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-extrabold text-slate-900 focus:outline-none focus:border-brand-500">
                     <button type="button" onclick="document.getElementById('${blockId}').remove()" class="text-xs text-red-500 hover:text-red-600 font-bold">Remove</button>
                 </div>
-                <div class="sets-container space-y-2">
-                    ${setsHtml}
+                <div class="sets-container space-y-2">${setsHtml}</div>
+                <div class="flex items-center justify-between pt-1">
+                    <button type="button" onclick="addSetToBlock('${blockId}')" class="text-xs bg-white hover:bg-slate-100 text-brand-700 font-bold px-3.5 py-2 rounded-xl border border-slate-200 transition shadow-sm">+ Add Set</button>
+                    <input type="text" placeholder="Superset with (optional)" value="${supersetWith}" class="superset-input w-52 bg-white border border-purple-200 rounded-xl px-3 py-1.5 text-xs text-purple-800 font-semibold focus:outline-none focus:border-purple-500">
                 </div>
-                <button type="button" onclick="addSetToBlock('${blockId}')" class="text-xs bg-white hover:bg-slate-100 text-brand-700 font-bold px-3.5 py-2 rounded-xl border border-slate-200 transition shadow-sm">
-                    + Add Set Entry
-                </button>
             `;
             container.appendChild(div);
+        }
+
+        function addSupersetBlock() {
+            addExerciseBlock('Exercise A (Superset 1)', [{weight: '', reps: ''}], 'Exercise B (Superset 1)');
         }
 
         function addSetToBlock(blockId) {
             const block = document.getElementById(blockId);
             const setsContainer = block.querySelector('.sets-container');
             const setNum = setsContainer.children.length + 1;
-            
             const setRow = document.createElement('div');
             setRow.className = 'flex items-center gap-2 set-row';
             setRow.innerHTML = `
                 <span class="text-xs font-bold text-slate-500 w-12">Set ${setNum}</span>
-                <input type="text" placeholder="Sets string (e.g. 20kgx12/12)" class="set-string w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-bold focus:outline-none focus:border-brand-500">
+                <input type="text" placeholder="Sets string (e.g. 20kgx12)" class="set-string w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-bold focus:outline-none focus:border-brand-500">
                 <button type="button" onclick="this.closest('.set-row').remove()" class="text-slate-400 hover:text-red-500 px-2"><i class="fa-solid fa-trash"></i></button>
             `;
             setsContainer.appendChild(setRow);
@@ -2023,7 +2067,6 @@ function parseSheetData(rows) {
             e.preventDefault();
             const clientId = document.getElementById('logger-client-select').value;
             const client = state.clients.find(c => c.id === clientId);
-            
             const blocks = document.querySelectorAll('#exercise-blocks-container > div');
             const exercises = [];
             
@@ -2034,7 +2077,10 @@ function parseSheetData(rows) {
                 b.querySelectorAll('.set-string').forEach(input => {
                     if (input.value.trim()) setsArr.push(input.value.trim());
                 });
-                exercises.push({ name, sets: setsArr.join(' ') || 'BWx12' });
+                const supersetWith = b.querySelector('.superset-input') ? b.querySelector('.superset-input').value.trim() : '';
+                const exObj = { name, sets: setsArr.join(' ') || 'BWx12' };
+                if (supersetWith) exObj.supersetWith = supersetWith;
+                exercises.push(exObj);
             });
 
             if (exercises.length === 0) {
@@ -2059,13 +2105,16 @@ function parseSheetData(rows) {
             alert('Live session saved successfully and synced!');
             document.getElementById('live-session-form').reset();
             document.getElementById('exercise-blocks-container').innerHTML = '';
-            addExerciseBlock('Goblet Squats', [{weight: '25kg', reps: '12'}]);
+            addExerciseBlock('Goblet Squats', [{weight: '25kg', reps: '15'}]);
         }
 
-        // Client Portal View & Charts
+        // Client Portal View & Muscle Group Categorizer
         function switchClientPortal(clientId) {
             state.selectedClientPortalId = clientId;
             renderClientPortalView();
+            if (state.activeClientTab === 'exercises') {
+                renderMuscleGroupProgression();
+            }
         }
 
         function renderClientPortalView() {
@@ -2080,7 +2129,6 @@ function parseSheetData(rows) {
             const clientWorkouts = state.workouts.filter(w => w.clientId === client.id);
             document.getElementById('client-session-count-badge').textContent = clientWorkouts.length + ' Sessions';
 
-            // Render Client Workout History
             const historyContainer = document.getElementById('client-workout-history-list');
             historyContainer.innerHTML = '';
 
@@ -2090,8 +2138,16 @@ function parseSheetData(rows) {
                 clientWorkouts.forEach(w => {
                     let exHtml = '';
                     w.exercises.forEach(ex => {
-                        let setsStr = typeof ex.sets === 'string' ? ex.sets : Array.isArray(ex.sets) ? ex.sets.map(s => typeof s === 'string' ? s : `${s.weight}x${s.reps}`).join(', ') : '';
-                        exHtml += `<div class="text-xs py-1 flex justify-between items-center"><strong class="text-slate-900">${ex.name}</strong> <span class="bg-brand-50 text-brand-700 px-2.5 py-0.5 rounded-lg font-mono text-[11px] font-bold">${setsStr}</span></div>`;
+                        let setsStr = typeof ex.sets === 'string' ? ex.sets : Array.isArray(ex.sets) ? ex.sets.map(s => `${s.weight}x${s.reps}`).join(', ') : '';
+                        exHtml += `
+                            <div class="text-xs py-1.5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 border-b border-slate-100 last:border-0">
+                                <div>
+                                    <strong class="text-slate-900">${ex.name}</strong>
+                                    ${ex.supersetWith ? `<span class="ml-2 bg-purple-50 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded-md"><i class="fa-solid fa-link"></i> + ${ex.supersetWith}</span>` : ''}
+                                </div>
+                                <span class="bg-brand-50 text-brand-700 px-2.5 py-1 rounded-lg font-mono text-[11px] font-bold">${setsStr}</span>
+                            </div>
+                        `;
                     });
 
                     const card = document.createElement('div');
@@ -2101,7 +2157,7 @@ function parseSheetData(rows) {
                             <h4 class="font-extrabold text-slate-900 text-sm flex items-center gap-2"><i class="fa-solid fa-circle-check text-brand-600"></i> ${w.title}</h4>
                             <span class="text-xs bg-white border border-slate-200 text-slate-600 px-2.5 py-1 rounded-xl font-medium">${w.date}</span>
                         </div>
-                        <div class="divide-y divide-slate-200/60">${exHtml}</div>
+                        <div class="divide-y divide-slate-200/40">${exHtml}</div>
                         ${w.notes ? `<p class="text-xs text-slate-600 italic bg-white p-2.5 rounded-xl border border-slate-200/60">${w.notes}</p>` : ''}
                     `;
                     historyContainer.appendChild(card);
@@ -2111,16 +2167,110 @@ function parseSheetData(rows) {
             renderProgressionChart(client, clientWorkouts);
         }
 
-        function renderProgressionChart(client, clientWorkouts) {
-            const ctx = document.getElementById('progressionChart').getContext('2d');
-            if (progressionChartInstance) {
-                progressionChartInstance.destroy();
+        // Muscle Group Categorizer Helper
+        function classifyMuscleGroup(exerciseName) {
+            const name = exerciseName.toLowerCase();
+            if (name.includes('squat') || name.includes('lunges') || name.includes('leg press') || name.includes('step') || name.includes('hack') || name.includes('bulgarian') || name.includes('leaps') || name.includes('jump')) return 'Quads';
+            if (name.includes('rdl') || name.includes('deadlift') || name.includes('hamstring') || name.includes('curl') && name.includes('leg')) return 'Glutes/Hamstrings';
+            if (name.includes('row') || name.includes('pull down') || name.includes('pull-down') || name.includes('pull up') || name.includes('pull-up') || name.includes('pulldown') || name.includes('lat') || name.includes('back')) return 'Back';
+            if (name.includes('press') && (name.includes('bench') || name.includes('chest') || name.includes('incline')) || name.includes('push up') || name.includes('push-up') || name.includes('fly') || name.includes('dips')) return 'Chest';
+            if (name.includes('shoulder') || name.includes('overhead') || name.includes('military') || name.includes('raise') || name.includes('delt') || name.includes('facepull')) return 'Shoulders';
+            if (name.includes('curl') || name.includes('tricep') || name.includes('extension') || name.includes('skull')) return 'Arms';
+            if (name.includes('plank') || name.includes('crunch') || name.includes('core') || name.includes('rotation') || name.includes('slam') || name.includes('burpee') || name.includes('climber') || name.includes('calf')) return 'Core';
+            return 'Quads'; // Default fallback
+        }
+
+        function renderMuscleGroupProgression() {
+            const client = state.clients.find(c => c.id === state.selectedClientPortalId) || state.clients[0];
+            if (!client) return;
+
+            const clientWorkouts = state.workouts.filter(w => w.clientId === client.id);
+            const filterGroup = document.getElementById('muscle-group-filter').value;
+            const container = document.getElementById('muscle-groups-container');
+            container.innerHTML = '';
+
+            // Map exercises by group
+            const groups = {
+                'Quads': {},
+                'Glutes/Hamstrings': {},
+                'Back': {},
+                'Chest': {},
+                'Shoulders': {},
+                'Arms': {},
+                'Core': {}
+            };
+
+            clientWorkouts.forEach(w => {
+                w.exercises.forEach(ex => {
+                    const group = classifyMuscleGroup(ex.name);
+                    if (!groups[group][ex.name]) {
+                        groups[group][ex.name] = { count: 0, history: [] };
+                    }
+                    groups[group][ex.name].count++;
+                    groups[group][ex.name].history.push({ date: w.date, sets: ex.sets });
+                });
+            });
+
+            let groupKeys = Object.keys(groups);
+            if (filterGroup !== 'all') {
+                groupKeys = [filterGroup];
             }
 
-            // Take last 10 sessions chronologically for chart
+            let hasAny = false;
+            groupKeys.forEach(groupName => {
+                const exercisesInGroup = groups[groupName];
+                const exNames = Object.keys(exercisesInGroup);
+                if (exNames.length === 0) return;
+                hasAny = true;
+
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'bg-slate-50 border border-slate-200/80 p-5 sm:p-6 rounded-3xl space-y-4';
+                
+                let exercisesHtml = '';
+                exNames.forEach(exName => {
+                    const stats = exercisesInGroup[exName];
+                    // sort history by date
+                    stats.history.sort((a,b) => new Date(a.date) - new Date(b.date));
+                    
+                    let historyBadges = '';
+                    stats.history.slice(-4).forEach(h => {
+                        historyBadges += `<span class="bg-white border border-slate-200 text-slate-700 px-2.5 py-1 rounded-xl text-[11px] font-mono font-semibold">${h.date}: ${h.sets}</span>`;
+                    });
+
+                    exercisesHtml += `
+                        <div class="bg-white border border-slate-200/70 p-4 rounded-2xl space-y-2 shadow-sm">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <h5 class="font-extrabold text-slate-900 text-sm">${exName}</h5>
+                                <span class="bg-brand-50 text-brand-700 text-xs px-3 py-0.5 rounded-full font-bold">Done ${stats.count} times</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2 pt-1">
+                                ${historyBadges}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                groupDiv.innerHTML = `
+                    <div class="flex items-center gap-2.5 border-b border-slate-200 pb-3">
+                        <div class="w-8 h-8 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-xs"><i class="fa-solid fa-dumbbell"></i></div>
+                        <h4 class="font-extrabold text-slate-900 text-base">${groupName}</h4>
+                    </div>
+                    <div class="space-y-3">${exercisesHtml}</div>
+                `;
+                container.appendChild(groupDiv);
+            });
+
+            if (!hasAny) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-400 text-xs">No exercise history found for this category.</div>`;
+            }
+        }
+
+        function renderProgressionChart(client, clientWorkouts) {
+            const ctx = document.getElementById('progressionChart').getContext('2d');
+            if (progressionChartInstance) progressionChartInstance.destroy();
+
             const sortedWorkouts = [...clientWorkouts].sort((a,b) => new Date(a.date) - new Date(b.date));
             const chartWorkouts = sortedWorkouts.slice(-12);
-
             const labels = chartWorkouts.map(w => w.date);
             const dataCounts = chartWorkouts.map((w, idx) => (idx + 1) * 3 + Math.floor(Math.random() * 5));
 
@@ -2144,9 +2294,7 @@ function parseSheetData(rows) {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
                         x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#64748b', font: { size: 10, weight: '600' } } },
                         y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#64748b', font: { size: 11, weight: '600' } } }
@@ -2158,11 +2306,16 @@ function parseSheetData(rows) {
         function handleLogExtraActivity(e) {
             e.preventDefault();
             const name = document.getElementById('extra-activity-name').value;
+            const fromDate = document.getElementById('extra-date-from').value;
+            const toDate = document.getElementById('extra-date-to').value;
             const steps = document.getElementById('extra-steps').value;
             const duration = document.getElementById('extra-duration').value || '30';
             
-            alert(`Activity logged successfully!\n\nActivity: ${name}\nSteps: ${steps}\nDuration: ${duration} mins\n\nYour trainer can now view your weekly consistency.`);
+            alert(`Activity logged successfully!\n\nActivity: ${name}\nPeriod: ${fromDate} to ${toDate}\nAvg Steps: ${steps}\nDuration: ${duration} mins\n\nYour trainer can now view your weekly consistency.`);
             e.target.reset();
+            const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('extra-date-from').value = todayStr;
+            document.getElementById('extra-date-to').value = todayStr;
         }
 
         // Initialize default exercise block on load
