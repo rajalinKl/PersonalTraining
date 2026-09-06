@@ -5,102 +5,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ProTrainer Elite | Professional Coaching & Client Portal</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <!-- Include Chart.js for interactive progress charts -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; }
-    .glass-card { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04); transition: all 0.3s ease; }
-    .glass-card:hover { transform: translateY(-2px); box-shadow: 0 20px 35px -10px rgba(4, 120, 87, 0.08); }
-    .hero-banner { background: linear-gradient(135deg, #065f46 0%, #047857 55%, #064e3b 100%); }
-    .client-hero-banner { background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #090d16 100%); }
-    .tab-btn { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 1rem; padding: 0.75rem 1.25rem; font-weight: 600; font-size: 0.8125rem; }
-    .tab-btn.active { background-color: #047857; color: white; box-shadow: 0 10px 20px -3px rgba(4, 120, 87, 0.3); }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; color: #0f172a; }
+    .glass-card { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01); }
+    .hero-banner { background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%); }
+    .tab-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 0.875rem; padding: 0.75rem 1.25rem; font-weight: 600; font-size: 0.8125rem; }
+    .tab-btn.active { background-color: #047857; color: white; box-shadow: 0 10px 15px -3px rgba(4, 120, 87, 0.25); }
     .tab-btn:not(.active) { color: #475569; background-color: #ffffff; border: 1px solid #e2e8f0; }
-    .tab-btn:not(.active):hover { background-color: #f1f5f9; color: #0f172a; border-color: #cbd5e1; }
-    .badge-glow { box-shadow: 0 0 15px rgba(16, 185, 129, 0.25); }
-    .img-hover-zoom { transition: transform 0.5s ease; }
-    .img-hover-zoom:hover { transform: scale(1.03); }
+    .tab-btn:not(.active):hover { background-color: #f8fafc; color: #0f172a; border-color: #cbd5e1; }
   </style>
 </head>
-<body class="h-full flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+<body class="h-full flex flex-col antialiased">
 
-  <header class="bg-white/95 border-b border-slate-200/80 sticky top-0 z-50 backdrop-blur-md">
+  <!-- TOP HEADER BAR -->
+  <header class="bg-white border-b border-slate-200/80 sticky top-0 z-50 backdrop-blur-md bg-white/95">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <div class="flex items-center space-x-3.5">
-        <div class="relative w-12 h-12 rounded-2xl overflow-hidden shadow-lg shadow-emerald-700/20 group">
-          <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=200&q=80" alt="Trainer Logo" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-          <div class="absolute inset-0 bg-emerald-900/40 flex items-center justify-center text-white">
-            <i class="fa-solid fa-dumbbell text-base drop-shadow"></i>
-          </div>
+        <div class="w-12 h-12 bg-emerald-700 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-700/20">
+          <i class="fa-solid fa-dumbbell text-xl"></i>
         </div>
         <div>
           <div class="flex items-center space-x-2">
-            <h1 class="font-extrabold text-base sm:text-lg text-slate-900 tracking-tight">ProTrainer</h1>
-            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full tracking-wider badge-glow">ELITE</span>
+            <h1 class="font-extrabold text-base text-slate-900 tracking-tight">ProTrainer</h1>
+            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full tracking-wider">ELITE</span>
           </div>
           <p class="text-xs text-slate-500 font-medium">Professional Coaching & Client Management Suite</p>
         </div>
       </div>
 
-      <div class="flex items-center space-x-3 sm:space-x-4">
+      <div class="flex items-center space-x-4">
         <button onclick="openSyncModal()" id="syncStatusBadge" class="hidden sm:flex items-center space-x-2 px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl transition-all cursor-pointer border border-slate-200 shadow-2xs">
           <span id="syncDot" class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
           <span id="syncText">Sheets Sync Ready</span>
         </button>
 
         <div class="bg-slate-100 p-1.5 rounded-2xl flex space-x-1 border border-slate-200">
-          <button onclick="switchRole('trainer')" id="roleBtnTrainer" class="px-4 sm:px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-2">
+          <button onclick="switchRole('trainer')" id="roleBtnTrainer" class="px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-2">
             <i class="fa-solid fa-user-tie"></i>
-            <span class="hidden sm:inline">Trainer Portal</span>
-            <span class="sm:hidden">Trainer</span>
+            <span>Trainer Portal</span>
           </button>
-          <button onclick="switchRole('client')" id="roleBtnClient" class="px-4 sm:px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-2">
+          <button onclick="switchRole('client')" id="roleBtnClient" class="px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-2">
             <i class="fa-solid fa-user"></i>
-            <span class="hidden sm:inline">Client View</span>
-            <span class="sm:hidden">Client</span>
+            <span>Client View</span>
           </button>
         </div>
       </div>
     </div>
   </header>
 
+  <!-- MAIN APP CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
 
     <!-- ==================== TRAINER VIEW ==================== -->
     <div id="trainerView" class="space-y-6">
       
-      <!-- Hero Banner -->
-      <div class="hero-banner rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden shadow-2xl flex flex-col md:flex-row justify-between items-center gap-8">
-        <div class="absolute right-0 top-0 bottom-0 w-1/2 opacity-20 pointer-events-none hidden md:block overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80" alt="Gym Fitness" class="w-full h-full object-cover img-hover-zoom">
-          <div class="absolute inset-0 bg-gradient-to-r from-emerald-900 via-transparent to-transparent"></div>
+      <!-- Modern Hero Banner with Professional Fitness Imagery -->
+      <div class="hero-banner rounded-3xl p-8 text-white relative overflow-hidden shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="absolute right-0 top-0 bottom-0 w-1/2 opacity-15 pointer-events-none hidden md:block">
+          <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80" alt="Gym Fitness" class="w-full h-full object-cover">
         </div>
-        <div class="relative z-10 space-y-3 max-w-xl text-center md:text-left">
-          <div class="inline-flex items-center space-x-2 bg-emerald-800/80 text-emerald-100 text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-widest border border-emerald-600/40">
-            <i class="fa-solid fa-shield-halved text-emerald-300"></i>
-            <span>Master Coaching Dashboard</span>
-          </div>
-          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Welcome Back, Rajal</h2>
-          <p class="text-emerald-100 text-xs sm:text-sm font-medium leading-relaxed">
-            Manage your clients, live-log gym floor workouts with zero errors, and track real-time schedule slots synchronized directly with your Google Sheets.
-          </p>
+        <div class="relative z-10 space-y-2 max-w-xl">
+          <span class="bg-emerald-800/80 text-emerald-100 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Master Coaching Dashboard</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Welcome Back, Rajal</h2>
+          <p class="text-emerald-100 text-xs sm:text-sm font-medium leading-relaxed">Manage your clients, live-log gym floor workouts with zero errors, and track real-time schedule slots synchronized directly with your Google Sheets.</p>
         </div>
-        <div class="relative z-10 flex flex-wrap justify-center md:justify-end gap-3.5">
-          <button onclick="switchTrainerTab('logger')" class="px-6 py-3.5 bg-white text-emerald-900 hover:bg-emerald-50 text-xs font-extrabold rounded-2xl shadow-xl transition-all cursor-pointer flex items-center space-x-2 hover:scale-105">
-            <i class="fa-solid fa-circle-plus text-emerald-700"></i><span>Live Gym Logger</span>
+        <div class="relative z-10 flex flex-wrap gap-3">
+          <button onclick="switchTrainerTab('logger')" class="px-5 py-3 bg-white text-emerald-900 hover:bg-emerald-50 text-xs font-bold rounded-2xl shadow-md transition-all cursor-pointer flex items-center space-x-2">
+            <i class="fa-solid fa-circle-plus"></i><span>Live Gym Logger</span>
           </button>
-          <button onclick="switchTrainerTab('schedule')" class="px-6 py-3.5 bg-emerald-800/90 text-white hover:bg-emerald-800 text-xs font-extrabold rounded-2xl shadow-xl transition-all cursor-pointer border border-emerald-600/50 flex items-center space-x-2 hover:scale-105">
+          <button onclick="switchTrainerTab('schedule')" class="px-5 py-3 bg-emerald-800/80 text-white hover:bg-emerald-800 text-xs font-bold rounded-2xl shadow-md transition-all cursor-pointer border border-emerald-600/50 flex items-center space-x-2">
             <i class="fa-solid fa-calendar-days"></i><span>View Schedule</span>
           </button>
         </div>
       </div>
 
       <!-- Navigation Tabs -->
-      <div class="flex flex-wrap gap-2.5 bg-white p-2.5 rounded-2xl border border-slate-200/80 shadow-xs overflow-x-auto">
+      <div class="flex flex-wrap gap-2.5 bg-white p-2.5 rounded-2xl border border-slate-200/80 shadow-2xs">
         <button onclick="switchTrainerTab('overview')" id="ttab_overview" class="tab-btn active">Master Overview</button>
         <button onclick="switchTrainerTab('clients')" id="ttab_clients" class="tab-btn">Client Management</button>
         <button onclick="switchTrainerTab('logger')" id="ttab_logger" class="tab-btn">Live Session Logger</button>
@@ -111,21 +96,21 @@
 
       <!-- Tab 1: Master Overview -->
       <div id="tcontent_overview" class="trainer-tab-content space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
-            <div class="absolute right-3 top-3 text-slate-100 text-5xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-users"></i></div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+          <div class="glass-card p-6 rounded-2xl relative overflow-hidden">
+            <div class="absolute right-3 top-3 text-slate-100 text-4xl"><i class="fa-solid fa-users"></i></div>
             <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Clients</div>
             <div id="statActiveClients" class="text-3xl font-extrabold text-slate-900 mt-2">2</div>
             <div class="text-[11px] text-emerald-600 font-semibold mt-2 flex items-center space-x-1"><i class="fa-solid fa-arrow-trend-up"></i><span>100% active retention</span></div>
           </div>
-          <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
-            <div class="absolute right-3 top-3 text-slate-100 text-5xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-dumbbell"></i></div>
+          <div class="glass-card p-6 rounded-2xl relative overflow-hidden">
+            <div class="absolute right-3 top-3 text-slate-100 text-4xl"><i class="fa-solid fa-dumbbell"></i></div>
             <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Workouts Logged</div>
             <div id="statTotalWorkouts" class="text-3xl font-extrabold text-emerald-700 mt-2">0</div>
             <div class="text-[11px] text-slate-500 font-medium mt-2">Synced across 6 sheets</div>
           </div>
-          <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
-            <div class="absolute right-3 top-3 text-slate-100 text-5xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-cloud"></i></div>
+          <div class="glass-card p-6 rounded-2xl relative overflow-hidden">
+            <div class="absolute right-3 top-3 text-slate-100 text-4xl"><i class="fa-solid fa-cloud"></i></div>
             <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sync Status</div>
             <div id="statSyncStatus" class="text-sm font-bold text-slate-700 mt-3 flex items-center space-x-2">
               <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
@@ -133,54 +118,35 @@
             </div>
             <div class="text-[11px] text-slate-400 mt-2">Click to configure webhook</div>
           </div>
-          <div class="glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 text-white relative overflow-hidden">
-            <div class="absolute -right-6 -bottom-6 opacity-20"><i class="fa-solid fa-bolt text-7xl"></i></div>
+          <div class="glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-slate-900 to-slate-800 text-white">
             <div>
               <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Gym Floor Mode</div>
               <div class="text-sm font-extrabold mt-1">Ready for Session</div>
             </div>
-            <button onclick="switchTrainerTab('logger')" class="w-full mt-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center space-x-2">
-              <span>Launch Logger</span> <i class="fa-solid fa-arrow-right"></i>
+            <button onclick="switchTrainerTab('logger')" class="w-full mt-3 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer">
+              Launch Logger <i class="fa-solid fa-arrow-right ml-1"></i>
             </button>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div class="lg:col-span-2 glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Active Client Roster & Latest Schedule</h2>
-              <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">Live Database Overview</span>
-            </div>
-            <div id="trainerClientRosterList" class="space-y-3.5 my-2"></div>
+        <div class="glass-card rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-bold text-slate-900 text-base">Active Client Roster & Latest Schedule</h2>
+            <span class="text-xs font-semibold text-slate-400">Live Database Overview</span>
           </div>
-          <div class="glass-card rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between bg-emerald-900 text-white">
-            <div class="absolute inset-0 opacity-30">
-              <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80" alt="Athletic Conditioning" class="w-full h-full object-cover">
-            </div>
-            <div class="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-900/80 to-transparent"></div>
-            <div class="relative z-10 space-y-2">
-              <span class="bg-emerald-800/80 text-emerald-200 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase">Elite Coaching Tip</span>
-              <h3 class="font-extrabold text-lg">Peak Performance Conditioning</h3>
-              <p class="text-xs text-emerald-100/90 leading-relaxed">Ensure clients log individual set rep ranges and weights to guarantee continuous progressive overload week over week.</p>
-            </div>
-            <div class="relative z-10 pt-4">
-              <button onclick="switchTrainerTab('clients')" class="w-full py-2.5 bg-white text-emerald-900 hover:bg-emerald-50 text-xs font-bold rounded-xl shadow-md transition-all cursor-pointer">
-                Manage Clients & Nutrition
-              </button>
-            </div>
-          </div>
+          <div id="trainerClientRosterList" class="space-y-3"></div>
         </div>
       </div>
 
       <!-- Tab 2: Client Management -->
       <div id="tcontent_clients" class="trainer-tab-content space-y-6 hidden">
-        <div class="glass-card rounded-2xl p-6 sm:p-8">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div class="glass-card rounded-2xl p-6">
+          <div class="flex justify-between items-center mb-6">
             <div>
-              <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Manage Clients & Nutrition Targets</h2>
+              <h2 class="font-bold text-slate-900 text-base">Manage Clients & Nutrition Targets</h2>
               <p class="text-xs text-slate-500 mt-0.5">Configure daily calorie goals, protein targets, and dietary prescriptions.</p>
             </div>
-            <button onclick="openClientModal()" class="px-5 py-3 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl cursor-pointer shadow-md transition-all flex items-center space-x-2">
+            <button onclick="openClientModal()" class="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm transition-all flex items-center space-x-2">
               <i class="fa-solid fa-plus"></i><span>Add Client</span>
             </button>
           </div>
@@ -190,14 +156,11 @@
 
       <!-- Tab 3: Live Session Logger -->
       <div id="tcontent_logger" class="trainer-tab-content space-y-6 hidden">
-        <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-48 h-48 opacity-10 pointer-events-none">
-            <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=400&q=80" alt="Gym" class="w-full h-full object-cover rounded-bl-full">
-          </div>
+        <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-100 pb-5">
             <div>
-              <h2 class="font-extrabold text-slate-900 text-lg sm:text-xl">Gym Floor Live Session Logger</h2>
-              <p class="text-xs text-slate-500 mt-0.5">Structured logging with separate fields for weight, reps, and sets to eliminate manual data entry errors.</p>
+              <h2 class="font-extrabold text-slate-900 text-lg">Gym Floor Live Session Logger</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Structured logging with equipment prefixes (CBL, DB, BB, BW) for accurate sheet charts and progression.</p>
             </div>
             <span class="px-3.5 py-1.5 bg-emerald-50 text-emerald-800 text-xs font-extrabold rounded-xl border border-emerald-200 flex items-center space-x-1.5">
               <i class="fa-solid fa-bolt text-emerald-600"></i><span>Gym Floor Active</span>
@@ -208,7 +171,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50/90 p-4 rounded-2xl border border-slate-200/80">
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Select Trainee</label>
-                <select id="logClientSelect" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-emerald-500 outline-none cursor-pointer"></select>
+                <select id="logClientSelect" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-emerald-500 outline-none"></select>
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Session Title / Phase</label>
@@ -216,14 +179,14 @@
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Session Date</label>
-                <input type="date" id="logDate" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-emerald-500 outline-none cursor-pointer">
+                <input type="date" id="logDate" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-emerald-500 outline-none">
               </div>
             </div>
 
             <div class="space-y-4">
               <div class="flex justify-between items-center">
                 <label class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Exercises Logged</label>
-                <button type="button" onclick="addExerciseRow()" class="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl cursor-pointer transition-colors border border-emerald-200 flex items-center space-x-1.5 shadow-2xs">
+                <button type="button" onclick="addExerciseRow()" class="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl cursor-pointer transition-colors border border-emerald-200 flex items-center space-x-1.5">
                   <i class="fa-solid fa-plus"></i><span>Add Exercise</span>
                 </button>
               </div>
@@ -232,7 +195,7 @@
 
             <div class="pt-2">
               <label class="block text-xs font-bold text-slate-700 mb-1.5">Coach Notes / Energy Level</label>
-              <textarea id="logNotes" rows="2" placeholder="e.g., Great energy, mobility drills completed, hit new PR on squats..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+              <textarea id="logNotes" rows="2" placeholder="e.g., Great energy, mobility drills completed, hit new PR..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
             </div>
 
             <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
@@ -246,10 +209,10 @@
 
       <!-- Tab 4: Workout Database -->
       <div id="tcontent_workouts" class="trainer-tab-content space-y-6 hidden">
-        <div class="glass-card rounded-2xl p-6 sm:p-8">
+        <div class="glass-card rounded-2xl p-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
-              <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Workout Database Explorer</h2>
+              <h2 class="font-bold text-slate-900 text-base">Workout Database Explorer</h2>
               <p class="text-xs text-slate-500 mt-0.5">All historical workouts logged across clients, synchronized with Google Sheets.</p>
             </div>
             <div class="flex items-center space-x-2 w-full sm:w-auto">
@@ -275,13 +238,13 @@
 
       <!-- Tab 5: Schedule & Open Slots -->
       <div id="tcontent_schedule" class="trainer-tab-content space-y-6 hidden">
-        <div class="glass-card rounded-2xl p-6 sm:p-8">
+        <div class="glass-card rounded-2xl p-6">
           <div class="flex justify-between items-center mb-6">
             <div>
-              <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Calendar & Schedule Management</h2>
+              <h2 class="font-bold text-slate-900 text-base">Calendar & Schedule Management</h2>
               <p class="text-xs text-slate-500 mt-0.5">Identify open slots and review client reschedule requests.</p>
             </div>
-            <button onclick="openScheduleModal()" class="px-5 py-3 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl cursor-pointer shadow-md transition-all flex items-center space-x-2">
+            <button onclick="openScheduleModal()" class="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm transition-all flex items-center space-x-2">
               <i class="fa-solid fa-plus"></i><span>Schedule Session / Slot</span>
             </button>
           </div>
@@ -308,9 +271,9 @@
 
       <!-- Tab 6: Google Sheets Sync Setup -->
       <div id="tcontent_database" class="trainer-tab-content space-y-6 hidden">
-        <div class="glass-card rounded-2xl p-6 sm:p-8 max-w-2xl mx-auto space-y-6">
+        <div class="glass-card rounded-2xl p-6 max-w-2xl mx-auto space-y-6">
           <div>
-            <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Google Sheets Two-Way Sync Configuration</h2>
+            <h2 class="font-bold text-slate-900 text-base">Google Sheets Two-Way Sync Configuration</h2>
             <p class="text-xs text-slate-500 mt-1">Connect your Google Apps Script Web App URL to automatically sync data across all 6 database tabs (<code class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">Clients</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">Workouts</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">Activities</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">InBodyScans</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">Nutrition</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">Schedule</code>).</p>
           </div>
 
@@ -336,39 +299,27 @@
 
     <!-- ==================== CLIENT VIEW ==================== -->
     <div id="clientView" class="space-y-6 hidden">
-      <!-- Client Hero Banner -->
-      <div class="client-hero-banner rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden shadow-2xl flex flex-col md:flex-row justify-between items-center gap-6">
-        <div class="absolute right-0 top-0 bottom-0 w-1/2 opacity-25 pointer-events-none hidden md:block">
-          <img src="https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=1000&q=80" alt="Client Workout" class="w-full h-full object-cover img-hover-zoom">
-          <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-transparent to-transparent"></div>
+      <div class="glass-card p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="flex items-center space-x-3 w-full sm:w-auto">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Viewing As:</span>
+          <select id="clientPortalSelector" onchange="switchActiveClientPortal(this.value)" class="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"></select>
         </div>
-        <div class="relative z-10 space-y-3 max-w-xl text-center md:text-left">
-          <div class="inline-flex items-center space-x-2 bg-emerald-500/20 text-emerald-300 text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-widest border border-emerald-500/30">
-            <i class="fa-solid fa-medal"></i>
-            <span>Trainee Portal Dashboard</span>
-          </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Your Personal Training & Nutrition Center</h2>
-          <p class="text-slate-300 text-xs sm:text-sm font-medium leading-relaxed">
-            Monitor your daily caloric targets, track exercise weight progression, and manage your upcoming coaching sessions with ease.
-          </p>
-        </div>
-        <div class="relative z-10 w-full md:w-auto">
-          <label class="block text-[11px] font-bold text-emerald-400 uppercase tracking-wider mb-1">Active Trainee Profile</label>
-          <select id="clientPortalSelector" onchange="switchActiveClientPortal(this.value)" class="w-full md:w-64 px-4 py-3 bg-slate-800 border border-slate-700 rounded-2xl text-sm font-bold text-white outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shadow-lg"></select>
+        <div class="text-xs font-medium text-slate-500">
+          Personalized Training & Nutrition Portal
         </div>
       </div>
 
       <div class="space-y-6">
-        <!-- 1. SCHEDULER & NEXT SESSION WIDGET -->
+        <!-- 1. SCHEDULER & NEXT SESSION WIDGET (Top of Page) -->
         <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
-          <div class="absolute right-0 top-0 bottom-0 w-1/3 opacity-15 pointer-events-none hidden md:block">
+          <div class="absolute right-0 top-0 bottom-0 w-1/3 opacity-10 pointer-events-none hidden md:block">
             <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80" alt="Training" class="w-full h-full object-cover">
           </div>
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
             <div>
               <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">Next Scheduled Session</span>
-              <h2 id="clientNextSessionTitle" class="text-lg font-extrabold text-slate-900 mt-2">No upcoming session scheduled</h2>
-              <p id="clientNextSessionTime" class="text-xs text-slate-500 mt-0.5">Please check your schedule or request a session.</p>
+              <h2 id="clientNextSessionTitle" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2">No upcoming session scheduled</h2>
+              <p id="clientNextSessionTime" class="text-sm sm:text-base font-bold text-emerald-700 mt-1">Please check your schedule or request a session.</p>
             </div>
             <div id="clientNextSessionActions" class="flex items-center space-x-2"></div>
           </div>
@@ -376,79 +327,71 @@
 
         <!-- 2. HIGH-LEVEL NUTRITION & SESSION KPIS -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
-            <div class="absolute right-3 top-3 text-slate-100 text-4xl group-hover:scale-110"><i class="fa-solid fa-fire text-amber-500/30"></i></div>
+          <div class="glass-card p-6 rounded-2xl">
             <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Daily Calorie Target</div>
             <div id="clientKpiCalories" class="text-2xl font-extrabold text-slate-900 mt-2">2,100 kcal</div>
-            <div class="text-[11px] text-slate-500 mt-1">Personalized nutrition plan</div>
           </div>
-          <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
-            <div class="absolute right-3 top-3 text-slate-100 text-4xl group-hover:scale-110"><i class="fa-solid fa-fish text-blue-500/30"></i></div>
+          <div class="glass-card p-6 rounded-2xl">
             <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Protein Target</div>
             <div id="clientKpiProtein" class="text-2xl font-extrabold text-slate-900 mt-2">140g</div>
-            <div class="text-[11px] text-slate-500 mt-1">Muscle protein synthesis goal</div>
           </div>
-          <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
-            <div class="absolute right-3 top-3 text-slate-100 text-4xl group-hover:scale-110"><i class="fa-solid fa-calendar-check text-emerald-500/30"></i></div>
+          <div class="glass-card p-6 rounded-2xl">
             <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sessions Done (This Year)</div>
             <div id="clientKpiSessionsYear" class="text-2xl font-extrabold text-emerald-700 mt-2">0</div>
-            <div class="text-[11px] text-slate-500 mt-1">Consistent attendance</div>
           </div>
-          <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
-            <div class="absolute right-3 top-3 text-slate-100 text-4xl group-hover:scale-110"><i class="fa-solid fa-flag-checkered text-purple-500/30"></i></div>
+          <div class="glass-card p-6 rounded-2xl">
             <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">First Session Recorded</div>
             <div id="clientKpiFirstSession" class="text-sm font-extrabold text-slate-800 mt-3 truncate">N/A</div>
-            <div class="text-[11px] text-slate-500 mt-1">Coaching journey started</div>
           </div>
         </div>
 
-        <!-- 3. EXERCISE PERFORMANCE ANALYTICS & PROGRESS CHARTS -->
-        <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+        <!-- 3. PERFORMANCE ANALYTICS & EXERCISE PROGRESS CHART -->
+        <div class="glass-card rounded-2xl p-6 space-y-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-5">
             <div>
-              <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md uppercase">Performance Analytics</span>
-              <h2 class="font-extrabold text-slate-900 text-lg sm:text-xl mt-1">Exercise Progress & Weight Progression Chart</h2>
+              <span class="text-[11px] font-extrabold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 uppercase">Performance Analytics</span>
+              <h2 class="font-extrabold text-slate-900 text-lg mt-2">Exercise Progress & Weight Progression Chart</h2>
               <p class="text-xs text-slate-500 mt-0.5">Select an exercise to analyze historical weight, rep ranges, and volume growth over time.</p>
             </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Select Exercise to Analyze</label>
-              <select id="analyticsExerciseSelect" onchange="renderExerciseAnalyticsChart()" class="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shadow-2xs"></select>
+            <div class="w-full sm:w-72">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Select Exercise to Analyze</label>
+              <select id="chartExerciseSelect" onchange="renderExercisePerformanceChart()" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"></select>
             </div>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
-            <div class="lg:col-span-2 bg-slate-50/70 p-4 sm:p-6 rounded-2xl border border-slate-200/80 relative h-72 sm:h-80">
-              <canvas id="exerciseAnalyticsCanvas"></canvas>
+            <div class="lg:col-span-2 bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80 h-72 relative flex items-center justify-center">
+              <canvas id="exerciseChart"></canvas>
             </div>
-            <div class="bg-gradient-to-br from-emerald-900 to-slate-900 text-white p-6 rounded-2xl space-y-4 shadow-lg">
-              <h3 class="font-extrabold text-sm uppercase tracking-wider text-emerald-300">Progress Statistics</h3>
+            <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-2xl space-y-4 shadow-md">
+              <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Progress Statistics</div>
               <div class="space-y-3 text-xs">
-                <div class="flex justify-between items-center border-b border-white/10 pb-2">
-                  <span class="text-slate-300">Total Recorded Sessions</span>
-                  <strong id="statExerciseSessions" class="text-base text-white">0</strong>
+                <div class="flex justify-between border-b border-slate-700 pb-2">
+                  <span class="text-slate-400">Total Recorded Sessions</span>
+                  <span id="statExerciseSessions" class="font-bold">0</span>
                 </div>
-                <div class="flex justify-between items-center border-b border-white/10 pb-2">
-                  <span class="text-slate-300">Max Weight Lifted</span>
-                  <strong id="statExerciseMaxWeight" class="text-base text-emerald-400">0 kg</strong>
+                <div class="flex justify-between border-b border-slate-700 pb-2">
+                  <span class="text-slate-400">Max Weight Lifted</span>
+                  <span id="statExerciseMaxWeight" class="font-bold text-emerald-400">0 kg</span>
                 </div>
-                <div class="flex justify-between items-center border-b border-white/10 pb-2">
-                  <span class="text-slate-300">Latest Resistance</span>
-                  <strong id="statExerciseLatestWeight" class="text-base text-white">0</strong>
+                <div class="flex justify-between border-b border-slate-700 pb-2">
+                  <span class="text-slate-400">Latest Resistance</span>
+                  <span id="statExerciseLatestResistance" class="font-semibold">-</span>
                 </div>
-                <div class="flex justify-between items-center pt-1">
-                  <span class="text-slate-300">Performance Trend</span>
-                  <span id="statExerciseTrend" class="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 font-bold rounded-lg text-[11px]">Steady Overload</span>
+                <div class="flex justify-between pt-1">
+                  <span class="text-slate-400">Performance Trend</span>
+                  <span id="statExerciseTrend" class="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 rounded font-bold text-[10px]">Stable</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 4. WORKOUT HISTORY & PROGRESSION TABLE WITH COLUMN FILTERING -->
-        <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+        <!-- 4. WORKOUT HISTORY & PROGRESSION TABLE -->
+        <div class="glass-card rounded-2xl p-6 space-y-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Exercise History & Max Weight Progression</h2>
+              <h2 class="font-bold text-slate-900 text-base">Exercise History & Max Weight Progression</h2>
               <p class="text-xs text-slate-500 mt-0.5">Filter and search your historical performance across all logged exercises.</p>
             </div>
             
@@ -486,10 +429,10 @@
   </main>
 
   <!-- MODALS -->
-  <div id="clientModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-8 space-y-4 border border-slate-100">
-      <h3 class="font-extrabold text-slate-900 text-lg">Add / Edit Client Profile</h3>
-      <form id="clientForm" onsubmit="saveClientProfile(event)" class="space-y-4">
+  <div id="clientModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-100">
+      <h3 class="font-bold text-slate-900 text-lg">Add / Edit Client Profile</h3>
+      <form id="clientForm" onsubmit="saveClientProfile(event)" class="space-y-3.5">
         <input type="hidden" id="modalClientId">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Client Full Name</label>
@@ -511,19 +454,19 @@
         </div>
         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
           <button type="button" onclick="closeClientModal()" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-xs font-bold rounded-xl cursor-pointer">Cancel</button>
-          <button type="submit" class="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm">Save Client</button>
+          <button type="submit" class="px-4 py-2.5 bg-emerald-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm">Save Client</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div id="scheduleModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-8 space-y-4 border border-slate-100">
-      <h3 class="font-extrabold text-slate-900 text-lg">Schedule New Session or Slot</h3>
-      <form id="scheduleForm" onsubmit="saveScheduleItem(event)" class="space-y-4">
+  <div id="scheduleModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-100">
+      <h3 class="font-bold text-slate-900 text-lg">Schedule New Session or Slot</h3>
+      <form id="scheduleForm" onsubmit="saveScheduleItem(event)" class="space-y-3.5">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Client</label>
-          <select id="schedClientSelect" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"></select>
+          <select id="schedClientSelect" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500"></select>
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Session Title</label>
@@ -532,32 +475,32 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Date</label>
-            <input type="date" id="schedDate" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+            <input type="date" id="schedDate" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Time</label>
-            <input type="time" id="schedTime" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+            <input type="time" id="schedTime" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500">
           </div>
         </div>
         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
           <button type="button" onclick="closeScheduleModal()" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-xs font-bold rounded-xl cursor-pointer">Cancel</button>
-          <button type="submit" class="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm">Schedule</button>
+          <button type="submit" class="px-4 py-2.5 bg-emerald-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm">Schedule</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div id="clientRequestModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-8 space-y-4 border border-slate-100">
-      <h3 id="clientRequestModalTitle" class="font-extrabold text-slate-900 text-lg">Request Reschedule</h3>
-      <form id="clientRequestForm" onsubmit="submitClientRequest(event)" class="space-y-4">
+  <div id="clientRequestModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-100">
+      <h3 id="clientRequestModalTitle" class="font-bold text-slate-900 text-lg">Request Reschedule</h3>
+      <form id="clientRequestForm" onsubmit="submitClientRequest(event)" class="space-y-3.5">
         <input type="hidden" id="reqSessionId">
         <input type="hidden" id="reqType">
         <div id="newDateTimeContainer">
           <label class="block text-xs font-bold text-slate-700 mb-1">Proposed New Date & Time</label>
           <div class="grid grid-cols-2 gap-3">
-            <input type="date" id="reqNewDate" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none cursor-pointer">
-            <input type="time" id="reqNewTime" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none cursor-pointer">
+            <input type="date" id="reqNewDate" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none">
+            <input type="time" id="reqNewTime" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none">
           </div>
         </div>
         <div>
@@ -566,7 +509,7 @@
         </div>
         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
           <button type="button" onclick="closeClientRequestModal()" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-xs font-bold rounded-xl cursor-pointer">Cancel</button>
-          <button type="submit" class="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm">Submit Request</button>
+          <button type="submit" class="px-4 py-2.5 bg-emerald-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm">Submit Request</button>
         </div>
       </form>
     </div>
@@ -593,14 +536,47 @@
       ]
     };
 
-    let exerciseAnalyticsChartInstance = null;
+    let exerciseChartInstance = null;
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = months[d.getMonth()];
+      const year = d.getFullYear();
+      return `${day} ${month} ${year}`;
+    }
 
     function initDefaultData() {
       if (appState.workouts.length === 0) {
         appState.workouts = [
-          { id: 'w_1', clientId: 'c_1', clientName: 'Rajal', title: 'Sun Session & Supersets', date: '2026-09-01', exercises: [{name:'Rear delt fly', sets:'DB6lbsx15/15', weightNum: 6, muscleGroup:'Shoulders'}, {name:'Reverse lunges', sets:'5kgx12', weightNum: 5, muscleGroup:'Quads & Legs'}], notes:'Great energy' },
-          { id: 'w_2', clientId: 'c_1', clientName: 'Rajal', title: 'Mid-Week Hypertrophy', date: '2026-09-04', exercises: [{name:'Rear delt fly', sets:'DB8lbsx15/15', weightNum: 8, muscleGroup:'Shoulders'}, {name:'Reverse lunges', sets:'7.5kgx12', weightNum: 7.5, muscleGroup:'Quads & Legs'}], notes:'Hit new PR' },
-          { id: 'w_3', clientId: 'c_1', clientName: 'Rajal', title: 'Weekend Conditioning', date: '2026-09-06', exercises: [{name:'Rear delt fly', sets:'DB10lbsx12/12', weightNum: 10, muscleGroup:'Shoulders'}, {name:'Reverse lunges', sets:'10kgx12', weightNum: 10, muscleGroup:'Quads & Legs'}], notes:'Exceptional strength' }
+          { 
+            id: 'w_1', 
+            clientId: 'c_1', 
+            clientName: 'Rajal', 
+            title: 'Sun Session & Supersets', 
+            date: '2026-06-06', 
+            exercises: [
+              {name:'Warm up - Mobility drills', sets:'10 mins'}, 
+              {name:'Seated rows', sets:'CBL5x15/15/12', muscleGroup:'Back & Lats'}, 
+              {name:'Reverse lunges', sets:'DB7.5kgx12/12', muscleGroup:'Quads & Legs'}
+            ], 
+            notes:'Great energy' 
+          },
+          { 
+            id: 'w_2', 
+            clientId: 'c_1', 
+            clientName: 'Rajal', 
+            title: 'Hypertrophy Day', 
+            date: '2026-07-15', 
+            exercises: [
+              {name:'Seated rows', sets:'CBL7.5x12/12/12', muscleGroup:'Back & Lats'}, 
+              {name:'Chest press', sets:'BB20kgx10/10', muscleGroup:'Chest & Pushing'}
+            ], 
+            notes:'Solid progression' 
+          }
         ];
       }
     }
@@ -630,11 +606,11 @@
       const btnClient = document.getElementById('roleBtnClient');
       
       if (role === 'trainer') {
-        btnTrainer.className = "px-4 sm:px-5 py-2 rounded-xl text-xs font-bold bg-emerald-700 text-white shadow-xs cursor-pointer flex items-center space-x-2";
-        btnClient.className = "px-4 sm:px-5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 cursor-pointer flex items-center space-x-2";
+        btnTrainer.className = "px-5 py-2 rounded-xl text-xs font-bold bg-emerald-700 text-white shadow-xs cursor-pointer flex items-center space-x-2";
+        btnClient.className = "px-5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 cursor-pointer flex items-center space-x-2";
       } else {
-        btnClient.className = "px-4 sm:px-5 py-2 rounded-xl text-xs font-bold bg-emerald-700 text-white shadow-xs cursor-pointer flex items-center space-x-2";
-        btnTrainer.className = "px-4 sm:px-5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 cursor-pointer flex items-center space-x-2";
+        btnClient.className = "px-5 py-2 rounded-xl text-xs font-bold bg-emerald-700 text-white shadow-xs cursor-pointer flex items-center space-x-2";
+        btnTrainer.className = "px-5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 cursor-pointer flex items-center space-x-2";
         populateClientSelector();
       }
       renderAll();
@@ -674,6 +650,7 @@
       if (clientPortalSel) clientPortalSel.innerHTML = appState.clients.map(c => `<option value="${c.id}" ${c.id === appState.activeClientEmail ? 'selected' : ''}>${c.name}</option>`).join('');
     }
 
+    // --- STRUCTURED LIVE LOGGER WITH EQUIPMENT ABBREVIATIONS ---
     function addExerciseRow() {
       const container = document.getElementById('loggerExercisesContainer');
       const index = container.children.length + 1;
@@ -691,7 +668,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Exercise Name</label>
-            <input type="text" placeholder="e.g. Goblet Squats / Bench Press" class="ex-name w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500" required>
+            <input type="text" placeholder="e.g. Seated rows / Bench Press" class="ex-name w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500" required>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Muscle Group</label>
@@ -705,24 +682,30 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-3.5 bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/80">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/80">
           <div>
-            <label class="block text-[11px] font-bold text-slate-600 uppercase">Weight / Resistance (Num)</label>
-            <input type="number" step="0.5" placeholder="e.g. 20" class="ex-weight-num w-full mt-1.5 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500" required>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase">Equipment Type</label>
+            <select class="ex-eq w-full mt-1.5 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+              <option value="CBL">CBL (Cable)</option>
+              <option value="DB">DB (Dumbbell)</option>
+              <option value="BB">BB (Barbell)</option>
+              <option value="BW">BW (Bodyweight)</option>
+              <option value="MACH">MACH (Machine)</option>
+            </select>
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-slate-600 uppercase">Reps per Set</label>
-            <input type="text" placeholder="e.g. 12, 12, 10" class="ex-reps w-full mt-1.5 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500" required>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase">Weight / Resistance Value</label>
+            <input type="text" placeholder="e.g. 7.5kg / 20lbs" class="ex-weight w-full mt-1.5 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500" required>
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-slate-600 uppercase">Number of Sets</label>
-            <input type="text" placeholder="e.g. 3 sets" class="ex-sets-count w-full mt-1.5 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500" required>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase">Reps & Sets Breakdown</label>
+            <input type="text" placeholder="e.g. 15/15/12" class="ex-reps w-full mt-1.5 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500" required>
           </div>
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Superset Paired Exercise (Optional)</label>
-          <input type="text" placeholder="e.g. Romanian DLs" class="ex-superset w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500">
+          <input type="text" placeholder="e.g. Romanian DLs DB20kgx15" class="ex-superset w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-500">
         </div>
       `;
       container.appendChild(div);
@@ -763,17 +746,17 @@
       cards.forEach(card => {
         const name = card.querySelector('.ex-name').value;
         const muscleGroup = card.querySelector('.ex-muscle').value;
-        const weightNum = parseFloat(card.querySelector('.ex-weight-num').value) || 0;
-        const reps = card.querySelector('.ex-reps').value;
-        const setCount = card.querySelector('.ex-sets-count').value;
+        const eq = card.querySelector('.ex-eq').value;
+        const weight = card.querySelector('.ex-weight').value.trim();
+        const reps = card.querySelector('.ex-reps').value.trim();
         const superset = card.querySelector('.ex-superset').value;
 
-        const formattedSets = `${weightNum}kg | Reps: ${reps} | Sets: ${setCount}${superset ? ' (SS: ' + superset + ')' : ''}`;
+        // Formats as e.g. "CBL7.5kgx15/15/12" or "DB20kgx12/12/10" for Google Sheet chart parsing
+        const formattedSets = `${eq}${weight}x${reps}${superset ? ' (SS: ' + superset + ')' : ''}`;
 
         exercises.push({
           name: name,
           sets: formattedSets,
-          weightNum: weightNum,
           muscleGroup: muscleGroup
         });
       });
@@ -807,18 +790,13 @@
       roster.innerHTML = appState.clients.map(c => {
         const nextSched = appState.schedule.find(s => s.clientId === c.id && s.status === 'Confirmed');
         return `
-          <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100/70 transition-colors">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">
-                ${c.name.charAt(0)}
-              </div>
-              <div>
-                <div class="font-bold text-slate-900 text-sm">${c.name}</div>
-                <div class="text-xs text-slate-500 mt-0.5">Calories: ${c.calories} kcal | Protein: ${c.protein}g</div>
-              </div>
+          <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+            <div>
+              <div class="font-bold text-slate-900 text-sm">${c.name}</div>
+              <div class="text-xs text-slate-500 mt-0.5">Calories: ${c.calories} kcal | Protein: ${c.protein}g</div>
             </div>
             <div class="text-right">
-              <div class="text-xs font-semibold text-emerald-700">${nextSched ? nextSched.date + ' @ ' + nextSched.time : 'No open slot scheduled'}</div>
+              <div class="text-xs font-semibold text-emerald-700">${nextSched ? formatDate(nextSched.date) + ' @ ' + nextSched.time : 'No open slot scheduled'}</div>
               <div class="text-[11px] text-slate-400">${nextSched ? nextSched.title : 'Open for booking'}</div>
             </div>
           </div>
@@ -829,20 +807,15 @@
     function renderClientManagement() {
       const container = document.getElementById('clientManagementList');
       container.innerHTML = appState.clients.map(c => `
-        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4 hover:shadow-md transition-shadow">
+        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-3">
           <div class="flex justify-between items-start">
-            <div class="flex items-center space-x-3">
-              <div class="w-12 h-12 rounded-2xl bg-emerald-700 text-white flex items-center justify-center font-extrabold text-base shadow-sm">
-                ${c.name.charAt(0)}
-              </div>
-              <div>
-                <h3 class="font-bold text-slate-900 text-base">${c.name}</h3>
-                <p class="text-xs text-slate-500 mt-0.5">${c.dietNotes || 'No specific diet notes'}</p>
-              </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-base">${c.name}</h3>
+              <p class="text-xs text-slate-500 mt-0.5">${c.dietNotes || 'No specific diet notes'}</p>
             </div>
-            <button onclick="editClient('${c.id}')" class="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-100 cursor-pointer shadow-2xs">Edit</button>
+            <button onclick="editClient('${c.id}')" class="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-100 cursor-pointer">Edit</button>
           </div>
-          <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-200/60 text-xs">
+          <div class="grid grid-cols-2 gap-2 pt-2.5 border-t border-slate-200/60 text-xs">
             <div><span class="text-slate-400">Calories:</span> <strong class="text-slate-800">${c.calories} kcal</strong></div>
             <div><span class="text-slate-400">Protein:</span> <strong class="text-slate-800">${c.protein}g</strong></div>
           </div>
@@ -860,14 +833,9 @@
         (w.exercises && w.exercises.some(e => e.name.toLowerCase().includes(query)))
       );
 
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">No workout records found.</td></tr>`;
-        return;
-      }
-
       tbody.innerHTML = filtered.map(w => `
-        <tr class="hover:bg-slate-50/80 transition-colors">
-          <td class="p-3.5 whitespace-nowrap">${w.date}</td>
+        <tr class="hover:bg-slate-50/80">
+          <td class="p-3.5 whitespace-nowrap">${formatDate(w.date)}</td>
           <td class="p-3.5 font-bold">${w.clientName}</td>
           <td class="p-3.5 font-semibold text-slate-900">${w.title}</td>
           <td class="p-3.5 text-slate-600">${(w.exercises || []).map(e => e.name + ' (' + e.sets + ')').join(', ')}</td>
@@ -887,7 +855,7 @@
             <div>
               <span class="text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded">Action Required: ${p.requestType} Request</span>
               <div class="font-bold text-slate-900 text-sm mt-1">${p.clientName} - ${p.title}</div>
-              <p class="text-xs text-slate-600 mt-0.5">Proposed Slot: ${p.date} @ ${p.time} | Reason: "${p.requestNote}"</p>
+              <p class="text-xs text-slate-600 mt-0.5">Proposed Slot: ${formatDate(p.date)} @ ${p.time} | Reason: "${p.requestNote}"</p>
             </div>
             <div class="flex items-center space-x-2">
               <button onclick="approveRequest('${p.id}', true)" class="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl cursor-pointer">Approve</button>
@@ -900,14 +868,14 @@
       }
 
       tbody.innerHTML = appState.schedule.map(s => `
-        <tr class="hover:bg-slate-50/80 transition-colors">
-          <td class="p-3.5 whitespace-nowrap">${s.date}</td>
+        <tr class="hover:bg-slate-50/80">
+          <td class="p-3.5 whitespace-nowrap">${formatDate(s.date)}</td>
           <td class="p-3.5 whitespace-nowrap font-semibold">${s.time}</td>
           <td class="p-3.5 font-bold">${s.clientName}</td>
           <td class="p-3.5 text-slate-900">${s.title}</td>
           <td class="p-3.5"><span class="px-2.5 py-1 rounded-full text-[11px] font-semibold ${s.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${s.status}</span></td>
           <td class="p-3.5 text-right">
-            <button onclick="deleteScheduleItem('${s.id}')" class="text-rose-500 hover:text-rose-700 text-xs cursor-pointer p-1"><i class="fa-solid fa-trash"></i></button>
+            <button onclick="deleteScheduleItem('${s.id}')" class="text-rose-500 hover:text-rose-700 text-xs cursor-pointer"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
       `).join('');
@@ -950,10 +918,10 @@
 
       if (nextSched) {
         titleEl.innerText = nextSched.title;
-        timeEl.innerText = `Scheduled for ${nextSched.date} at ${nextSched.time}`;
+        timeEl.innerText = `${formatDate(nextSched.date)} at ${nextSched.time}`;
         actionsEl.innerHTML = `
-          <button onclick="openClientRequestModal('${nextSched.id}', 'Reschedule')" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl cursor-pointer border border-slate-200 transition-colors">Reschedule</button>
-          <button onclick="openClientRequestModal('${nextSched.id}', 'Cancel')" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold rounded-xl cursor-pointer border border-rose-200 transition-colors">Cancel</button>
+          <button onclick="openClientRequestModal('${nextSched.id}', 'Reschedule')" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl cursor-pointer border border-slate-200">Reschedule</button>
+          <button onclick="openClientRequestModal('${nextSched.id}', 'Cancel')" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold rounded-xl cursor-pointer border border-rose-200">Cancel</button>
         `;
       } else {
         titleEl.innerText = 'No upcoming session scheduled';
@@ -972,103 +940,108 @@
 
       if (clientWorkouts.length > 0) {
         const sorted = [...clientWorkouts].sort((a,b) => new Date(a.date) - new Date(b.date));
-        document.getElementById('clientKpiFirstSession').innerText = sorted[0].date;
+        document.getElementById('clientKpiFirstSession').innerText = formatDate(sorted[0].date);
       } else {
         document.getElementById('clientKpiFirstSession').innerText = 'N/A';
       }
 
-      populateAnalyticsExerciseDropdown(client.id);
+      populateExerciseDropdownForChart(client);
       renderClientProgressTable();
     }
 
-    function populateAnalyticsExerciseDropdown(clientId) {
-      const select = document.getElementById('analyticsExerciseSelect');
+    function populateExerciseDropdownForChart(client) {
+      const select = document.getElementById('chartExerciseSelect');
       if (!select) return;
 
-      const exerciseNames = new Set();
-      appState.workouts.filter(w => w.clientId === clientId).forEach(w => {
-        (w.exercises || []).forEach(ex => exerciseNames.add(ex.name));
+      const exerciseSet = new Set();
+      appState.workouts.filter(w => w.clientId === client.id).forEach(w => {
+        (w.exercises || []).forEach(ex => exerciseSet.add(ex.name));
       });
 
-      const list = Array.from(exerciseNames);
-      if (list.length === 0) {
+      const exercises = Array.from(exerciseSet);
+      if (exercises.length === 0) {
         select.innerHTML = `<option value="">No exercises recorded</option>`;
-        if (exerciseAnalyticsChartInstance) {
-          exerciseAnalyticsChartInstance.destroy();
-          exerciseAnalyticsChartInstance = null;
-        }
+        if (exerciseChartInstance) exerciseChartInstance.destroy();
         return;
       }
 
       const currentVal = select.value;
-      select.innerHTML = list.map(name => `<option value="${name}" ${name === currentVal ? 'selected' : ''}>${name}</option>`).join('');
-      renderExerciseAnalyticsChart();
+      select.innerHTML = exercises.map(ex => `<option value="${ex}" ${ex === currentVal ? 'selected' : ''}>${ex}</option>`).join('');
+      renderExercisePerformanceChart();
     }
 
-    function renderExerciseAnalyticsChart() {
-      const clientId = appState.activeClientEmail;
-      const select = document.getElementById('analyticsExerciseSelect');
-      if (!select) return;
-      const selectedExercise = select.value;
+    function extractNumericWeight(setsStr) {
+      if (!setsStr) return 0;
+      // Match patterns like CBL7.5kg, DB20, BB50kg, etc.
+      const match = setsStr.match(/(?:CBL|DB|BB|MACH|BW)?\s*([0-9]+(?:\.[0-9]+)?)\s*(?:kg|lbs)?/i);
+      if (match && match[1]) {
+        return parseFloat(match[1]);
+      }
+      return 0;
+    }
 
+    function renderExercisePerformanceChart() {
+      const client = appState.clients.find(c => c.id === appState.activeClientEmail) || appState.clients[0];
+      const select = document.getElementById('chartExerciseSelect');
+      if (!client || !select) return;
+
+      const selectedExercise = select.value;
       const clientWorkouts = appState.workouts
-        .filter(w => w.clientId === clientId)
+        .filter(w => w.clientId === client.id && (w.exercises || []).some(e => e.name === selectedExercise))
         .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-      const dates = [];
-      const weights = [];
-      let totalSessionsCount = 0;
-      let maxWeightVal = 0;
-      let latestWeightStr = '0';
+      const labels = [];
+      const dataPoints = [];
+      let latestResistance = '-';
+      let maxWeight = 0;
 
       clientWorkouts.forEach(w => {
-        (w.exercises || []).forEach(ex => {
-          if (ex.name === selectedExercise) {
-            totalSessionsCount++;
-            dates.push(w.date);
-            const wNum = ex.weightNum !== undefined ? ex.weightNum : 0;
-            weights.push(wNum);
-            if (wNum > maxWeightVal) maxWeightVal = wNum;
-            latestWeightStr = ex.sets;
-          }
-        });
+        const ex = w.exercises.find(e => e.name === selectedExercise);
+        if (ex) {
+          labels.push(formatDate(w.date));
+          const weightVal = extractNumericWeight(ex.sets);
+          dataPoints.push(weightVal);
+          latestResistance = ex.sets;
+          if (weightVal > maxWeight) maxWeight = weightVal;
+        }
       });
 
-      document.getElementById('statExerciseSessions').innerText = totalSessionsCount;
-      document.getElementById('statExerciseMaxWeight').innerText = maxWeightVal + ' kg';
-      document.getElementById('statExerciseLatestWeight').innerText = latestWeightStr;
+      document.getElementById('statExerciseSessions').innerText = clientWorkouts.length;
+      document.getElementById('statExerciseMaxWeight').innerText = maxWeight + ' kg';
+      document.getElementById('statExerciseLatestResistance').innerText = latestResistance;
+      document.getElementById('statExerciseTrend').innerText = clientWorkouts.length >= 2 ? 'Steady Overload' : 'Baseline Set';
 
-      const ctx = document.getElementById('exerciseAnalyticsCanvas').getContext('2d');
-      if (exerciseAnalyticsChartInstance) {
-        exerciseAnalyticsChartInstance.destroy();
+      const ctx = document.getElementById('exerciseChart').getContext('2d');
+      if (exerciseChartInstance) {
+        exerciseChartInstance.destroy();
       }
 
-      exerciseAnalyticsChartInstance = new Chart(ctx, {
+      exerciseChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: dates,
+          labels: labels.length > 0 ? labels : ['No Data'],
           datasets: [{
             label: `${selectedExercise} Weight (kg)`,
-            data: weights,
-            borderColor: '#047857',
-            backgroundColor: 'rgba(4, 120, 87, 0.1)',
+            data: dataPoints.length > 0 ? dataPoints : [0],
+            borderColor: '#059669',
+            backgroundColor: 'rgba(5, 150, 105, 0.1)',
             borderWidth: 3,
-            pointBackgroundColor: '#065f46',
-            pointRadius: 5,
             fill: true,
-            tension: 0.3
+            tension: 0.3,
+            pointBackgroundColor: '#047857',
+            pointRadius: 5
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { display: true, position: 'top' }
+            legend: { display: false }
           },
           scales: {
             y: {
               beginAtZero: true,
-              grid: { color: 'rgba(226, 232, 240, 0.6)' }
+              grid: { color: '#e2e8f0' }
             },
             x: {
               grid: { display: false }
@@ -1091,10 +1064,14 @@
         (w.exercises || []).forEach(ex => {
           const name = ex.name;
           if (!exerciseMap[name]) {
-            exerciseMap[name] = { name: name, muscleGroup: ex.muscleGroup || 'General', count: 0, latestWeight: ex.sets, maxWeight: ex.sets };
+            exerciseMap[name] = { name: name, muscleGroup: ex.muscleGroup || 'General', count: 0, latestWeight: ex.sets, maxWeight: extractNumericWeight(ex.sets) };
           }
           exerciseMap[name].count += 1;
           exerciseMap[name].latestWeight = ex.sets;
+          const wNum = extractNumericWeight(ex.sets);
+          if (wNum > exerciseMap[name].maxWeight) {
+            exerciseMap[name].maxWeight = wNum;
+          }
         });
       });
 
@@ -1108,12 +1085,12 @@
       }
 
       tbody.innerHTML = rows.map(r => `
-        <tr class="hover:bg-slate-50/80 transition-colors">
+        <tr class="hover:bg-slate-50/80">
           <td class="p-3.5 font-bold text-slate-900">${r.name}</td>
           <td class="p-3.5"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-[11px] font-semibold rounded-md">${r.muscleGroup}</span></td>
           <td class="p-3.5">${r.count} sessions</td>
           <td class="p-3.5 font-semibold text-emerald-700">${r.latestWeight}</td>
-          <td class="p-3.5 font-bold text-slate-800">${r.maxWeight}</td>
+          <td class="p-3.5 font-bold text-slate-800">${r.maxWeight} kg</td>
         </tr>
       `).join('');
     }
@@ -1203,7 +1180,7 @@
         if (s) {
           s.status = 'Pending Approval';
           s.requestType = type;
-          s.requestNote = note + (newDate ? ` (Proposed: ${newDate} @ ${newTime})` : '');
+          s.requestNote = note + (newDate ? ` (Proposed: ${formatDate(newDate)} @ ${newTime})` : '');
         }
       } else {
         appState.schedule.push({
